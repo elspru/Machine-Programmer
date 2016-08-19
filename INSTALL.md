@@ -6,12 +6,17 @@ apt-get install autoconf automake libtool build-essential
 ```
 
 ##OpenCL
-The hardest part of compiling this is probably installing OpenCL
+The hardest part of compiling this is probably installing OpenCL.
+If you have that down, can simply:
+```bash
+./autogen.sh && ./configure && make && binary/programmer
+```
 
-If you don't have an OpenCL compatible GPU, then you'll have to install POCL, 
-you can get POCL from http://pocl.sourceforge.net/ 
 
 ##CPU OpenCL Installation
+
+If you don't have an OpenCL compatible GPU, then you'll have to install 
+Portable Open Compute Library or [POCL](http://pocl.sourceforge.net/).
 
 POCL has some dependencies on Ubuntu
 ```bash
@@ -61,9 +66,10 @@ In order to compile need the ones from [Mali OpenCL SDK](https://developer.arm.c
 
 After downloading that package, extract it and fix up platform.mk to reflect
 your current platform. For example:
-
->CC:=arm-linux-gnueabihf-g++
->AR=arm-linux-gnueabihf-ar
+```bash
+CC:=arm-linux-gnueabihf-g++
+AR=arm-linux-gnueabihf-ar
+```
 
 then
 ```bash
