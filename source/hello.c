@@ -30,15 +30,15 @@ cl_int ret;
 char string[MEM_SIZE];
  
 FILE *fp;
-char fileName[] ="./hello.cl";
+char fileName[] ="hello.cl";
 char *source_str;
 size_t source_size;
  
 /* Load the source code containing the kernel*/
 fp = fopen(fileName, "r");
 if (!fp) {
-fprintf(stderr, "Failed to load kernel.\n");
-exit(1);
+  fprintf(stderr, "Failed to load kernel. %s:%d\n", __FILE__, __LINE__);
+  exit(1);
 }
 source_str = (char*)malloc(MAX_SOURCE_SIZE);
 source_size = fread(source_str, 1, MAX_SOURCE_SIZE, fp);
@@ -48,10 +48,13 @@ fclose(fp);
  
 /* Get Platform and Device Info */
 ret = clGetPlatformIDs(1, &platform_id, &ret_num_platforms);
+if (!success_verification(ret)) { return 1; }
 ret = clGetDeviceIDs(platform_id, CL_DEVICE_TYPE_DEFAULT, 1, &device_id, &ret_num_devices);
+if (!success_verification(ret)) { return 1; }
  
 /* Create OpenCL context */
 context = clCreateContext(NULL, 1, &device_id, NULL, NULL, &ret);
+if (!success_verification(ret)) { return 1; }
  
 /* Create Command Queue */
 #ifdef CL_VERSION_2_0
@@ -61,8 +64,10 @@ context = clCreateContext(NULL, 1, &device_id, NULL, NULL, &ret);
   command_waiting_line = clCreateCommandQueue(context, device_id, 0, &ret);
 #endif
  
+if (!success_verification(ret)) { return 1; }
 /* Create Memory Buffer */
 memobj = clCreateBuffer(context, CL_MEM_READ_WRITE,MEM_SIZE * sizeof(char), NULL, &ret);
+if (!success_verification(ret)) { return 1; }
  
 /* Create Kernel Program from the source */
 program = clCreateProgramWithSource(context, 1, (const char **)&source_str,
@@ -77,12 +82,15 @@ program = clCreateProgramWithSource(context, 1, (const char **)&source_str,
  
 /* Build Kernel Program */
 ret = clBuildProgram(program, 1, &device_id, NULL, NULL, NULL);
+if (!success_verification(ret)) { return 1; }
  
 /* Create OpenCL Kernel */
 kernel = clCreateKernel(program, "hello", &ret);
+if (!success_verification(ret)) { return 1; }
  
 /* Set OpenCL Kernel Parameters */
 ret = clSetKernelArg(kernel, 0, sizeof(cl_mem), (void *)&memobj);
+if (!success_verification(ret)) { return 1; }
  
 /* Execute OpenCL Kernel */
 size_t globalWorksize[1] ={1};
@@ -91,10 +99,14 @@ cl_event event;
 ret = clEnqueueNDRangeKernel(
           command_waiting_line, kernel, 1, NULL, globalWorksize, localWorksize,
           0, NULL, &event);
+if (!success_verification(ret)) { return 1; }
  
 /* Copy results from the memory buffer */
 ret = clEnqueueReadBuffer(command_waiting_line, memobj, CL_TRUE, 0,
 MEM_SIZE * sizeof(char),string, 0, NULL, NULL);
+if (!success_verification(ret)) { return 1; }
+
+getInfo();
  
 /* Display Result */
 puts(string);
