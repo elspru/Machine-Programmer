@@ -84,7 +84,7 @@ once you have a libOpenCL.so can put it into the projects library/ folder and
 ###Other GPU's
 You would have to see what is available for your platform,
 if you have success in getting OpenCL, then please write up a summary and email
-me at streond (at) gmail (dot) com
+me.
 
 ## Developing
 
@@ -92,3 +92,5 @@ If you would like to help with development, need some additional packages.
 ```bash
 apt-get install clang-format git
 ```
+
+Can email me at streondj (at) gmail (dot) com for details.
