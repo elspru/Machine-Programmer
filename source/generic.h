@@ -22,6 +22,8 @@ contact: streondj at gmail dot com
 #ifdef __APPLE__
 #include <OpenCL/opencl.h>
 #else
+#define CL_USE_DEPRECATED_OPENCL_1_1_APIS
+#include <CL/cl_platform.h>
 #include <CL/cl.h>
 #endif
 

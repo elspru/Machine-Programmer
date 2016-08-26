@@ -25,7 +25,6 @@ contact: streondj at gmail dot com
 
 #include "generic.h"
 #include "seed.h"
-
 #define NEWSPAPER_LONG 0x10
 #define MAX_SOURCE_SIZE (0x100000)
 uint8_t newspaper_indexFinger = 0;
