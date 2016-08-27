@@ -1,7 +1,19 @@
+-   [Introduction](#introduction)
+-   [Dependencies](#dependencies)
+    -   [OpenCL](#opencl)
+    -   [CPU OpenCL Installation](#cpu-opencl-installation)
+    -   [GPU OpenCL Installation](#gpu-opencl-installation)
+        -   [(ARM) Mali GPU’s (O-Droid XU3/4)](#arm-mali-gpus-o-droid-xu34)
+        -   [Intel GPUs](#intel-gpus)
+        -   [Nvidia GPUs](#nvidia-gpus)
+        -   [Other GPU’s](#other-gpus)
+-   [Developing](#developing)
+-   [Contact](#contact)
+
 Introduction
 ============
 
-This is a guide for how to install it on Ubuntu Linux. Ubuntu Linux is perhaps the most popular Linux Distribution, also it is free to download and install (though donations are welcome). So if you have the misfortune of having a Micrsoft or Apple computer, feel free to format it and install Ubuntu Linux, or set up a dual boot, if you need to transition slowly.
+This is a guide for how to install Machine Programmer on Ubuntu Linux. Ubuntu Linux is perhaps the most popular Linux Distribution, also it is free to download and install (though donations are welcome). So if you have the misfortune of having a Micrsoft or Apple computer, feel free to format it and install Ubuntu Linux, or set up a dual boot, if you need to transition slowly.
 
 The version of Ubuntu Linux this tutorial will be refering to is 16.04 or Xenial, the current long-term-support release.
 
@@ -104,11 +116,35 @@ After that can go back into the project folder
 ./autogen.sh && ./configure LDFLAGS=-L./library && make && binary/programmer
 ```
 
+### Intel GPUs
+
+Intel includes onboard GPUs on a lot of motherboards, so chances are good that if you have an Intel CPU, that you may also have an intel GPU, which you can take advantage of using the well functioning open source beignet drivers.
+
+``` bash
+apt-get install beignet beignet-dev beignet-opencl-icd
+```
+
 ### Nvidia GPUs
 
-Unfortunately there are no libre drivers for Nvidia that have OpenCL support, however there are proprietary drivers, which may work in certain cases.
+Unfortunately there are no libre drivers for Nvidia that have OpenCL support, however there are proprietary drivers, which may work in certain cases. Note this means you can’t use UEFI, common on modern laptops, you’ll have to disable it in the bios. Also this could make breaking changes so I advise you backup your data before attempting to install proprietary drivers.
 
-If you have
+There are a variety of versions of the nvidia drivers, this is because they are very finicky and they might not all work with your GPU card. For instance I had to try several, and spend several days testing, before I finally figured out which ones worked.
+
+The best one for my GeForce GTX 960M, is nvidia-361. I tried their recommended nvidia-367 and nvidia-370 those didn’t work, and nvidia-340 didn’t even show any picture on the screen (good thing I had ssh).
+
+So I would advise you backup your system, and install ssh, so you could ssh tunnel into your computer and fix it in case the monitor stops working due to incompatible drivers.
+
+If you have a GeForce GTX 960M, then can do
+
+``` bash
+apt-get install nvidia-361 
+```
+
+You may find it doesn’t work well with the standard dev packs, something I was struggling with for days. But fortunately can install the open source ones for Intel.
+
+``` bash
+apt-get install beignet-opencl-icd
+```
 
 ### Other GPU’s
 
@@ -126,4 +162,4 @@ apt-get install clang-format git
 Contact
 =======
 
-Can email me at [](mailto:streondj@gmail.com) for details.
+Can email me at <streondj@gmail.com> for details.

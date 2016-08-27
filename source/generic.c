@@ -17,6 +17,7 @@ along with this program.  If not, see <http://www.gnu.org/licenses/>.
 contact: streondj at gmail dot com
 */
 #include <stdio.h>
+#include <string.h>
 
 #include "generic.h"
 
@@ -142,79 +143,157 @@ void getInfo() {
   cl_uint numEntries = 5;
   cl_platform_id platforms[5];
   cl_uint num_platforms = 0;
+  uint8_t platform_indexFinger = 0;
   cl_int ret;
   // cl_int result;
   ret = clGetPlatformIDs(numEntries, platforms, &num_platforms);
   if (!(success_verification(ret))) {
     fprintf(stderr, "getPlatformId failed \n");
-    return ;
+    return;
   }
   printf("num_platforms %d\n", num_platforms);
+  for (; platform_indexFinger < num_platforms; ++platform_indexFinger) {
+    printf("#################\n");
+#define INFO_LENGTH 512
+    char platformInfo[INFO_LENGTH];
+    memset(platformInfo, 0, INFO_LENGTH);
+    size_t realSize = 0;
+    memset(platformInfo, 0, INFO_LENGTH);
+    ret = clGetPlatformInfo(platforms[platform_indexFinger], CL_PLATFORM_VENDOR,
+                            INFO_LENGTH, &platformInfo, &realSize);
+    if (!(success_verification(ret))) {
+      return;
+    }
+    printf("vendor %s \n", platformInfo);
+    memset(platformInfo, 0, INFO_LENGTH);
+    ret = clGetPlatformInfo(platforms[platform_indexFinger], CL_PLATFORM_NAME,
+                            INFO_LENGTH, &platformInfo, &realSize);
+    if (!(success_verification(ret))) {
+      fprintf(stderr, "getPlatformInfo Failed \n");
+    }
+    printf("name %s \n", platformInfo);
+    memset(platformInfo, 0, INFO_LENGTH);
+    ret =
+        clGetPlatformInfo(platforms[platform_indexFinger], CL_PLATFORM_VERSION,
+                          INFO_LENGTH, &platformInfo, &realSize);
+    if (!(success_verification(ret))) {
+      return;
+    }
+    printf("version %s \n", platformInfo);
+    memset(platformInfo, 0, INFO_LENGTH);
+    ret =
+        clGetPlatformInfo(platforms[platform_indexFinger], CL_PLATFORM_PROFILE,
+                          INFO_LENGTH, &platformInfo, &realSize);
+    if (!(success_verification(ret))) {
+      return;
+    }
+    printf("profile %s \n", platformInfo);
+    ret = clGetPlatformInfo(platforms[platform_indexFinger],
+                            CL_PLATFORM_EXTENSIONS, INFO_LENGTH, &platformInfo,
+                            &realSize);
+    if (!(success_verification(ret))) {
+      return;
+    }
+    printf("extensions %s \n", platformInfo);
 
-  char platformInfo[256];
-  size_t realSize = 0;
-  ret = clGetPlatformInfo(platforms[0], CL_PLATFORM_NAME, 256, &platformInfo,
-                          &realSize);
-  if (!(success_verification(ret))) {
-    fprintf(stderr, "getPlatformInfo Failed \n");
-  }
-  printf("name %s \n", platformInfo);
+    cl_device_id deviceID[4];
+    cl_uint num_devices;
+    clGetDeviceIDs(platforms[platform_indexFinger], CL_DEVICE_TYPE_ALL, 8,
+                   deviceID, &num_devices);
+    if (!success_verification(ret)) {
+      return;
+    }
+    printf("# of devices %d\n", num_devices);
 
-  cl_device_id deviceID[4];
-  cl_uint num_devices;
-  clGetDeviceIDs(platforms[0], CL_DEVICE_TYPE_ALL, 8, deviceID, &num_devices);
-  printf("# of devices %d\n", num_devices);
-
-  // cl_ulong deviceType[2];
-  cl_ulong globalCacheSize = 0;
-  cl_ulong globalMemSize = 0;
-  cl_ulong localMemSize = 0;
-  cl_ulong constantBufferSize = 0;
-  cl_ulong memAllocSize = 0;
-  // size_t maxParameterSize = 0;
-  size_t workGroupSize = 0;
-  cl_uint workItemDimensions = 0;
-  cl_uint maxComputeUnits = 0;
-  cl_uint clockFreq = 0;
-  size_t workItemSizes[6];
-  char deviceName[256];
-  cl_uint i = 0;
-  for (i = 0; i < num_devices; i++) {
-    clGetDeviceInfo(deviceID[i], CL_DEVICE_NAME, 256, deviceName, &realSize);
-    clGetDeviceInfo(deviceID[i], CL_DEVICE_MAX_COMPUTE_UNITS, 8,
-                    &maxComputeUnits, &realSize);
-    clGetDeviceInfo(deviceID[i], CL_DEVICE_MAX_CLOCK_FREQUENCY, 8, &clockFreq,
-                    &realSize);
-    clGetDeviceInfo(deviceID[i], CL_DEVICE_LOCAL_MEM_SIZE, 16, &localMemSize,
-                    &realSize);
-    clGetDeviceInfo(deviceID[i], CL_DEVICE_MAX_CONSTANT_BUFFER_SIZE, 8,
-                    &constantBufferSize, &realSize);
-    clGetDeviceInfo(deviceID[i], CL_DEVICE_GLOBAL_MEM_CACHE_SIZE, 8,
-                    &globalCacheSize, &realSize);
-    clGetDeviceInfo(deviceID[i], CL_DEVICE_GLOBAL_MEM_SIZE, 8, &globalMemSize,
-                    &realSize);
-    clGetDeviceInfo(deviceID[i], CL_DEVICE_MAX_MEM_ALLOC_SIZE, 8, &memAllocSize,
-                    &realSize);
-    clGetDeviceInfo(deviceID[i], CL_DEVICE_MAX_WORK_GROUP_SIZE, 8,
-                    &workGroupSize, &realSize);
-    clGetDeviceInfo(deviceID[i], CL_DEVICE_MAX_WORK_ITEM_DIMENSIONS, 8,
-                    &workItemDimensions, &realSize);
-    clGetDeviceInfo(deviceID[i], CL_DEVICE_MAX_WORK_ITEM_DIMENSIONS, 25,
-                    workItemSizes, &realSize);
-    printf("\n DEVICE %d\n", i);
-    printf("name %s \n", deviceName);
-    printf("compute units \t%u \n", (unsigned int)maxComputeUnits);
-    printf("clockFreq \t%u \n", (unsigned int)clockFreq);
-    printf("localMemSize \t%lu \n", (unsigned long)localMemSize);
-    printf("constant buffer size \t%lu \n", (unsigned long)constantBufferSize);
-    printf("globalCacheSize %lu \n", (unsigned long)globalCacheSize);
-    printf("globalMemSize \t%lu \n", (unsigned long)globalMemSize);
-    printf("memory allocation size \t %ld \n", (unsigned long)memAllocSize);
-    printf("max work group size %d \n", (unsigned int)workGroupSize);
-    printf("max work item dimensions %d \n", (unsigned int)workItemDimensions);
-    printf("max work item sizes 0 %lu \n", (unsigned long)workItemSizes[0]);
-    printf("max work item sizes 1 %lu \n", (unsigned long)workItemSizes[1]);
-    printf("max work item sizes 2 %lu \n", (unsigned long)workItemSizes[2]);
-    printf("max work item sizes 3 %lu \n", (unsigned long)workItemSizes[3]);
+    // cl_ulong deviceType[2];
+    cl_ulong globalCacheSize = 0;
+    cl_ulong globalMemSize = 0;
+    cl_ulong localMemSize = 0;
+    cl_ulong constantBufferSize = 0;
+    cl_ulong memAllocSize = 0;
+    // size_t maxParameterSize = 0;
+    size_t workGroupSize = 0;
+    cl_uint workItemDimensions = 0;
+    cl_uint maxComputeUnits = 0;
+    cl_uint clockFreq = 0;
+    size_t workItemSizes[6];
+    char deviceName[256];
+    memset(deviceName, 0, 256);
+    cl_uint i = 0;
+    printf("\n Platform %d\n", platform_indexFinger);
+    for (i = 0; i < num_devices; i++) {
+      ret = clGetDeviceInfo(deviceID[i], CL_DEVICE_NAME, 256, deviceName,
+                            &realSize);
+      if (!success_verification(ret)) {
+        return;
+      }
+      ret = clGetDeviceInfo(deviceID[i], CL_DEVICE_MAX_COMPUTE_UNITS, 8,
+                            &maxComputeUnits, &realSize);
+      if (!success_verification(ret)) {
+        return;
+      }
+      ret = clGetDeviceInfo(deviceID[i], CL_DEVICE_MAX_CLOCK_FREQUENCY, 8,
+                            &clockFreq, &realSize);
+      if (!success_verification(ret)) {
+        return;
+      }
+      ret = clGetDeviceInfo(deviceID[i], CL_DEVICE_LOCAL_MEM_SIZE, 16,
+                            &localMemSize, &realSize);
+      if (!success_verification(ret)) {
+        return;
+      }
+      ret = clGetDeviceInfo(deviceID[i], CL_DEVICE_MAX_CONSTANT_BUFFER_SIZE, 8,
+                            &constantBufferSize, &realSize);
+      if (!success_verification(ret)) {
+        return;
+      }
+      ret = clGetDeviceInfo(deviceID[i], CL_DEVICE_GLOBAL_MEM_CACHE_SIZE, 8,
+                            &globalCacheSize, &realSize);
+      if (!success_verification(ret)) {
+        return;
+      }
+      ret = clGetDeviceInfo(deviceID[i], CL_DEVICE_GLOBAL_MEM_SIZE, 8,
+                            &globalMemSize, &realSize);
+      if (!success_verification(ret)) {
+        return;
+      }
+      ret = clGetDeviceInfo(deviceID[i], CL_DEVICE_MAX_MEM_ALLOC_SIZE, 8,
+                            &memAllocSize, &realSize);
+      if (!success_verification(ret)) {
+        return;
+      }
+      ret = clGetDeviceInfo(deviceID[i], CL_DEVICE_MAX_WORK_GROUP_SIZE, 8,
+                            &workGroupSize, &realSize);
+      if (!success_verification(ret)) {
+        return;
+      }
+      ret = clGetDeviceInfo(deviceID[i], CL_DEVICE_MAX_WORK_ITEM_DIMENSIONS, 8,
+                            &workItemDimensions, &realSize);
+      if (!success_verification(ret)) {
+        return;
+      }
+      ret = clGetDeviceInfo(deviceID[i], CL_DEVICE_MAX_WORK_ITEM_DIMENSIONS, 25,
+                            workItemSizes, &realSize);
+      if (!success_verification(ret)) {
+        return;
+      }
+      printf("\n DEVICE %d\n", i);
+      printf("name %s \n", deviceName);
+      printf("compute units \t%u \n", (unsigned int)maxComputeUnits);
+      printf("clockFreq \t%u \n", (unsigned int)clockFreq);
+      printf("localMemSize \t%lu \n", (unsigned long)localMemSize);
+      printf("constant buffer size \t%lu \n",
+             (unsigned long)constantBufferSize);
+      printf("globalCacheSize %lu \n", (unsigned long)globalCacheSize);
+      printf("globalMemSize \t%lu \n", (unsigned long)globalMemSize);
+      printf("memory allocation size \t %ld \n", (unsigned long)memAllocSize);
+      printf("max work group size %d \n", (unsigned int)workGroupSize);
+      printf("max work item dimensions %d \n",
+             (unsigned int)workItemDimensions);
+      printf("max work item sizes 0 %lu \n", (unsigned long)workItemSizes[0]);
+      printf("max work item sizes 1 %lu \n", (unsigned long)workItemSizes[1]);
+      printf("max work item sizes 2 %lu \n", (unsigned long)workItemSizes[2]);
+      printf("max work item sizes 3 %lu \n", (unsigned long)workItemSizes[3]);
+    }
   }
 }

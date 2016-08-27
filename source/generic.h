@@ -23,8 +23,8 @@ contact: streondj at gmail dot com
 #include <OpenCL/opencl.h>
 #else
 #define CL_USE_DEPRECATED_OPENCL_1_1_APIS
-#include <CL/cl_platform.h>
 #include <CL/cl.h>
+#include <CL/cl_platform.h>
 #endif
 
 int success_verification(cl_int error_number);
