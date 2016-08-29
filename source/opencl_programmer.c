@@ -1,4 +1,4 @@
-/*SPEL virtual machine
+/*SPEL machine programmer
 Copyright (C) 2016  Logan Streondj
 
 This program is free software: you can redistribute it and/or modify
@@ -245,12 +245,13 @@ int main(void) {
   // v16us population[4];
   memset(quiz_independentClause_list, 0,
          (size_t)(quiz_independentClause_list_size * TABLET_LONG * WORD_THICK));
-  text_code(activity_atom_text_size, activity_atom_text, &activity_atom_size,
-            activity_atom, &text_remainder);
+  text_encoding(activity_atom_text_size, activity_atom_text,
+                &activity_atom_size, activity_atom, &text_remainder);
   assert(text_remainder == 0);
-  text_code(quiz_independentClause_list_text_size,
-            quiz_independentClause_list_text, &quiz_independentClause_list_size,
-            quiz_independentClause_list, &text_remainder);
+  text_encoding(quiz_independentClause_list_text_size,
+                quiz_independentClause_list_text,
+                &quiz_independentClause_list_size, quiz_independentClause_list,
+                &text_remainder);
   /* [Initialize the input data] */
 
   /* [Un-map the buffers] */

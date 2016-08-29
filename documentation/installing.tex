@@ -32,8 +32,10 @@ So if you have the misfortune of having a Micrsoft or Apple computer,
 feel free to format it and install Ubuntu Linux,
 or set up a dual boot, if you need to transition slowly.  
 
-The version of Ubuntu Linux this tutorial will be refering to is 16.04 or
-Xenial, the current long-term-support release. 
+The version of Ubuntu Linux this tutorial will be refering to is 14.04 or
+Trusty Tahr, since 16.04 Xenial does not have good OpenCL support. 
+Hopefully 18.04 will have good OpenCL support, 
+which will be released in 2018, within the supported lifetime of Trusty Tahr. 
 
 If you use a different version of Linux, I'm sure can adapt the package names to
 those which are suitable for your distribution.  If you'd like to document how
@@ -58,9 +60,10 @@ If you have that down, can simply:
 Otherwise if that doesn't work, then you probably need OpenCL,
 so follow along below.
 
-\subsection{CPU OpenCL Installation}
+\subsection{CPU OpenCL Installationdownload opencl header packages}
 
-If you don't have an OpenCL compatible GPU, then you'll have to install 
+If you'd like to take advantage of your CPU cores, or
+you don't have an OpenCL compatible GPU, then you'll have to install 
 Portable Open Compute Library or
 \href{http://pocl.sourceforge.net/}{POCL}.
 
@@ -81,13 +84,31 @@ dependencies.
 
 If you find that the dependencies I listed about are insufficient, then please
 email me with how you got it working.
-
 Otherwise once you have POCL can simply 
 \begin{lstlisting}[language=bash]
 ./autogen.sh && ./configure && make && binary/programmer
 \end{lstlisting}
 
 \subsection{GPU  OpenCL Installation}
+
+For all GPU's the supported version of OpenCL may differ from the latest
+version. To avoid deprecation warnings and unexplained segmentation faults, 
+can install the header files which are pertinent to your supported OpenCL version. 
+
+You can find out what version of OpenCL your hardware supports either from it's
+documentation, or by successfully installing OpenCL and then running the hello
+scripts, which will also give you information about your available OpenCL
+platforms. 
+
+For your convenience I've included zip files of the headers in library/.
+For example if your GPU supports OpenCL 1.1 then can install by doing:
+\begin{lstlisting}[language=bash]
+cd library/
+unzip OpenCL-Headers-opencl11.zip 
+mv OpenCL-Headers-opencl11 CL
+sudo mv CL /usr/local/include/
+\end{lstlisting}
+
 
 \subsubsection{(ARM) Mali GPU's (O-Droid XU3/4)}
 
@@ -146,6 +167,7 @@ source beignet drivers.
 apt-get install beignet beignet-dev beignet-opencl-icd
 \end{lstlisting}
 
+Note this does not work with the AMD hardware that I've tested it with.
 
 \subsubsection{Nvidia GPUs}
 Unfortunately there are no libre drivers for Nvidia that have OpenCL support,
@@ -153,6 +175,12 @@ however there are proprietary drivers, which may work in certain cases.
 Note this means you can't use UEFI, common on modern laptops, you'll have to
 disable it in the bios.  Also this could make breaking changes so I advise you
 backup your data before attempting to install proprietary drivers. 
+
+Before you begin, make sure your system is up to date;
+\begin{lstlisting}[language=bash]
+sudo apt-get update && sudo apt-get upgrade && sudo apt-get dist-upgrade;
+sudo apt-get autoremove #cleans up extra packages
+\end{lstlisting}
 
 There are a variety of versions of the nvidia drivers, this is because they are
 very finicky and they might not all work with your GPU card.  For instance I had
@@ -167,17 +195,42 @@ So I would advise you backup your system, and install ssh, so you could ssh
 tunnel into your computer and fix it in case the monitor stops working due to
 incompatible drivers. 
 
+Another good troubleshooting method when the screen is blank due to proprietary
+drivers, is to hold the shift-key during boot-up as this can let you enter the
+grub menu, where you can select "Advanced options" and use a recovery mode or
+different kernel. 
+
+Also may be a good idea to have a boot recovery disk or installation disk handy,
+because installing proprietary drivers may make the system unbootable. 
+
 If you have a GeForce GTX 960M, then can do
 \begin{lstlisting}[language=bash]
 apt-get install nvidia-361 
 \end{lstlisting}
 
+At first reboot after installing the drivers I noticed that the computer turned
+itself off and on several times before loading properly, I'm guessing this is
+normal for prorpeitary drivers. 
+
 You may find it doesn't work well with the standard dev packs, something I was
 struggling with for days.  But fortunately can install the open source ones 
-for Intel.
+from Intel.
 
 \begin{lstlisting}[language=bash]
 apt-get install beignet-opencl-icd
+\end{lstlisting}
+
+
+You may also run into it not using the proprietary drivers, 
+for instance if you do 
+\begin{lstlisting}[language=bash]
+lsmod |grep nvidia
+\end{lstlisting}
+it may give you nothing. 
+
+in this case may need to update-alternatives
+\begin{lstlisting}[language=bash]
+sudo update-alternatives --config x86_64-linux-gnu_gl_conf
 \end{lstlisting}
 
 

@@ -70,6 +70,7 @@ contact: streondj at gmail dot com
 #define CONDITIONAL_MOOD 0x9BE
 #define COUNTERFACTUAL_CONDITIONAL_MOOD 0x159E
 #define ACCUSATIVE_CASE 0x45E
+#define VOCATIVE_CASE 0x08BE
 #define DATIVE_CASE 0x007E
 #define INSTRUMENTAL_CASE 0x087E
 #define QUOTED_WORD_LONG 2
@@ -164,13 +165,15 @@ void code_ACC_word_DAT_number(const uint8_t word_size, const char *word,
 
 void text_copy(const uint8_t size, const char *ACC_text, char *DAT_text);
 
-void tablet_code(const uint8_t code_text_size, const uint16_t *code_text,
-                 uint8_t *tablet_size, uint16_t *tablet, uint8_t *remainder);
-void independentClause_code(const uint16_t text_size, const char *text,
-                            uint8_t *tablet_size, v16us *tablet,
-                            uint16_t *remainder);
-void text_code(const uint16_t text_size, const char *text,
-               uint16_t *tablet_size, v16us *tablet, uint16_t *text_remainder);
+void tablet_encoding(const uint8_t code_text_size, const uint16_t *code_text,
+                     uint8_t *tablet_size, uint16_t *tablet,
+                     uint8_t *remainder);
+void independentClause_encoding(const uint16_t text_size, const char *text,
+                                uint8_t *tablet_size, v16us *tablet,
+                                uint16_t *remainder);
+void text_encoding(const uint16_t text_size, const char *text,
+                   uint16_t *tablet_size, v16us *tablet,
+                   uint16_t *text_remainder);
 void play(const v4us coded_name, v8us *hook_list);
 void burden_hook_list(const uint8_t tablet_size, const v16us *tablet,
                       uint8_t *tablet_indexFinger, v4us *coded_name,

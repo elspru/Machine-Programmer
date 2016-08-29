@@ -13,6 +13,7 @@
 #define MAX_SOURCE_SIZE (0x100000)
 
 int main() {
+  getInfo();
   cl_device_id device_id = NULL;
   cl_context context = NULL;
   cl_command_queue command_waiting_line = NULL;
@@ -136,8 +137,6 @@ int main() {
   if (!success_verification(ret)) {
     return 1;
   }
-
-  getInfo();
 
   /* Display Result */
   puts(string);

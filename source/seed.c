@@ -653,6 +653,9 @@ static inline void establish_ACC_binary_phrase_list(
     case DATIVE_CASE:
       current = (uint8_t)(~current);
       break;
+    case VOCATIVE_CASE:
+      current = (uint8_t)(~current);
+      break;
     case DEONTIC_MOOD:
       current = 2;
       break;
@@ -665,8 +668,9 @@ static inline void establish_ACC_binary_phrase_list(
   }
   tablet[0] = *binary_phrase_list;
 }
-void tablet_code(const uint8_t code_text_size, const uint16_t *code_text,
-                 uint8_t *tablet_size, uint16_t *tablet, uint8_t *remainder) {
+void tablet_encoding(const uint8_t code_text_size, const uint16_t *code_text,
+                     uint8_t *tablet_size, uint16_t *tablet,
+                     uint8_t *remainder) {
   uint16_t binary_phrase_list = 0;
   uint8_t i = 0;
   uint8_t independentClause_size = 0;
@@ -928,9 +932,9 @@ static void convert_last_number_to_quote(uint8_t *last_tablet_indexFinger,
   assert(number_indexFinger <= 2);
 }
 
-void independentClause_code(const uint16_t text_size, const char *text,
-                            uint8_t *tablet_size, v16us *tablet,
-                            uint16_t *text_remainder) {
+void independentClause_encoding(const uint16_t text_size, const char *text,
+                                uint8_t *tablet_size, v16us *tablet,
+                                uint16_t *text_remainder) {
   /* algorithm:
       loop through glyphs,
       derive words
@@ -1056,6 +1060,12 @@ void independentClause_code(const uint16_t text_size, const char *text,
             break;
           case DATIVE_CASE:
             binary_phrase_list ^=
+                (uint16_t)(binary_phrase_list ^ (1 << tablet_indexFinger));
+            ((uint16_t *)tablet)[tablet_indexFinger] = number;
+            ++tablet_indexFinger;
+            break;
+          case VOCATIVE_CASE:
+            binary_phrase_list =
                 (uint16_t)(binary_phrase_list ^ (1 << tablet_indexFinger));
             ((uint16_t *)tablet)[tablet_indexFinger] = number;
             ++tablet_indexFinger;
@@ -1404,8 +1414,9 @@ inline void play_independentClause(const uint8_t tablet_size,
   // printf("\n");
 }
 
-void text_code(const uint16_t max_text_size, const char *text,
-               uint16_t *tablet_size, v16us *tablet, uint16_t *text_remainder) {
+void text_encoding(const uint16_t max_text_size, const char *text,
+                   uint16_t *tablet_size, v16us *tablet,
+                   uint16_t *text_remainder) {
   /* find end of independentClause for each,
     then pass each independentClause to independentClause code,
     return the result */
@@ -1426,9 +1437,9 @@ void text_code(const uint16_t max_text_size, const char *text,
     } else {
       independentClause_tablet_size = (uint8_t)MAX_INDEPENDENTCLAUSE_TABLET;
     }
-    independentClause_code(*text_remainder, text + text_indexFinger,
-                           &independentClause_tablet_size,
-                           &tablet[*tablet_size], text_remainder);
+    independentClause_encoding(*text_remainder, text + text_indexFinger,
+                               &independentClause_tablet_size,
+                               &tablet[*tablet_size], text_remainder);
     *tablet_size = (uint16_t)(*tablet_size + independentClause_tablet_size);
     if (*text_remainder == 0) {
       break;
