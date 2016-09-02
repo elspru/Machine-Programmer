@@ -131,14 +131,18 @@ int main(void) {
   /* Build Kernel Program */
   ret = clBuildProgram(program, 1, &device_id, NULL, NULL, NULL);
   if (!success_verification(ret)) {
-    // cleanUpOpenCL(context, command_waiting_line, program, kernel,
-    // memoryObjects,
-    //              numberOfMemoryObjects);
+#define INFO_LENGTH 4096
+    char compile_newspaper[INFO_LENGTH];
+    memset(compile_newspaper, 0, INFO_LENGTH);
+    size_t compile_newspaper_long = 0;
+    ret = clGetProgramBuildInfo(program, device_id, CL_PROGRAM_BUILD_LOG,
+                                INFO_LENGTH, compile_newspaper,
+                                &compile_newspaper_long);
+    fprintf(stderr, "compile_newspaper %s\n", compile_newspaper);
     fprintf(stderr, "Failed to build OpenCL program. %s:%d\n", __FILE__,
             __LINE__);
     return 1;
   }
-
   kernel = clCreateKernel(program, "composition_population", &errorNumber);
   if (!success_verification(errorNumber)) {
     // cleanUpOpenCL(context, command_waiting_line, program, kernel,
@@ -153,9 +157,9 @@ int main(void) {
   /* Number of elements in the arrays of input and output data. */
 
   /* The buffers are the size of the arrays. */
-  uint16_t activity_atom_size = MAX_INDEPENDENTCLAUSE_TABLET * 1;
+  uint16_t activity_atom_size = MAX_INDEPENDENTCLAUSE_TABLET * 2;
   uint8_t program_size = 1;
-  uint8_t population_size = 4;
+  uint8_t population_size = 0x10;
   size_t activity_atom_byte_size = activity_atom_size * sizeof(v16us);
   uint16_t population_byte_size =
       (uint16_t)(program_size * (uint16_t)(population_size * sizeof(v16us)));
@@ -221,7 +225,7 @@ int main(void) {
 
   /* [Initialize the input data] */
 
-  const char *activity_atom_text = "nyistu htoftu hnattu hnamtu";
+  const char *activity_atom_text = "plostu drettu gzactu bwistu hwantu hnamtu";
   const uint16_t activity_atom_text_size =
       (uint16_t)(strlen(activity_atom_text));
   const char *quiz_independentClause_list_text =

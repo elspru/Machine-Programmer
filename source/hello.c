@@ -1,5 +1,6 @@
 #include <stdio.h>
 #include <stdlib.h>
+#include <string.h>
 
 #include "generic.h"
 
@@ -102,6 +103,16 @@ int main() {
   fprintf(stderr, "building program. %s:%d\n", __FILE__, __LINE__);
   ret = clBuildProgram(program, 1, &device_id, NULL, NULL, NULL);
   if (!success_verification(ret)) {
+#define INFO_LENGTH 4096
+    char compile_newspaper[INFO_LENGTH];
+    memset(compile_newspaper, 0, INFO_LENGTH);
+    size_t compile_newspaper_long = 0;
+    ret = clGetProgramBuildInfo(program, device_id, CL_PROGRAM_BUILD_LOG,
+                                INFO_LENGTH, compile_newspaper,
+                                &compile_newspaper_long);
+    fprintf(stderr, "compile_newspaper %s\n", compile_newspaper);
+    fprintf(stderr, "Failed to build OpenCL program. %s:%d\n", __FILE__,
+            __LINE__);
     return 1;
   }
 
