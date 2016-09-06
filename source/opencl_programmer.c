@@ -26,7 +26,6 @@ contact: streondj at gmail dot com
 #include "generic.h"
 #include "seed.h"
 #define NEWSPAPER_LONG 0x10
-#define MAX_SOURCE_SIZE (0x100000)
 uint8_t newspaper_indexFinger = 0;
 const uint16_t newspaper_byte_size = NEWSPAPER_LONG * TABLET_BYTE_LONG;
 // v16us newspaper[NEWSPAPER_LONG] = {0};
@@ -52,20 +51,7 @@ int main(void) {
   cl_uint ret_num_devices;
   cl_int errorNumber;
   cl_int ret;
-  /* Load the source code containing the kernel*/
-  char fileName[] = "source/parallel/composition_population.cl";
-  FILE *fp;
-  char *source_str;
-  size_t source_size;
-  fp = fopen(fileName, "r");
   cl_uint ret_num_platforms;
-  if (!fp) {
-    fprintf(stderr, "Failed to load kernel %s:%d.\n", __FILE__, __LINE__);
-    exit(1);
-  }
-  source_str = (char *)malloc(MAX_SOURCE_SIZE);
-  source_size = fread(source_str, 1, MAX_SOURCE_SIZE, fp);
-  fclose(fp);
 
   // printf("file: %s :file", source_str);
 
@@ -116,42 +102,9 @@ int main(void) {
     return 1;
   }
 
-  /* create program */
-
-  program = clCreateProgramWithSource(context, 1, (const char **)&source_str,
-                                      (const size_t *)&source_size, &ret);
-  if (!success_verification(ret)) {
-    // cleanUpOpenCL(context, command_waiting_line, program, kernel,
-    // memoryObjects,
-    //              numberOfMemoryObjects);
-    fprintf(stderr, "Failed to create OpenCL program. %s:%d\n", __FILE__,
-            __LINE__);
-    return 1;
-  }
-  /* Build Kernel Program */
-  ret = clBuildProgram(program, 1, &device_id, NULL, NULL, NULL);
-  if (!success_verification(ret)) {
-#define INFO_LENGTH 4096
-    char compile_newspaper[INFO_LENGTH];
-    memset(compile_newspaper, 0, INFO_LENGTH);
-    size_t compile_newspaper_long = 0;
-    ret = clGetProgramBuildInfo(program, device_id, CL_PROGRAM_BUILD_LOG,
-                                INFO_LENGTH, compile_newspaper,
-                                &compile_newspaper_long);
-    fprintf(stderr, "compile_newspaper %s\n", compile_newspaper);
-    fprintf(stderr, "Failed to build OpenCL program. %s:%d\n", __FILE__,
-            __LINE__);
-    return 1;
-  }
-  kernel = clCreateKernel(program, "composition_population", &errorNumber);
-  if (!success_verification(errorNumber)) {
-    // cleanUpOpenCL(context, command_waiting_line, program, kernel,
-    // memoryObjects,
-    //              numberOfMemoryObjects);
-    fprintf(stderr, "Failed to create OpenCL kernel. %s:%d\n", __FILE__,
-            __LINE__);
-    return 1;
-  }
+  seed_program_establish(device_id, context,
+                         "source/parallel/composition_population.cl", &program,
+                         &kernel);
 
   /* [Setup memory] */
   /* Number of elements in the arrays of input and output data. */
@@ -208,12 +161,6 @@ int main(void) {
       activity_atom_byte_size, 0, NULL, NULL, &errorNumber);
   mapMemoryObjectsSuccess &= success_verification(errorNumber);
 
-  // cl_int *inputB = (cl_int *)clEnqueueMapBuffer(
-  //    command_waiting_line, memoryObjects[1], CL_TRUE, CL_MAP_WRITE, 0,
-  //    bufferSize, 0,
-  //    NULL, NULL, &errorNumber);
-  // mapMemoryObjectsSuccess &= success_verification(errorNumber);
-
   if (!mapMemoryObjectsSuccess) {
     // cleanUpOpenCL(context, command_waiting_line, program, kernel,
     // memoryObjects,
@@ -269,55 +216,54 @@ int main(void) {
   if (!success_verification(
           clEnqueueUnmapMemObject(command_waiting_line, memoryObjects[0],
                                   activity_atom, 0, NULL, NULL))) {
-    // cleanUpOpenCL(context, command_waiting_line, program, kernel,
-    // memoryObjects,
-    //              numberOfMemoryObjects);
     fprintf(stderr, "Unmapping memory objects failed %s:%d\n", __FILE__,
             __LINE__);
     return 1;
   }
 
-  // if (!success_verification(clEnqueueUnmapMemObject(command_waiting_line,
-  // memoryObjects[1],
-  //                                          inputB, 0, NULL, NULL))) {
-  //  cleanUpOpenCL(context, command_waiting_line, program, kernel,
-  //  memoryObjects,
-  //                numberOfMemoryObjects);
-  //  cerr << "Unmapping memory objects failed " << __FILE__ << ":" << __LINE__
-  //       << endl;
-  //  return 1;
-  //}
   /* [Un-map the buffers] */
 
   /* [Set the kernel arguments] */
   int setKernelArgumentsSuccess = TRUE;
+  cl_uint input_indexFinger = 0;
   printf("arg0\n");
-  setKernelArgumentsSuccess &= success_verification(clSetKernelArg(
-      kernel, 0, sizeof(uint8_t), (uint8_t *)&activity_atom_size));
+  setKernelArgumentsSuccess &= success_verification(
+      clSetKernelArg(kernel, input_indexFinger, sizeof(uint8_t),
+                     (uint8_t *)&activity_atom_size));
+  ++input_indexFinger;
   printf("arg1\n");
-  setKernelArgumentsSuccess &= success_verification(
-      clSetKernelArg(kernel, 1, sizeof(cl_mem), &memoryObjects[0]));
+  setKernelArgumentsSuccess &= success_verification(clSetKernelArg(
+      kernel, input_indexFinger, sizeof(cl_mem), &memoryObjects[0]));
+  ++input_indexFinger;
   printf("arg2\n");
-  setKernelArgumentsSuccess &= success_verification(
-      clSetKernelArg(kernel, 2, sizeof(uint16_t), (uint16_t *)&program_size));
+  setKernelArgumentsSuccess &= success_verification(clSetKernelArg(
+      kernel, input_indexFinger, sizeof(uint16_t), (uint16_t *)&program_size));
   printf("arg3\n");
-  setKernelArgumentsSuccess &= success_verification(
-      clSetKernelArg(kernel, 3, sizeof(uint8_t), (uint8_t *)&population_size));
+  ++input_indexFinger;
+  setKernelArgumentsSuccess &= success_verification(clSetKernelArg(
+      kernel, input_indexFinger, sizeof(uint8_t), (uint8_t *)&population_size));
   printf("arg4\n");
-  setKernelArgumentsSuccess &= success_verification(
-      clSetKernelArg(kernel, 4, sizeof(uint64_t), (uint64_t *)&random_seed));
+  ++input_indexFinger;
+  setKernelArgumentsSuccess &= success_verification(clSetKernelArg(
+      kernel, input_indexFinger, sizeof(uint64_t), (uint64_t *)&random_seed));
   printf("arg5\n");
-  setKernelArgumentsSuccess &=
-      success_verification(clSetKernelArg(kernel, 5, sizeof(uint64_t *), NULL));
+  ++input_indexFinger;
+  setKernelArgumentsSuccess &= success_verification(
+      clSetKernelArg(kernel, input_indexFinger, sizeof(uint64_t *), NULL));
+  ++input_indexFinger;
   printf("arg6\n");
-  setKernelArgumentsSuccess &= success_verification(
-      clSetKernelArg(kernel, 6, sizeof(cl_mem), &memoryObjects[1]));
+
+  setKernelArgumentsSuccess &= success_verification(clSetKernelArg(
+      kernel, input_indexFinger, sizeof(cl_mem), &memoryObjects[1]));
+  ++input_indexFinger;
   printf("arg7\n");
-  setKernelArgumentsSuccess &=
-      success_verification(clSetKernelArg(kernel, 7, sizeof(uint8_t *), NULL));
-  printf("arg8\n");
   setKernelArgumentsSuccess &= success_verification(
-      clSetKernelArg(kernel, 8, sizeof(cl_mem), &memoryObjects[2]));
+      clSetKernelArg(kernel, input_indexFinger, sizeof(uint8_t *), NULL));
+  ++input_indexFinger;
+  printf("arg8\n");
+  setKernelArgumentsSuccess &= success_verification(clSetKernelArg(
+      kernel, input_indexFinger, sizeof(cl_mem), &memoryObjects[2]));
+  ++input_indexFinger;
 
   if (!setKernelArgumentsSuccess) {
     // cleanUpOpenCL(context, command_waiting_line, program, kernel,

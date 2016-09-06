@@ -31,4 +31,10 @@ int success_verification(cl_int error_number);
 
 void getInfo();
 
+void seed_program_establish(const cl_device_id device_id,
+                            const cl_context context, char *filename,
+                            cl_program *program, cl_kernel *kernel);
+int seed_input_giving(const cl_kernel seed, const uint8_t input_series_long,
+                      const void **input_series);
+
 #endif
