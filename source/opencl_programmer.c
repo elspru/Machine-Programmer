@@ -224,55 +224,26 @@ int main(void) {
   /* [Un-map the buffers] */
 
   /* [Set the kernel arguments] */
-  int setKernelArgumentsSuccess = TRUE;
   cl_uint input_indexFinger = 0;
-  printf("arg0\n");
-  setKernelArgumentsSuccess &= success_verification(
-      clSetKernelArg(kernel, input_indexFinger, sizeof(uint8_t),
-                     (uint8_t *)&activity_atom_size));
-  ++input_indexFinger;
-  printf("arg1\n");
-  setKernelArgumentsSuccess &= success_verification(clSetKernelArg(
-      kernel, input_indexFinger, sizeof(cl_mem), &memoryObjects[0]));
-  ++input_indexFinger;
-  printf("arg2\n");
-  setKernelArgumentsSuccess &= success_verification(clSetKernelArg(
-      kernel, input_indexFinger, sizeof(uint16_t), (uint16_t *)&program_size));
-  printf("arg3\n");
-  ++input_indexFinger;
-  setKernelArgumentsSuccess &= success_verification(clSetKernelArg(
-      kernel, input_indexFinger, sizeof(uint8_t), (uint8_t *)&population_size));
-  printf("arg4\n");
-  ++input_indexFinger;
-  setKernelArgumentsSuccess &= success_verification(clSetKernelArg(
-      kernel, input_indexFinger, sizeof(uint64_t), (uint64_t *)&random_seed));
-  printf("arg5\n");
-  ++input_indexFinger;
-  setKernelArgumentsSuccess &= success_verification(
-      clSetKernelArg(kernel, input_indexFinger, sizeof(uint64_t *), NULL));
-  ++input_indexFinger;
-  printf("arg6\n");
 
-  setKernelArgumentsSuccess &= success_verification(clSetKernelArg(
-      kernel, input_indexFinger, sizeof(cl_mem), &memoryObjects[1]));
-  ++input_indexFinger;
-  printf("arg7\n");
-  setKernelArgumentsSuccess &= success_verification(
-      clSetKernelArg(kernel, input_indexFinger, sizeof(uint8_t *), NULL));
-  ++input_indexFinger;
-  printf("arg8\n");
-  setKernelArgumentsSuccess &= success_verification(clSetKernelArg(
-      kernel, input_indexFinger, sizeof(cl_mem), &memoryObjects[2]));
-  ++input_indexFinger;
+  seed_input_giving(kernel, input_indexFinger, sizeof(uint8_t),
+                    (uint8_t *)&activity_atom_size);
+  seed_input_giving(kernel, input_indexFinger, sizeof(cl_mem),
+                    &memoryObjects[0]);
+  seed_input_giving(kernel, input_indexFinger, sizeof(uint16_t),
+                    (uint16_t *)&program_size);
+  seed_input_giving(kernel, input_indexFinger, sizeof(uint8_t),
+                    (uint8_t *)&population_size);
+  seed_input_giving(kernel, input_indexFinger, sizeof(uint64_t),
+                    (uint64_t *)&random_seed);
+  seed_input_giving(kernel, input_indexFinger, sizeof(uint64_t *), NULL);
 
-  if (!setKernelArgumentsSuccess) {
-    // cleanUpOpenCL(context, command_waiting_line, program, kernel,
-    // memoryObjects,
-    //              numberOfMemoryObjects);
-    fprintf(stderr, "Failed setting OpenCL kernel arguments. %s:%d\n", __FILE__,
-            __LINE__);
-    return 1;
-  }
+  seed_input_giving(kernel, input_indexFinger, sizeof(cl_mem),
+                    &memoryObjects[1]);
+  seed_input_giving(kernel, input_indexFinger, sizeof(uint8_t *), NULL);
+  seed_input_giving(kernel, input_indexFinger, sizeof(cl_mem),
+                    &memoryObjects[2]);
+
   /* [Set the kernel arguments] */
 
   /* An event to associate with the Kernel. Allows us to retrieve profiling
