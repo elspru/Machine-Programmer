@@ -45,7 +45,7 @@ library_library_dictionary_a_CFLAGS = -I$(top_srcdir) $(MY_CFLAGS)\
 #         -Wstack-usage=256 # data bytes per warp
 
 # vm 
-bin_PROGRAMS = binary/programmer binary/encoding
+bin_PROGRAMS = binary/programmer binary/encoding binary/clprobe
 binary_programmer_SOURCES = source/opencl_programmer.c 
 binary_programmer_CFLAGS = -I$(top_srcdir) $(MY_CFLAGS) \
          -Wstack-usage=32768  #L1 Cache
@@ -58,6 +58,11 @@ binary_encoding_CFLAGS = -I$(top_srcdir) $(MY_CFLAGS) \
          -Wstack-usage=32768  #L1 Cache
 binary_encoding_LDADD = library/library_seed.a \
           library/library_generic.a library/library_dictionary.a
+
+binary_clprobe_SOURCES = source/clprobe.c
+binary_clprobe_CFLAGS = -I$(top_srcdir) $(MY_CFLAGS) \
+         -Wstack-usage=32768  #L1 Cache
+binary_clprobe_LDADD = library/library_generic.a 
 
 # TESTS
 #TESTS = check_vm

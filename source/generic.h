@@ -31,14 +31,17 @@ int success_verification(cl_int error_number);
 
 void getInfo();
 
+void seed_program_probe(const cl_device_id device_id, const cl_context context,
+                        char *filename, cl_program *program /*,
+                            cl_kernel *kernel*/);
 void seed_program_establish(const cl_device_id device_id,
                             const cl_context context, char *filename,
-                            cl_program *program, cl_kernel *kernel);
+                            char *seed_name, cl_program *program,
+                            cl_kernel *kernel);
 
 #define seed_input_giving(seed, indexFinger, input_long, input)                \
   if (success_verification(                                                    \
           clSetKernelArg(kernel, indexFinger, input_long, input))) {           \
-    printf("input %d", indexFinger);                                           \
     ++indexFinger;                                                             \
   } else {                                                                     \
     fprintf(stderr, "seed input %d error %s:%d", indexFinger, __FILE__,        \

@@ -40,6 +40,7 @@ const uint16_t newspaper_byte_size = NEWSPAPER_LONG * TABLET_BYTE_LONG;
  */
 
 int main(void) {
+  cl_platform_id platform_id = NULL;
   cl_context context = 0;
   cl_command_queue command_waiting_line = 0;
   cl_program program = 0;
@@ -47,40 +48,30 @@ int main(void) {
   cl_kernel kernel = 0;
   // int numberOfMemoryObjects = 3;
   cl_mem memoryObjects[3] = {0, 0, 0};
-  cl_platform_id platform_id = NULL;
   cl_uint ret_num_devices;
   cl_int errorNumber;
-  cl_int ret;
+  cl_int return_number;
   cl_uint ret_num_platforms;
 
   // printf("file: %s :file", source_str);
 
   getInfo();
 
-  ret = clGetPlatformIDs(1, &platform_id, &ret_num_platforms);
-  if (!success_verification(ret)) {
-    // cleanUpOpenCL(context, command_waiting_line, program, kernel,
-    // memoryObjects,
-    //              numberOfMemoryObjects);
+  return_number = clGetPlatformIDs(1, &platform_id, &ret_num_platforms);
+  if (!success_verification(return_number)) {
     fprintf(stderr, "Failed to get platform id's. %s:%d\n", __FILE__, __LINE__);
     return 1;
   }
-  ret = clGetDeviceIDs(platform_id, CL_DEVICE_TYPE_DEFAULT, 1, &device_id,
-                       &ret_num_devices);
-  if (!success_verification(ret)) {
-    // cleanUpOpenCL(context, command_waiting_line, program, kernel,
-    // memoryObjects,
-    //              numberOfMemoryObjects);
+  return_number = clGetDeviceIDs(platform_id, CL_DEVICE_TYPE_DEFAULT, 1,
+                                 &device_id, &ret_num_devices);
+  if (!success_verification(return_number)) {
     fprintf(stderr, "Failed to get OpenCL devices. %s:%d\n", __FILE__,
             __LINE__);
     return 1;
   }
 
-  context = clCreateContext(NULL, 1, &device_id, NULL, NULL, &ret);
-  if (!success_verification(ret)) {
-    // cleanUpOpenCL(context, command_waiting_line, program, kernel,
-    // memoryObjects,
-    //              numberOfMemoryObjects);
+  context = clCreateContext(NULL, 1, &device_id, NULL, NULL, &return_number);
+  if (!success_verification(return_number)) {
     fprintf(stderr, "Failed to create an OpenCL context. %s:%d\n", __FILE__,
             __LINE__);
     return 1;
@@ -88,23 +79,21 @@ int main(void) {
 
 #ifdef CL_VERSION_2_0
   command_waiting_line =
-      clCreateCommandQueueWithProperties(context, device_id, 0, &ret);
+      clCreateCommandQueueWithProperties(context, device_id, 0, &return_number);
 #else
-  command_waiting_line = clCreateCommandQueue(context, device_id, 0, &ret);
+  command_waiting_line =
+      clCreateCommandQueue(context, device_id, 0, &return_number);
 #endif
 
-  if (!success_verification(ret)) {
-    // cleanUpOpenCL(context, command_waiting_line, program, kernel,
-    // memoryObjects,
-    //              numberOfMemoryObjects);
+  if (!success_verification(return_number)) {
     fprintf(stderr, "Failed to create the OpenCL command queue. %s:%d\n",
             __FILE__, __LINE__);
     return 1;
   }
 
   seed_program_establish(device_id, context,
-                         "source/parallel/composition_population.cl", &program,
-                         &kernel);
+                         "source/parallel/composition_population.cl",
+                         "composition_population", &program, &kernel);
 
   /* [Setup memory] */
   /* Number of elements in the arrays of input and output data. */
@@ -226,23 +215,20 @@ int main(void) {
   /* [Set the kernel arguments] */
   cl_uint input_indexFinger = 0;
 
-  seed_input_giving(kernel, input_indexFinger, sizeof(uint8_t),
-                    (uint8_t *)&activity_atom_size);
-  seed_input_giving(kernel, input_indexFinger, sizeof(cl_mem),
-                    &memoryObjects[0]);
-  seed_input_giving(kernel, input_indexFinger, sizeof(uint16_t),
-                    (uint16_t *)&program_size);
-  seed_input_giving(kernel, input_indexFinger, sizeof(uint8_t),
-                    (uint8_t *)&population_size);
-  seed_input_giving(kernel, input_indexFinger, sizeof(uint64_t),
-                    (uint64_t *)&random_seed);
-  seed_input_giving(kernel, input_indexFinger, sizeof(uint64_t *), NULL);
+#define input_giving(input_long, input)                                        \
+  seed_input_giving(kernel, input_indexFinger, input_long, input)
 
-  seed_input_giving(kernel, input_indexFinger, sizeof(cl_mem),
-                    &memoryObjects[1]);
-  seed_input_giving(kernel, input_indexFinger, sizeof(uint8_t *), NULL);
-  seed_input_giving(kernel, input_indexFinger, sizeof(cl_mem),
-                    &memoryObjects[2]);
+  input_giving(sizeof(uint8_t), (uint8_t *)&activity_atom_size);
+  input_giving(sizeof(cl_mem), &memoryObjects[0]);
+  input_giving(sizeof(uint16_t), (uint16_t *)&program_size);
+  input_giving(sizeof(uint8_t), (uint8_t *)&population_size);
+
+  input_giving(sizeof(uint64_t), (uint64_t *)&random_seed);
+  input_giving(sizeof(uint64_t *), NULL);
+  input_giving(sizeof(cl_mem), &memoryObjects[1]);
+  input_giving(sizeof(uint8_t *), NULL);
+
+  input_giving(sizeof(cl_mem), &memoryObjects[2]);
 
   /* [Set the kernel arguments] */
 
@@ -262,9 +248,6 @@ int main(void) {
   if (!success_verification(clEnqueueNDRangeKernel(
           command_waiting_line, kernel, 1, NULL, globalWorksize, localWorksize,
           0, NULL, &event))) {
-    // cleanUpOpenCL(context, command_waiting_line, program, kernel,
-    // memoryObjects,
-    //              numberOfMemoryObjects);
     fprintf(stderr, "Failed enqueuing the kernel. %s:%d\n", __FILE__, __LINE__);
     return 1;
   }
@@ -272,9 +255,6 @@ int main(void) {
 
   /* Wait for kernel execution completion. */
   if (!success_verification(clFinish(command_waiting_line))) {
-    // cleanUpOpenCL(context, command_waiting_line, program, kernel,
-    // memoryObjects,
-    //              numberOfMemoryObjects);
     fprintf(stderr, "Failed waiting for kernel execution to finish. %s:%d\n",
             __FILE__, __LINE__);
     return 1;
@@ -355,6 +335,16 @@ int main(void) {
 
   printf("releasing\n");
   /* Release OpenCL objects. */
+  return_number = clFlush(command_waiting_line);
+  return_number = clFinish(command_waiting_line);
+  return_number = clReleaseKernel(kernel);
+  return_number = clReleaseProgram(program);
+
+  printf("loading quiz population \n");
+  seed_program_establish(device_id, context,
+                         "source/parallel/quiz_population.cl",
+                         "quiz_population", &program, &kernel);
+
   // cleanUpOpenCL(context, command_waiting_line, program, kernel,
   // memoryObjects,
   //              numberOfMemoryObjects);
