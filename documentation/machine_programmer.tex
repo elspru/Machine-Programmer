@@ -1,0 +1,17 @@
+\documentclass[12pt]{report}
+\usepackage{machine_programmer}
+\usepackage{standalone}
+\usepackage{pdfpages}
+\title{Machine Programmer Documentation}
+\author{\copyright 2016 Logan Streondj}%\\
+%\doclicenseName}
+\begin{document}
+\maketitle
+\tableofcontents
+\input{readme}
+\input{installing}
+%\inputsourcecode{../source/clprobe.c}
+\chapter{OpenCl Probe: clprobe}
+\includepdf[pages=-]{clprobe.pdf}
+%\input{encoding}
+\end{document}

@@ -1,41 +1,23 @@
 \documentclass[12pt]{article}
-\usepackage[margin=2cm]{geometry}
-\usepackage{listings}
-\usepackage{hyperref}
-\usepackage{color}
-\lstset{frame=tb,
-  language=bash,
-  aboveskip=3mm,
-  belowskip=3mm,
-  showstringspaces=false,
-  columns=flexible,
-  basicstyle={\small\ttfamily},
-  numbers=none,
-  numberstyle=\tiny\color{gray},
-  keywordstyle=\color{blue},
-  commentstyle=\color{green},
-  stringstyle=\color{mauve},
-  breaklines=true,
-  breakatwhitespace=true,
-  tabsize=2
-}
-\title{Machine Programmer Installation}
-\author{Logan Streondj}
+\usepackage{machine_programmer}
 \begin{document}
-\maketitle
-\tableofcontents
+%\dominitoc
+%\faketableofcontents
+\chapter{Installation}
+%\minitoc
 \section{Introduction}
-This is a guide for how to install Machine Programmer on Ubuntu Linux.
+This is a guide for how to install Machine Programmer on Ubuntu
+Linux\cite{Ubuntu}.
 Ubuntu Linux is perhaps the most popular Linux Distribution,
 also it is free to download and install (though donations are welcome).
-So if you have the misfortune of having a Micrsoft or Apple computer, 
-feel free to format it and install Ubuntu Linux,
-or set up a dual boot, if you need to transition slowly.  
 
-The version of Ubuntu Linux this tutorial will be refering to is 14.04 or
-Trusty Tahr, since 16.04 Xenial does not have good OpenCL support. 
-Hopefully 18.04 will have good OpenCL support, 
-which will be released in 2018, within the supported lifetime of Trusty Tahr. 
+If you have a different operating system such as those made by Microsoft or
+Apple, feel free to get it working in whatever method you use, and send
+corresponding documentation so it can be added as an option.
+
+The version of Ubuntu Linux this tutorial will be refering to is 16.04,
+though at least for proprietary AMD drivers, you may have better luck on 14.04
+or Fedora.
 
 If you use a different version of Linux, I'm sure can adapt the package names to
 those which are suitable for your distribution.  If you'd like to document how
@@ -187,7 +169,7 @@ very finicky and they might not all work with your GPU card.  For instance I had
 to try several, and spend several days testing, before I finally figured out
 which ones worked. 
 
-The best one for my GeForce GTX 960M, is nvidia-361. I tried their recommended
+The best one for my GeForce GTX 960M, is unknown-361. I tried their recommended
 nvidia-367 and nvidia-370 those didn't work, and nvidia-340 didn't even show any
 picture on the screen (good thing I had ssh). 
 
@@ -203,10 +185,10 @@ different kernel.
 Also may be a good idea to have a boot recovery disk or installation disk handy,
 because installing proprietary drivers may make the system unbootable. 
 
-If you have a GeForce GTX 960M, then can do
-\begin{lstlisting}[language=bash]
-apt-get install nvidia-361 
-\end{lstlisting}
+%If you have a GeForce GTX 960M, then can do
+%\begin{lstlisting}[language=bash]
+%apt-get install nvidia-361 
+%\end{lstlisting}
 
 At first reboot after installing the drivers I noticed that the computer turned
 itself off and on several times before loading properly, I'm guessing this is
@@ -233,6 +215,10 @@ in this case may need to update-alternatives
 sudo update-alternatives --config x86_64-linux-gnu_gl_conf
 \end{lstlisting}
 
+This however wont work if you don't have any working proprietary drivers. 
+
+I manged to get nvidia proprietary-drivers working for one or two boots, however
+I was not able to reliably reproduce it.
 
 \subsubsection{Other GPU's}
 You would have to see what is available for your platform,
@@ -249,4 +235,5 @@ apt-get install clang-format git
 \section{Contact}
 Can email me at \href{mailto:streondj@gmail.com}{streondj@gmail.com}
 for details.
+\printbibliography
 \end{document}

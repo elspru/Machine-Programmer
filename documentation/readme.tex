@@ -1,0 +1,47 @@
+\documentclass[12pt]{report}
+\usepackage{machine_programmer}
+\begin{document}
+%\dominitoc
+%\faketableofcontents
+\chapter{Readme}
+%\minitoc
+\section{Abstract}
+Make specifications for your programs, and allow the computer to evolve the
+solutions. 
+
+\section{Ingredients}
+This project has several components:
+
+\begin{itemize}
+\item binary/encoding for encoding Pyash into 32 byte tablets. (beta)
+\item binary/clprobe for getting OpenCL info and compiling .cl files to check
+for syntax errors (beta)
+\item Machine programmer for evolving Pyash programs in OpenCL on GPU/CPU  (alpha)
+\item OpenCL compatible virtual machine for Pyash, the SPEL core-language (alpha)
+\item Compiler for converting Pyash byte-code to other languages like LLVM (concept)
+\end{itemize}
+
+\section{Progress}
+As of Aug 2016, this is just a prototype under active development. 
+It is expected that once the Machine Programmer can contribute to it's own code
+base, that the rate of development will increase. 
+
+\section{Tiny OpenCL Teaching}
+Even now it has some useful AGPLv3, OpenCL code, which can be adapted to
+other projects. 
+check out the following files for a mini OpenCL overview:
+\begin{lstlisting}[language=bash]
+source/hello.c
+source/hello.cl
+source/generic.h
+source/generic.c
+\end{lstlisting}
+
+can test with
+\begin{lstlisting}[language=bash]
+cd source
+gcc generic.c hello.c -lOpenCL  -o hello # possibly also -L../library 
+./hello
+\end{lstlisting}
+
+\end{document}

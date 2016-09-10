@@ -31,3 +31,12 @@ source/hello
 *aux
 *log
 binary/*
+*sha1
+*bcf
+*maf
+*xml
+*mtc
+*.mtc*
+*blx.bib
+*blg
+*toc
