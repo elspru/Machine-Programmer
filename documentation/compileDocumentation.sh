@@ -27,6 +27,6 @@ function file_compile {
 }
 file_compile installing
 file_compile readme
-file_compile machine_programmer
 file_compile encoding
 file_compile clprobe
+file_compile machine_programmer
