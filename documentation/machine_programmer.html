@@ -1,0 +1,1110 @@
+<?xml version="1.0" encoding="utf-8" ?> 
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" 
+  "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">  
+<!--http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd-->  
+<html xmlns="http://www.w3.org/1999/xhtml"  
+> 
+<head> 
+   <div class="marginpar">
+   updated: 2016/09/12</div> <title>Machine Programmer Documentation</title> 
+<meta http-equiv="Content-Type" content="text/html; charset=utf-8" /> 
+<meta name="generator" content="TeX4ht (http://www.cse.ohio-state.edu/~gurari/TeX4ht/)" /> 
+<meta name="originator" content="TeX4ht (http://www.cse.ohio-state.edu/~gurari/TeX4ht/)" /> 
+<!-- html,xhtml, charset=utf-8 --> 
+<meta name="src" content="machine_programmer.tex" /> 
+<meta name="date" content="2016-09-12 12:55:00" /> 
+<link rel="stylesheet" type="text/css" href="machine_programmer.css" /> 
+<link rel="stylesheet" type="text/css" href="scale.css" /></head><body 
+>
+   <div class="maketitle">
+                                                                                               
+                                                                                               
+
+<h2 class="titleHead">Machine Programmer Documentation</h2>
+<div class="author" ><span 
+class="cmsy-10x-x-144">©</span><span 
+class="cmr-12x-x-120">2016 Logan Streondj</span></div><br />
+<div class="date" ></div>
+                                                                                               
+                                                                                               
+   </div>
+                                                                                               
+                                                                                               
+   <h2 class="likechapterHead"><a 
+ id="x1-1000"></a>Contents</h2> <div class="tableofcontents">
+   <span class="chapterToc" >1 <a 
+href="#x1-20001" id="QQ2-1-2">Readme</a></span>
+<br />   &#x00A0;<span class="sectionToc" >1.1 <a 
+href="#x1-30001.1" id="QQ2-1-3">Abstract</a></span>
+<br />   &#x00A0;<span class="sectionToc" >1.2 <a 
+href="#x1-40001.2" id="QQ2-1-4">Ingredients</a></span>
+<br />   &#x00A0;<span class="sectionToc" >1.3 <a 
+href="#x1-50001.3" id="QQ2-1-5">Progress</a></span>
+<br />   &#x00A0;<span class="sectionToc" >1.4 <a 
+href="#x1-60001.4" id="QQ2-1-6">Tiny OpenCL Teaching</a></span>
+<br />   <span class="chapterToc" >2 <a 
+href="#x1-70002" id="QQ2-1-7">Installation</a></span>
+<br />   &#x00A0;<span class="sectionToc" >2.1 <a 
+href="#x1-80002.1" id="QQ2-1-8">Introduction</a></span>
+<br />   &#x00A0;<span class="sectionToc" >2.2 <a 
+href="#x1-90002.2" id="QQ2-1-9">Dependencies</a></span>
+<br />   &#x00A0;&#x00A0;<span class="subsectionToc" >2.2.1 <a 
+href="#x1-100002.2.1" id="QQ2-1-10">OpenCL</a></span>
+<br />   &#x00A0;&#x00A0;<span class="subsectionToc" >2.2.2 <a 
+href="#x1-110002.2.2" id="QQ2-1-11">CPU OpenCL Installationdownload opencl header packages</a></span>
+<br />   &#x00A0;&#x00A0;<span class="subsectionToc" >2.2.3 <a 
+href="#x1-120002.2.3" id="QQ2-1-12">GPU OpenCL Installation</a></span>
+<br />   &#x00A0;<span class="sectionToc" >2.3 <a 
+href="#x1-170002.3" id="QQ2-1-17">Developing</a></span>
+<br />   &#x00A0;<span class="sectionToc" >2.4 <a 
+href="#x1-180002.4" id="QQ2-1-18">Contact</a></span>
+<br />   <span class="chapterToc" >3 <a 
+href="#x1-190003" id="QQ2-1-19">binary/clprobe</a></span>
+<br />   &#x00A0;<span class="sectionToc" >3.1 <a 
+href="#x1-200003.1" id="QQ2-1-20">Synopsis</a></span>
+<br />   &#x00A0;<span class="sectionToc" >3.2 <a 
+href="#x1-210003.2" id="QQ2-1-21">Description</a></span>
+<br />   &#x00A0;<span class="sectionToc" >3.3 <a 
+href="#x1-220003.3" id="QQ2-1-22">Bugs</a></span>
+<br />   &#x00A0;<span class="sectionToc" >3.4 <a 
+href="#x1-230003.4" id="QQ2-1-23">Author</a></span>
+<br />   &#x00A0;<span class="sectionToc" >3.5 <a 
+href="#x1-240003.5" id="QQ2-1-24">See Also</a></span>
+<br />   &#x00A0;<span class="sectionToc" >3.6 <a 
+href="#x1-250003.6" id="QQ2-1-25">License</a></span>
+<br />   <span class="chapterToc" >4 <a 
+href="#x1-260004" id="QQ2-1-26">binary/encoding</a></span>
+   </div>
+                                                                                               
+                                                                                               
+   <h2 class="chapterHead"><span class="titlemark">Chapter&#x00A0;1</span><br /><a 
+ id="x1-20001"></a>Readme</h2>
+   <h3 class="sectionHead"><span class="titlemark">1.1   </span> <a 
+ id="x1-30001.1"></a>Abstract</h3>
+<!--l. 9--><p class="noindent" >Make specifications for your programs, and allow the computer to evolve the solutions.
+</p><!--l. 12--><p class="noindent" >
+</p>
+   <h3 class="sectionHead"><span class="titlemark">1.2   </span> <a 
+ id="x1-40001.2"></a>Ingredients</h3>
+<!--l. 13--><p class="noindent" >This project has several components:
+</p>
+      <ul class="itemize1">
+      <li class="itemize">binary/encoding for encoding Pyash into 32 byte tablets. (beta)
+      </li>
+      <li class="itemize">binary/clprobe for getting OpenCL info and compiling .cl files to check for syntax errors
+      (beta)
+      </li>
+      <li class="itemize">Machine programmer for evolving Pyash programs in OpenCL on GPU/CPU (alpha)
+      </li>
+      <li class="itemize">OpenCL compatible virtual machine for Pyash, the SPEL core-language (alpha)
+      </li>
+      <li class="itemize">Compiler for converting Pyash byte-code to other languages like LLVM (concept)</li></ul>
+<!--l. 24--><p class="noindent" >
+</p>
+   <h3 class="sectionHead"><span class="titlemark">1.3   </span> <a 
+ id="x1-50001.3"></a>Progress</h3>
+<!--l. 25--><p class="noindent" >As of Aug 2016, this is just a prototype under active development. It is expected that once the
+Machine Programmer can contribute to it&#8217;s own code base, that the rate of development will
+increase.
+</p><!--l. 29--><p class="noindent" >
+</p>
+   <h3 class="sectionHead"><span class="titlemark">1.4   </span> <a 
+ id="x1-60001.4"></a>Tiny OpenCL Teaching</h3>
+<!--l. 30--><p class="noindent" >Even now it has some useful AGPLv3, OpenCL code, which can be adapted to other projects. check out
+the following files for a mini OpenCL overview: </p><!--l. 33-->
+<div class="lstlisting" id="listing-1"><span class="label"><a 
+ id="x1-6001r1"></a></span><span 
+class="cmtt-10x-x-109">source</span><span 
+class="cmtt-10x-x-109">/</span><span 
+class="cmtt-10x-x-109">hello</span><span 
+class="cmtt-10x-x-109">.</span><span 
+class="cmtt-10x-x-109">c</span><span 
+class="cmtt-10x-x-109">&#x00A0;</span><br /><span class="label"><a 
+ id="x1-6002r2"></a></span><span 
+class="cmtt-10x-x-109">source</span><span 
+class="cmtt-10x-x-109">/</span><span 
+class="cmtt-10x-x-109">hello</span><span 
+class="cmtt-10x-x-109">.</span><span 
+class="cmtt-10x-x-109">cl</span><span 
+class="cmtt-10x-x-109">&#x00A0;</span><br /><span class="label"><a 
+ id="x1-6003r3"></a></span><span 
+class="cmtt-10x-x-109">source</span><span 
+class="cmtt-10x-x-109">/</span><span 
+class="cmtt-10x-x-109">generic</span><span 
+class="cmtt-10x-x-109">.</span><span 
+class="cmtt-10x-x-109">h</span><span 
+class="cmtt-10x-x-109">&#x00A0;</span><br /><span class="label"><a 
+ id="x1-6004r4"></a></span><span 
+class="cmtt-10x-x-109">source</span><span 
+class="cmtt-10x-x-109">/</span><span 
+class="cmtt-10x-x-109">generic</span><span 
+class="cmtt-10x-x-109">.</span><span 
+class="cmtt-10x-x-109">c</span>
+                                                                                               
+                                                                                               
+   </div>
+<!--l. 40--><p class="indent" >   can test with </p><!--l. 41-->
+<div class="lstlisting" id="listing-2"><span class="label"><a 
+ id="x1-6005r1"></a></span><span 
+class="cmtt-10x-x-109">cd</span><span 
+class="cmtt-10x-x-109">&#x00A0;</span><span 
+class="cmtt-10x-x-109">source</span><span 
+class="cmtt-10x-x-109">&#x00A0;</span><br /><span class="label"><a 
+ id="x1-6006r2"></a></span><span 
+class="cmtt-10x-x-109">gcc</span><span 
+class="cmtt-10x-x-109">&#x00A0;</span><span 
+class="cmtt-10x-x-109">generic</span><span 
+class="cmtt-10x-x-109">.</span><span 
+class="cmtt-10x-x-109">c</span><span 
+class="cmtt-10x-x-109">&#x00A0;</span><span 
+class="cmtt-10x-x-109">hello</span><span 
+class="cmtt-10x-x-109">.</span><span 
+class="cmtt-10x-x-109">c</span><span 
+class="cmtt-10x-x-109">&#x00A0;</span><span 
+class="cmtt-10x-x-109">-</span><span 
+class="cmtt-10x-x-109">lOpenCL</span><span 
+class="cmtt-10x-x-109">&#x00A0;</span><span 
+class="cmtt-10x-x-109">-</span><span 
+class="cmtt-10x-x-109">o</span><span 
+class="cmtt-10x-x-109">&#x00A0;</span><span 
+class="cmtt-10x-x-109">hello</span><span 
+class="cmtt-10x-x-109">&#x00A0;</span><span 
+class="cmtt-10x-x-109">#</span><span 
+class="cmtt-10x-x-109">&#x00A0;</span><span 
+class="cmtt-10x-x-109">possibly</span><span 
+class="cmtt-10x-x-109">&#x00A0;</span><span 
+class="cmtt-10x-x-109">also</span><span 
+class="cmtt-10x-x-109">&#x00A0;</span><span 
+class="cmtt-10x-x-109">-</span><span 
+class="cmtt-10x-x-109">L</span><span 
+class="cmtt-10x-x-109">../</span><span 
+class="cmtt-10x-x-109">library</span><span 
+class="cmtt-10x-x-109">&#x00A0;</span><br /><span class="label"><a 
+ id="x1-6007r3"></a></span><span 
+class="cmtt-10x-x-109">./</span><span 
+class="cmtt-10x-x-109">hello</span>
+   </div>
+                                                                                               
+                                                                                               
+   <h2 class="chapterHead"><span class="titlemark">Chapter&#x00A0;2</span><br /><a 
+ id="x1-70002"></a>Installation</h2>
+   <h3 class="sectionHead"><span class="titlemark">2.1   </span> <a 
+ id="x1-80002.1"></a>Introduction</h3>
+<!--l. 9--><p class="noindent" >This is a guide for how to install Machine Programmer on Ubuntu Linux[<span 
+class="cmbx-12">Ubuntu</span>]. Ubuntu Linux is
+perhaps the most popular Linux Distribution, also it is free to download and install (though donations
+are welcome).
+</p><!--l. 14--><p class="indent" >   If you have a different operating system such as those made by Microsoft or Apple, feel free to get it
+working in whatever method you use, and send corresponding documentation so it can be added as an
+option.
+</p><!--l. 18--><p class="indent" >   The version of Ubuntu Linux this tutorial will be refering to is 16.04, though at least for proprietary
+AMD drivers, you may have better luck on 14.04 or Fedora.
+</p><!--l. 22--><p class="indent" >   If you use a different version of Linux, I&#8217;m sure can adapt the package names to those which are
+suitable for your distribution. If you&#8217;d like to document how you did it then can forward it and will add
+your manual also.
+</p><!--l. 26--><p class="noindent" >
+</p>
+   <h3 class="sectionHead"><span class="titlemark">2.2   </span> <a 
+ id="x1-90002.2"></a>Dependencies</h3>
+<!--l. 27--><p class="noindent" >As with any package the most difficult part is getting the dependencies installed.
+</p><!--l. 30--><p class="indent" >   needs autotools to compile </p><!--l. 31-->
+<div class="lstlisting" id="listing-3"><span class="label"><a 
+ id="x1-9001r1"></a></span><span 
+class="cmtt-10x-x-109">apt</span><span 
+class="cmtt-10x-x-109">-</span><span 
+class="cmtt-10x-x-109">get</span><span 
+class="cmtt-10x-x-109">&#x00A0;</span><span 
+class="cmtt-10x-x-109">install</span><span 
+class="cmtt-10x-x-109">&#x00A0;</span><span 
+class="cmtt-10x-x-109">autoconf</span><span 
+class="cmtt-10x-x-109">&#x00A0;</span><span 
+class="cmtt-10x-x-109">automake</span><span 
+class="cmtt-10x-x-109">&#x00A0;</span><span 
+class="cmtt-10x-x-109">libtool</span><span 
+class="cmtt-10x-x-109">&#x00A0;</span><span 
+class="cmtt-10x-x-109">build</span><span 
+class="cmtt-10x-x-109">-</span><span 
+class="cmtt-10x-x-109">essential</span>
+   </div>
+<!--l. 35--><p class="noindent" >
+</p>
+   <h4 class="subsectionHead"><span class="titlemark">2.2.1   </span> <a 
+ id="x1-100002.2.1"></a>OpenCL</h4>
+<!--l. 36--><p class="noindent" >The hardest part of compiling this is probably installing OpenCL. If you have that down, can simply:
+</p><!--l. 38-->
+<div class="lstlisting" id="listing-4"><span class="label"><a 
+ id="x1-10001r1"></a></span><span 
+class="cmtt-10x-x-109">./</span><span 
+class="cmtt-10x-x-109">autogen</span><span 
+class="cmtt-10x-x-109">.</span><span 
+class="cmtt-10x-x-109">sh</span><span 
+class="cmtt-10x-x-109">&#x00A0;</span><span 
+class="cmtt-10x-x-109">&amp;&amp;</span><span 
+class="cmtt-10x-x-109">&#x00A0;</span><span 
+class="cmtt-10x-x-109">./</span><span 
+class="cmtt-10x-x-109">configure</span><span 
+class="cmtt-10x-x-109">&#x00A0;</span><span 
+class="cmtt-10x-x-109">&amp;&amp;</span><span 
+class="cmtt-10x-x-109">&#x00A0;</span><span 
+class="cmtt-10x-x-109">make</span><span 
+class="cmtt-10x-x-109">&#x00A0;</span><span 
+class="cmtt-10x-x-109">&amp;&amp;</span><span 
+class="cmtt-10x-x-109">&#x00A0;</span><span 
+class="cmtt-10x-x-109">binary</span><span 
+class="cmtt-10x-x-109">/</span><span 
+class="cmtt-10x-x-109">programmer</span>
+   </div>
+<!--l. 42--><p class="indent" >   Otherwise if that doesn&#8217;t work, then you probably need OpenCL, so follow along below.
+</p><!--l. 45--><p class="noindent" >
+</p>
+   <h4 class="subsectionHead"><span class="titlemark">2.2.2   </span> <a 
+ id="x1-110002.2.2"></a>CPU OpenCL Installationdownload opencl header packages</h4>
+<!--l. 47--><p class="noindent" >If you&#8217;d like to take advantage of your CPU cores, or you don&#8217;t have an OpenCL compatible GPU, then
+you&#8217;ll have to install Portable Open Compute Library or <a 
+href="http://pocl.sourceforge.net/" >POCL</a>.
+</p><!--l. 52--><p class="indent" >   POCL has some dependencies on Ubuntu </p><!--l. 53-->
+                                                                                               
+                                                                                               
+<div class="lstlisting" id="listing-5"><span class="label"><a 
+ id="x1-11001r1"></a></span><span 
+class="cmtt-10x-x-109">apt</span><span 
+class="cmtt-10x-x-109">-</span><span 
+class="cmtt-10x-x-109">get</span><span 
+class="cmtt-10x-x-109">&#x00A0;</span><span 
+class="cmtt-10x-x-109">install</span><span 
+class="cmtt-10x-x-109">&#x00A0;</span><span 
+class="cmtt-10x-x-109">libhwloc</span><span 
+class="cmtt-10x-x-109">-</span><span 
+class="cmtt-10x-x-109">dev</span><span 
+class="cmtt-10x-x-109">&#x00A0;</span><span 
+class="cmtt-10x-x-109">zlib1g</span><span 
+class="cmtt-10x-x-109">-</span><span 
+class="cmtt-10x-x-109">dev</span><span 
+class="cmtt-10x-x-109">&#x00A0;</span><span 
+class="cmtt-10x-x-109">libclang</span><span 
+class="cmtt-10x-x-109">-</span><span 
+class="cmtt-10x-x-109">dev</span><span 
+class="cmtt-10x-x-109">&#x00A0;</span><span 
+class="cmtt-10x-x-109">libx11</span><span 
+class="cmtt-10x-x-109">-</span><span 
+class="cmtt-10x-x-109">dev</span><span 
+class="cmtt-10x-x-109">&#x00A0;</span><span 
+class="cmtt-10x-x-109">ocl</span><span 
+class="cmtt-10x-x-109">-</span><span 
+class="cmtt-10x-x-109">icd</span><span 
+class="cmtt-10x-x-109">-</span><span 
+class="cmtt-10x-x-109">dev</span><span 
+class="cmtt-10x-x-109">&#x00A0;</span><span 
+class="cmtt-10x-x-109">cmake</span>
+   </div>
+<!--l. 57--><p class="indent" >   Then if you are sure you don&#8217;t have GPU drivers, as installing this package may conflict with any
+GPU drivers you may install: </p><!--l. 59-->
+<div class="lstlisting" id="listing-6"><span class="label"><a 
+ id="x1-11002r1"></a></span><span 
+class="cmtt-10x-x-109">apt</span><span 
+class="cmtt-10x-x-109">-</span><span 
+class="cmtt-10x-x-109">get</span><span 
+class="cmtt-10x-x-109">&#x00A0;</span><span 
+class="cmtt-10x-x-109">install</span><span 
+class="cmtt-10x-x-109">&#x00A0;</span><span 
+class="cmtt-10x-x-109">ocl</span><span 
+class="cmtt-10x-x-109">-</span><span 
+class="cmtt-10x-x-109">icd</span><span 
+class="cmtt-10x-x-109">-</span><span 
+class="cmtt-10x-x-109">opencl</span><span 
+class="cmtt-10x-x-109">-</span><span 
+class="cmtt-10x-x-109">dev</span>
+   </div>
+<!--l. 63--><p class="indent" >   then compile POCL based on it&#8217;s instructions, if it&#8217;s being difficult, can try the cmake part of the
+instructions, as cmake may give you additional dependencies.
+</p><!--l. 67--><p class="indent" >   If you find that the dependencies I listed about are insufficient, then please email me with how you
+got it working. Otherwise once you have POCL can simply </p><!--l. 70-->
+<div class="lstlisting" id="listing-7"><span class="label"><a 
+ id="x1-11003r1"></a></span><span 
+class="cmtt-10x-x-109">./</span><span 
+class="cmtt-10x-x-109">autogen</span><span 
+class="cmtt-10x-x-109">.</span><span 
+class="cmtt-10x-x-109">sh</span><span 
+class="cmtt-10x-x-109">&#x00A0;</span><span 
+class="cmtt-10x-x-109">&amp;&amp;</span><span 
+class="cmtt-10x-x-109">&#x00A0;</span><span 
+class="cmtt-10x-x-109">./</span><span 
+class="cmtt-10x-x-109">configure</span><span 
+class="cmtt-10x-x-109">&#x00A0;</span><span 
+class="cmtt-10x-x-109">&amp;&amp;</span><span 
+class="cmtt-10x-x-109">&#x00A0;</span><span 
+class="cmtt-10x-x-109">make</span><span 
+class="cmtt-10x-x-109">&#x00A0;</span><span 
+class="cmtt-10x-x-109">&amp;&amp;</span><span 
+class="cmtt-10x-x-109">&#x00A0;</span><span 
+class="cmtt-10x-x-109">binary</span><span 
+class="cmtt-10x-x-109">/</span><span 
+class="cmtt-10x-x-109">programmer</span>
+   </div>
+<!--l. 74--><p class="noindent" >
+</p>
+   <h4 class="subsectionHead"><span class="titlemark">2.2.3   </span> <a 
+ id="x1-120002.2.3"></a>GPU OpenCL Installation</h4>
+<!--l. 76--><p class="noindent" >For all GPU&#8217;s the supported version of OpenCL may differ from the latest version. To avoid deprecation
+warnings and unexplained segmentation faults, can install the header files which are pertinent to your
+supported OpenCL version.
+</p><!--l. 80--><p class="indent" >   You can find out what version of OpenCL your hardware supports either from it&#8217;s documentation, or
+by successfully installing OpenCL and then running the hello scripts, which will also give you information
+about your available OpenCL platforms.
+</p><!--l. 85--><p class="indent" >   For your convenience I&#8217;ve included zip files of the headers in library/. For example if your GPU
+supports OpenCL 1.1 then can install by doing: </p><!--l. 87-->
+<div class="lstlisting" id="listing-8"><span class="label"><a 
+ id="x1-12001r1"></a></span><span 
+class="cmtt-10x-x-109">cd</span><span 
+class="cmtt-10x-x-109">&#x00A0;</span><span 
+class="cmtt-10x-x-109">library</span><span 
+class="cmtt-10x-x-109">/</span><span 
+class="cmtt-10x-x-109">&#x00A0;</span><br /><span class="label"><a 
+ id="x1-12002r2"></a></span><span 
+class="cmtt-10x-x-109">unzip</span><span 
+class="cmtt-10x-x-109">&#x00A0;</span><span 
+class="cmtt-10x-x-109">OpenCL</span><span 
+class="cmtt-10x-x-109">-</span><span 
+class="cmtt-10x-x-109">Headers</span><span 
+class="cmtt-10x-x-109">-</span><span 
+class="cmtt-10x-x-109">opencl11</span><span 
+class="cmtt-10x-x-109">.</span><span 
+class="cmtt-10x-x-109">zip</span><span 
+class="cmtt-10x-x-109">&#x00A0;</span><br /><span class="label"><a 
+ id="x1-12003r3"></a></span><span 
+class="cmtt-10x-x-109">mv</span><span 
+class="cmtt-10x-x-109">&#x00A0;</span><span 
+class="cmtt-10x-x-109">OpenCL</span><span 
+class="cmtt-10x-x-109">-</span><span 
+class="cmtt-10x-x-109">Headers</span><span 
+class="cmtt-10x-x-109">-</span><span 
+class="cmtt-10x-x-109">opencl11</span><span 
+class="cmtt-10x-x-109">&#x00A0;</span><span 
+class="cmtt-10x-x-109">CL</span><span 
+class="cmtt-10x-x-109">&#x00A0;</span><br /><span class="label"><a 
+ id="x1-12004r4"></a></span><span 
+class="cmtt-10x-x-109">sudo</span><span 
+class="cmtt-10x-x-109">&#x00A0;</span><span 
+class="cmtt-10x-x-109">mv</span><span 
+class="cmtt-10x-x-109">&#x00A0;</span><span 
+class="cmtt-10x-x-109">CL</span><span 
+class="cmtt-10x-x-109">&#x00A0;</span><span 
+class="cmtt-10x-x-109">/</span><span 
+class="cmtt-10x-x-109">usr</span><span 
+class="cmtt-10x-x-109">/</span><span 
+class="cmtt-10x-x-109">local</span><span 
+class="cmtt-10x-x-109">/</span><span 
+class="cmtt-10x-x-109">include</span><span 
+class="cmtt-10x-x-109">/</span>
+   </div>
+<!--l. 95--><p class="noindent" >
+</p>
+   <h5 class="subsubsectionHead"><a 
+ id="x1-130002.2.3"></a>(ARM) Mali GPU&#8217;s (O-Droid XU3/4)</h5>
+<!--l. 97--><p class="noindent" >So far have tested it with the Mali OpenCL SDK, which works on the ODroid, an open-hardware
+heterogenous processing SoC board.
+</p><!--l. 100--><p class="indent" >   Strangely enough, in order to get it to compile, and to get it to run requires different versions of
+libOpenCL.so
+</p><!--l. 103--><p class="indent" >   To run it need to do </p><!--l. 104-->
+<div class="lstlisting" id="listing-9"><span class="label"><a 
+ id="x1-13001r1"></a></span><span 
+class="cmtt-10x-x-109">apt</span><span 
+class="cmtt-10x-x-109">-</span><span 
+class="cmtt-10x-x-109">get</span><span 
+class="cmtt-10x-x-109">&#x00A0;</span><span 
+class="cmtt-10x-x-109">install</span><span 
+class="cmtt-10x-x-109">&#x00A0;</span><span 
+class="cmtt-10x-x-109">mali</span><span 
+class="cmtt-10x-x-109">-</span><span 
+class="cmtt-10x-x-109">x11</span><span 
+class="cmtt-10x-x-109">&#x00A0;</span><span 
+class="cmtt-10x-x-109">#</span><span 
+class="cmtt-10x-x-109">&#x00A0;</span><span 
+class="cmtt-10x-x-109">and</span><span 
+class="cmtt-10x-x-109">&#x00A0;</span><span 
+class="cmtt-10x-x-109">probably</span><span 
+class="cmtt-10x-x-109">&#x00A0;</span><span 
+class="cmtt-10x-x-109">restart</span><span 
+class="cmtt-10x-x-109">&#x00A0;</span><span 
+class="cmtt-10x-x-109">X</span><span 
+class="cmtt-10x-x-109">&#x00A0;</span><span 
+class="cmtt-10x-x-109">server</span><span 
+class="cmtt-10x-x-109">.</span>
+                                                                                               
+                                                                                               
+   </div>
+<!--l. 108--><p class="indent" >   In order to compile need the ones from <a 
+href="https://developer.arm.com/products/software/mali-sdks/mali-opencl-sdk/downloads" >Mali OpenCL SDK</a>
+</p><!--l. 112--><p class="indent" >   After downloading that package, extract it and fix up platform.mk to reflect your current platform.
+For example: </p><!--l. 114-->
+<div class="lstlisting" id="listing-10"><span class="label"><a 
+ id="x1-13002r1"></a></span><span 
+class="cmtt-10x-x-109">CC</span><span 
+class="cmtt-10x-x-109">:=</span><span 
+class="cmtt-10x-x-109">arm</span><span 
+class="cmtt-10x-x-109">-</span><span 
+class="cmtt-10x-x-109">linux</span><span 
+class="cmtt-10x-x-109">-</span><span 
+class="cmtt-10x-x-109">gnueabihf</span><span 
+class="cmtt-10x-x-109">-</span><span 
+class="cmtt-10x-x-109">g</span><span 
+class="cmtt-10x-x-109">++</span><span 
+class="cmtt-10x-x-109">&#x00A0;</span><br /><span class="label"><a 
+ id="x1-13003r2"></a></span><span 
+class="cmtt-10x-x-109">AR</span><span 
+class="cmtt-10x-x-109">=</span><span 
+class="cmtt-10x-x-109">arm</span><span 
+class="cmtt-10x-x-109">-</span><span 
+class="cmtt-10x-x-109">linux</span><span 
+class="cmtt-10x-x-109">-</span><span 
+class="cmtt-10x-x-109">gnueabihf</span><span 
+class="cmtt-10x-x-109">-</span><span 
+class="cmtt-10x-x-109">ar</span>
+   </div>
+<!--l. 119--><p class="indent" >   then in the Mali SDK folder compile the libOpenCL.so </p><!--l. 120-->
+<div class="lstlisting" id="listing-11"><span class="label"><a 
+ id="x1-13004r1"></a></span><span 
+class="cmtt-10x-x-109">cd</span><span 
+class="cmtt-10x-x-109">&#x00A0;</span><span 
+class="cmtt-10x-x-109">lib</span><span 
+class="cmtt-10x-x-109">/</span><span 
+class="cmtt-10x-x-109">&#x00A0;</span><span 
+class="cmtt-10x-x-109">&amp;&amp;</span><span 
+class="cmtt-10x-x-109">&#x00A0;</span><span 
+class="cmtt-10x-x-109">make</span>
+   </div>
+<!--l. 123--><p class="indent" >   once you have a libOpenCL.so can put it into the machine-programmer&#8217;s library/ folder.
+</p><!--l. 125-->
+<div class="lstlisting" id="listing-12"><span class="label"><a 
+ id="x1-13005r1"></a></span><span 
+class="cmtt-10x-x-109">cp</span><span 
+class="cmtt-10x-x-109">&#x00A0;</span><span 
+class="cmtt-10x-x-109">lib</span><span 
+class="cmtt-10x-x-109">/</span><span 
+class="cmtt-10x-x-109">libOpenCL</span><span 
+class="cmtt-10x-x-109">.</span><span 
+class="cmtt-10x-x-109">so</span><span 
+class="cmtt-10x-x-109">&#x00A0;</span><span 
+class="cmtt-10x-x-109">$MACHINE_PROGRAMMER_PATH</span><span 
+class="cmtt-10x-x-109">/</span><span 
+class="cmtt-10x-x-109">library</span><span 
+class="cmtt-10x-x-109">/</span>
+   </div>
+<!--l. 129--><p class="indent" >   Because the standard opencl-headers provided by Ubuntu are 2.0+, and the Mali-T628 only supports
+up to 1.1 you&#8217;ll also have to copy the CL folder from Mali SDK to /usr/local/include, to avoid a bunch of
+deprecation warnings and-or errors. </p><!--l. 133-->
+<div class="lstlisting" id="listing-13"><span class="label"><a 
+ id="x1-13006r1"></a></span><span 
+class="cmtt-10x-x-109">sudo</span><span 
+class="cmtt-10x-x-109">&#x00A0;</span><span 
+class="cmtt-10x-x-109">cp</span><span 
+class="cmtt-10x-x-109">&#x00A0;</span><span 
+class="cmtt-10x-x-109">-</span><span 
+class="cmtt-10x-x-109">rv</span><span 
+class="cmtt-10x-x-109">&#x00A0;</span><span 
+class="cmtt-10x-x-109">include</span><span 
+class="cmtt-10x-x-109">/</span><span 
+class="cmtt-10x-x-109">CL</span><span 
+class="cmtt-10x-x-109">&#x00A0;</span><span 
+class="cmtt-10x-x-109">/</span><span 
+class="cmtt-10x-x-109">usr</span><span 
+class="cmtt-10x-x-109">/</span><span 
+class="cmtt-10x-x-109">local</span><span 
+class="cmtt-10x-x-109">/</span><span 
+class="cmtt-10x-x-109">include</span>
+   </div>
+<!--l. 137--><p class="indent" >   After that can go back into the project folder </p><!--l. 138-->
+<div class="lstlisting" id="listing-14"><span class="label"><a 
+ id="x1-13007r1"></a></span><span 
+class="cmtt-10x-x-109">./</span><span 
+class="cmtt-10x-x-109">autogen</span><span 
+class="cmtt-10x-x-109">.</span><span 
+class="cmtt-10x-x-109">sh</span><span 
+class="cmtt-10x-x-109">&#x00A0;</span><span 
+class="cmtt-10x-x-109">&amp;&amp;</span><span 
+class="cmtt-10x-x-109">&#x00A0;</span><span 
+class="cmtt-10x-x-109">./</span><span 
+class="cmtt-10x-x-109">configure</span><span 
+class="cmtt-10x-x-109">&#x00A0;</span><span 
+class="cmtt-10x-x-109">LDFLAGS</span><span 
+class="cmtt-10x-x-109">=-</span><span 
+class="cmtt-10x-x-109">L</span><span 
+class="cmtt-10x-x-109">./</span><span 
+class="cmtt-10x-x-109">library</span><span 
+class="cmtt-10x-x-109">&#x00A0;</span><span 
+class="cmtt-10x-x-109">&amp;&amp;</span><span 
+class="cmtt-10x-x-109">&#x00A0;</span><span 
+class="cmtt-10x-x-109">make</span><span 
+class="cmtt-10x-x-109">&#x00A0;</span><span 
+class="cmtt-10x-x-109">&amp;&amp;</span><span 
+class="cmtt-10x-x-109">&#x00A0;</span><span 
+class="cmtt-10x-x-109">binary</span><span 
+class="cmtt-10x-x-109">/</span><span 
+class="cmtt-10x-x-109">programmer</span>
+   </div>
+<!--l. 142--><p class="noindent" >
+</p>
+   <h5 class="subsubsectionHead"><a 
+ id="x1-140002.2.3"></a>Intel GPUs</h5>
+<!--l. 143--><p class="noindent" >Intel includes onboard GPUs on a lot of motherboards, so chances are good that if you have an Intel
+CPU, that you may also have an intel GPU, which you can take advantage of using the well functioning
+open source beignet drivers.
+</p>
+   <!--l. 148-->
+<div class="lstlisting" id="listing-15"><span class="label"><a 
+ id="x1-14001r1"></a></span><span 
+class="cmtt-10x-x-109">apt</span><span 
+class="cmtt-10x-x-109">-</span><span 
+class="cmtt-10x-x-109">get</span><span 
+class="cmtt-10x-x-109">&#x00A0;</span><span 
+class="cmtt-10x-x-109">install</span><span 
+class="cmtt-10x-x-109">&#x00A0;</span><span 
+class="cmtt-10x-x-109">beignet</span><span 
+class="cmtt-10x-x-109">&#x00A0;</span><span 
+class="cmtt-10x-x-109">beignet</span><span 
+class="cmtt-10x-x-109">-</span><span 
+class="cmtt-10x-x-109">dev</span><span 
+class="cmtt-10x-x-109">&#x00A0;</span><span 
+class="cmtt-10x-x-109">beignet</span><span 
+class="cmtt-10x-x-109">-</span><span 
+class="cmtt-10x-x-109">opencl</span><span 
+class="cmtt-10x-x-109">-</span><span 
+class="cmtt-10x-x-109">icd</span>
+   </div>
+                                                                                               
+                                                                                               
+<!--l. 152--><p class="indent" >   Note this does not work with the AMD hardware that I&#8217;ve tested it with.
+</p><!--l. 154--><p class="noindent" >
+</p>
+   <h5 class="subsubsectionHead"><a 
+ id="x1-150002.2.3"></a>Nvidia GPUs</h5>
+<!--l. 155--><p class="noindent" >Unfortunately there are no libre drivers for Nvidia that have OpenCL support, however there are
+proprietary drivers, which may work in certain cases. Note this means you can&#8217;t use UEFI, common on
+modern laptops, you&#8217;ll have to disable it in the bios. Also this could make breaking changes so I advise
+you backup your data before attempting to install proprietary drivers.
+</p><!--l. 161--><p class="indent" >   Before you begin, make sure your system is up to date; </p><!--l. 162-->
+<div class="lstlisting" id="listing-16"><span class="label"><a 
+ id="x1-15001r1"></a></span><span 
+class="cmtt-10x-x-109">sudo</span><span 
+class="cmtt-10x-x-109">&#x00A0;</span><span 
+class="cmtt-10x-x-109">apt</span><span 
+class="cmtt-10x-x-109">-</span><span 
+class="cmtt-10x-x-109">get</span><span 
+class="cmtt-10x-x-109">&#x00A0;</span><span 
+class="cmtt-10x-x-109">update</span><span 
+class="cmtt-10x-x-109">&#x00A0;</span><span 
+class="cmtt-10x-x-109">&amp;&amp;</span><span 
+class="cmtt-10x-x-109">&#x00A0;</span><span 
+class="cmtt-10x-x-109">sudo</span><span 
+class="cmtt-10x-x-109">&#x00A0;</span><span 
+class="cmtt-10x-x-109">apt</span><span 
+class="cmtt-10x-x-109">-</span><span 
+class="cmtt-10x-x-109">get</span><span 
+class="cmtt-10x-x-109">&#x00A0;</span><span 
+class="cmtt-10x-x-109">upgrade</span><span 
+class="cmtt-10x-x-109">&#x00A0;</span><span 
+class="cmtt-10x-x-109">&amp;&amp;</span><span 
+class="cmtt-10x-x-109">&#x00A0;</span><span 
+class="cmtt-10x-x-109">sudo</span><span 
+class="cmtt-10x-x-109">&#x00A0;</span><span 
+class="cmtt-10x-x-109">apt</span><span 
+class="cmtt-10x-x-109">-</span><span 
+class="cmtt-10x-x-109">get</span><span 
+class="cmtt-10x-x-109">&#x00A0;</span><span 
+class="cmtt-10x-x-109">dist</span><span 
+class="cmtt-10x-x-109">-</span><span 
+class="cmtt-10x-x-109">upgrade</span><span 
+class="cmtt-10x-x-109">;</span><span 
+class="cmtt-10x-x-109">&#x00A0;</span><br /><span class="label"><a 
+ id="x1-15002r2"></a></span><span 
+class="cmtt-10x-x-109">sudo</span><span 
+class="cmtt-10x-x-109">&#x00A0;</span><span 
+class="cmtt-10x-x-109">apt</span><span 
+class="cmtt-10x-x-109">-</span><span 
+class="cmtt-10x-x-109">get</span><span 
+class="cmtt-10x-x-109">&#x00A0;</span><span 
+class="cmtt-10x-x-109">autoremove</span><span 
+class="cmtt-10x-x-109">&#x00A0;</span><span 
+class="cmtt-10x-x-109">#</span><span 
+class="cmtt-10x-x-109">cleans</span><span 
+class="cmtt-10x-x-109">&#x00A0;</span><span 
+class="cmtt-10x-x-109">up</span><span 
+class="cmtt-10x-x-109">&#x00A0;</span><span 
+class="cmtt-10x-x-109">extra</span><span 
+class="cmtt-10x-x-109">&#x00A0;</span><span 
+class="cmtt-10x-x-109">packages</span>
+   </div>
+<!--l. 167--><p class="indent" >   There are a variety of versions of the nvidia drivers, this is because they are very finicky and they
+might not all work with your GPU card. For instance I had to try several, and spend several days testing,
+before I finally figured out which ones worked.
+</p><!--l. 172--><p class="indent" >   The best one for my GeForce GTX 960M, is unknown-361. I tried their recommended nvidia-367 and
+nvidia-370 those didn&#8217;t work, and nvidia-340 didn&#8217;t even show any picture on the screen (good thing I
+had ssh).
+</p><!--l. 176--><p class="indent" >   So I would advise you backup your system, and install ssh, so you could ssh tunnel into your
+computer and fix it in case the monitor stops working due to incompatible drivers.
+</p><!--l. 180--><p class="indent" >   Another good troubleshooting method when the screen is blank due to proprietary drivers, is to hold
+the shift-key during boot-up as this can let you enter the grub menu, where you can select &#8221;Advanced
+options&#8221; and use a recovery mode or different kernel.
+</p><!--l. 185--><p class="indent" >   Also may be a good idea to have a boot recovery disk or installation disk handy, because installing
+proprietary drivers may make the system unbootable.
+</p><!--l. 193--><p class="indent" >   At first reboot after installing the drivers I noticed that the computer turned itself off and on several
+times before loading properly, I&#8217;m guessing this is normal for prorpeitary drivers.
+</p><!--l. 197--><p class="indent" >   You may find it doesn&#8217;t work well with the standard dev packs, something I was struggling with for
+days. But fortunately can install the open source ones from Intel.
+</p>
+   <!--l. 201-->
+<div class="lstlisting" id="listing-17"><span class="label"><a 
+ id="x1-15003r1"></a></span><span 
+class="cmtt-10x-x-109">apt</span><span 
+class="cmtt-10x-x-109">-</span><span 
+class="cmtt-10x-x-109">get</span><span 
+class="cmtt-10x-x-109">&#x00A0;</span><span 
+class="cmtt-10x-x-109">install</span><span 
+class="cmtt-10x-x-109">&#x00A0;</span><span 
+class="cmtt-10x-x-109">beignet</span><span 
+class="cmtt-10x-x-109">-</span><span 
+class="cmtt-10x-x-109">opencl</span><span 
+class="cmtt-10x-x-109">-</span><span 
+class="cmtt-10x-x-109">icd</span>
+   </div>
+<!--l. 206--><p class="indent" >   You may also run into it not using the proprietary drivers, for instance if you do </p><!--l. 208-->
+<div class="lstlisting" id="listing-18"><span class="label"><a 
+ id="x1-15004r1"></a></span><span 
+class="cmtt-10x-x-109">lsmod</span><span 
+class="cmtt-10x-x-109">&#x00A0;</span><span 
+class="cmtt-10x-x-109">|</span><span 
+class="cmtt-10x-x-109">grep</span><span 
+class="cmtt-10x-x-109">&#x00A0;</span><span 
+class="cmtt-10x-x-109">nvidia</span>
+   </div>
+<!--l. 211--><p class="indent" >   it may give you nothing.
+</p><!--l. 213--><p class="indent" >   in this case may need to update-alternatives </p><!--l. 214-->
+<div class="lstlisting" id="listing-19"><span class="label"><a 
+ id="x1-15005r1"></a></span><span 
+class="cmtt-10x-x-109">sudo</span><span 
+class="cmtt-10x-x-109">&#x00A0;</span><span 
+class="cmtt-10x-x-109">update</span><span 
+class="cmtt-10x-x-109">-</span><span 
+class="cmtt-10x-x-109">alternatives</span><span 
+class="cmtt-10x-x-109">&#x00A0;</span><span 
+class="cmtt-10x-x-109">--</span><span 
+class="cmtt-10x-x-109">config</span><span 
+class="cmtt-10x-x-109">&#x00A0;</span><span 
+class="cmtt-10x-x-109">x86_64</span><span 
+class="cmtt-10x-x-109">-</span><span 
+class="cmtt-10x-x-109">linux</span><span 
+class="cmtt-10x-x-109">-</span><span 
+class="cmtt-10x-x-109">gnu_gl_conf</span>
+                                                                                               
+                                                                                               
+   </div>
+<!--l. 218--><p class="indent" >   This however wont work if you don&#8217;t have any working proprietary drivers.
+</p><!--l. 220--><p class="indent" >   I manged to get nvidia proprietary-drivers working for one or two boots, however I was not able to
+reliably reproduce it.
+</p><!--l. 223--><p class="noindent" >
+</p>
+   <h5 class="subsubsectionHead"><a 
+ id="x1-160002.2.3"></a>Other GPU&#8217;s</h5>
+<!--l. 224--><p class="noindent" >You would have to see what is available for your platform, if you have success in getting OpenCL, then
+please write up a summary and email me.
+</p><!--l. 228--><p class="noindent" >
+</p>
+   <h3 class="sectionHead"><span class="titlemark">2.3   </span> <a 
+ id="x1-170002.3"></a>Developing</h3>
+<!--l. 230--><p class="noindent" >If you would like to help with development, need some additional packages. </p><!--l. 231-->
+<div class="lstlisting" id="listing-20"><span class="label"><a 
+ id="x1-17001r1"></a></span><span 
+class="cmtt-10x-x-109">apt</span><span 
+class="cmtt-10x-x-109">-</span><span 
+class="cmtt-10x-x-109">get</span><span 
+class="cmtt-10x-x-109">&#x00A0;</span><span 
+class="cmtt-10x-x-109">install</span><span 
+class="cmtt-10x-x-109">&#x00A0;</span><span 
+class="cmtt-10x-x-109">clang</span><span 
+class="cmtt-10x-x-109">-</span><span 
+class="cmtt-10x-x-109">format</span><span 
+class="cmtt-10x-x-109">&#x00A0;</span><span 
+class="cmtt-10x-x-109">git</span>
+   </div>
+<!--l. 235--><p class="noindent" >
+</p>
+   <h3 class="sectionHead"><span class="titlemark">2.4   </span> <a 
+ id="x1-180002.4"></a>Contact</h3>
+<!--l. 236--><p class="noindent" >Can email me at <a 
+href="mailto:streondj@gmail.com" >streondj@gmail.com</a> for details.
+                                                                                               
+                                                                                               
+</p>
+   <h2 class="chapterHead"><span class="titlemark">Chapter&#x00A0;3</span><br /><a 
+ id="x1-190003"></a>binary/clprobe</h2>
+<!--l. 4--><p class="noindent" >OpenCL Probe Logan Streondj 2016/09/12<br 
+class="newline" /><span 
+class="cmr-10x-x-109">Version 0.1</span> </p><div 
+class="abstract" 
+>
+<!--l. 4--><p class="indent" >
+                                                                                               
+                                                                                               
+</p>
+<div class="center" 
+>
+<!--l. 4--><p class="noindent" >
+</p><!--l. 4--><p class="noindent" ><span 
+class="cmbx-12">Abstract</span></p></div>
+<!--l. 5--><p class="noindent" >Demonstrates OpenCL platform device knowledge xor tries to compile a .cl file based on input
+filename.
+</p><!--l. 7--><p class="indent" >
+                                                                                               
+                                                                                               
+</p>
+   </div>
+   <h3 class="sectionHead"><span class="titlemark">3.1   </span> <a 
+ id="x1-200003.1"></a>Synopsis</h3>
+<!--l. 40--><p class="noindent" ><span 
+class="cmti-12">clprobe input filename</span>
+</p>
+   <h3 class="sectionHead"><span class="titlemark">3.2   </span> <a 
+ id="x1-210003.2"></a>Description</h3>
+<!--l. 42--><p class="noindent" >if there is no filename ingredient then <span 
+class="cmti-12">clprobe </span>demonstrates openCL which includes the platform and
+instrument knowledge.
+</p><!--l. 45--><p class="indent" >
+<span 
+class="cmtt-12">&#x00A0;</span><span 
+class="cmtt-12">&#x00A0;if</span><span 
+class="cmtt-12">&#x00A0;(ingredient_long</span><span 
+class="cmtt-12">&#x00A0;!=</span><span 
+class="cmtt-12">&#x00A0;2)</span><span 
+class="cmtt-12">&#x00A0;{</span>
+<span 
+class="cmtt-12">&#x00A0;</span><br /><span 
+class="cmtt-12">&#x00A0;</span><span 
+class="cmtt-12">&#x00A0;</span><span 
+class="cmtt-12">&#x00A0;</span><span 
+class="cmtt-12">&#x00A0;fprintf(stderr,</span>
+<span 
+class="cmtt-12">&#x00A0;</span><br /><span 
+class="cmtt-12">&#x00A0;</span><span 
+class="cmtt-12">&#x00A0;</span><span 
+class="cmtt-12">&#x00A0;</span><span 
+class="cmtt-12">&#x00A0;</span><span 
+class="cmtt-12">&#x00A0;</span><span 
+class="cmtt-12">&#x00A0;</span><span 
+class="cmtt-12">&#x00A0;</span><span 
+class="cmtt-12">&#x00A0;</span><span 
+class="cmtt-12">&#x00A0;</span><span 
+class="cmtt-12">&#x00A0;</span><span 
+class="cmtt-12">&#x00A0;</span><span 
+class="cmtt-12">&#x00A0;"no</span><span 
+class="cmtt-12">&#x00A0;.cl</span><span 
+class="cmtt-12">&#x00A0;filename</span><span 
+class="cmtt-12">&#x00A0;ingredient</span><span 
+class="cmtt-12">&#x00A0;so</span><span 
+class="cmtt-12">&#x00A0;demonstrating</span><span 
+class="cmtt-12">&#x00A0;openCL</span><span 
+class="cmtt-12">&#x00A0;knowledge\n");</span>
+<span 
+class="cmtt-12">&#x00A0;</span><br /><span 
+class="cmtt-12">&#x00A0;</span><span 
+class="cmtt-12">&#x00A0;</span><span 
+class="cmtt-12">&#x00A0;</span><span 
+class="cmtt-12">&#x00A0;getInfo();</span>
+<span 
+class="cmtt-12">&#x00A0;</span><br /><span 
+class="cmtt-12">&#x00A0;</span><span 
+class="cmtt-12">&#x00A0;</span><span 
+class="cmtt-12">&#x00A0;</span><span 
+class="cmtt-12">&#x00A0;exit(0);</span>
+<span 
+class="cmtt-12">&#x00A0;</span><br /><span 
+class="cmtt-12">&#x00A0;</span><span 
+class="cmtt-12">&#x00A0;}</span>
+<span 
+class="cmtt-12">&#x00A0;</span><br /><span 
+class="cmtt-12">&#x00A0;</span><span 
+class="cmtt-12">&#x00A0;</span>
+</p><!--l. 54--><p class="indent" >   Otherwise Progclprobe accepts one ingredient, which is the input filename.
+</p><!--l. 56--><p class="indent" >
+<span 
+class="cmtt-12">&#x00A0;</span><span 
+class="cmtt-12">&#x00A0;char</span><span 
+class="cmtt-12">&#x00A0;*filename</span><span 
+class="cmtt-12">&#x00A0;=</span><span 
+class="cmtt-12">&#x00A0;ingredient_list[1];</span>
+<span 
+class="cmtt-12">&#x00A0;</span><br /><span 
+class="cmtt-12">&#x00A0;</span><span 
+class="cmtt-12">&#x00A0;</span>
+</p><!--l. 60--><p class="indent" >   It then sets up a minimal OpenCL environment, and attempts to compile it.
+</p><!--l. 63--><p class="indent" >
+<span 
+class="cmtt-12">&#x00A0;</span><span 
+class="cmtt-12">&#x00A0;cl_platform_id</span><span 
+class="cmtt-12">&#x00A0;platform_id</span><span 
+class="cmtt-12">&#x00A0;=</span><span 
+class="cmtt-12">&#x00A0;NULL;</span>
+<span 
+class="cmtt-12">&#x00A0;</span><br /><span 
+class="cmtt-12">&#x00A0;</span><span 
+class="cmtt-12">&#x00A0;cl_uint</span><span 
+class="cmtt-12">&#x00A0;ret_num_platforms;</span>
+<span 
+class="cmtt-12">&#x00A0;</span><br /><span 
+class="cmtt-12">&#x00A0;</span><span 
+class="cmtt-12">&#x00A0;cl_context</span><span 
+class="cmtt-12">&#x00A0;context</span><span 
+class="cmtt-12">&#x00A0;=</span><span 
+class="cmtt-12">&#x00A0;0;</span>
+<span 
+class="cmtt-12">&#x00A0;</span><br /><span 
+class="cmtt-12">&#x00A0;</span><span 
+class="cmtt-12">&#x00A0;cl_program</span><span 
+class="cmtt-12">&#x00A0;program</span><span 
+class="cmtt-12">&#x00A0;=</span><span 
+class="cmtt-12">&#x00A0;0;</span>
+<span 
+class="cmtt-12">&#x00A0;</span><br /><span 
+class="cmtt-12">&#x00A0;</span><span 
+class="cmtt-12">&#x00A0;cl_device_id</span><span 
+class="cmtt-12">&#x00A0;device_id</span><span 
+class="cmtt-12">&#x00A0;=</span><span 
+class="cmtt-12">&#x00A0;0;</span>
+<span 
+class="cmtt-12">&#x00A0;</span><br /><span 
+class="cmtt-12">&#x00A0;</span><span 
+class="cmtt-12">&#x00A0;cl_uint</span><span 
+class="cmtt-12">&#x00A0;ret_num_devices;</span>
+<span 
+class="cmtt-12">&#x00A0;</span><br /><span 
+class="cmtt-12">&#x00A0;</span><span 
+class="cmtt-12">&#x00A0;cl_int</span><span 
+class="cmtt-12">&#x00A0;return_number;</span>
+<span 
+class="cmtt-12">&#x00A0;</span><br />
+<span 
+class="cmtt-12">&#x00A0;</span><br /><span 
+class="cmtt-12">&#x00A0;</span><span 
+class="cmtt-12">&#x00A0;return_number</span><span 
+class="cmtt-12">&#x00A0;=</span><span 
+class="cmtt-12">&#x00A0;clGetPlatformIDs(1,</span><span 
+class="cmtt-12">&#x00A0;&amp;platform_id,</span><span 
+class="cmtt-12">&#x00A0;&amp;ret_num_platforms);</span>
+                                                                                               
+                                                                                               
+<span 
+class="cmtt-12">&#x00A0;</span><br /><span 
+class="cmtt-12">&#x00A0;</span><span 
+class="cmtt-12">&#x00A0;if</span><span 
+class="cmtt-12">&#x00A0;(!success_verification(return_number))</span><span 
+class="cmtt-12">&#x00A0;{</span>
+<span 
+class="cmtt-12">&#x00A0;</span><br /><span 
+class="cmtt-12">&#x00A0;</span><span 
+class="cmtt-12">&#x00A0;</span><span 
+class="cmtt-12">&#x00A0;</span><span 
+class="cmtt-12">&#x00A0;fprintf(stderr,</span><span 
+class="cmtt-12">&#x00A0;"Failed</span><span 
+class="cmtt-12">&#x00A0;to</span><span 
+class="cmtt-12">&#x00A0;get</span><span 
+class="cmtt-12">&#x00A0;platform</span><span 
+class="cmtt-12">&#x00A0;id&#8217;s.</span><span 
+class="cmtt-12">&#x00A0;%s:%d\n",</span><span 
+class="cmtt-12">&#x00A0;__FILE__,</span><span 
+class="cmtt-12">&#x00A0;__LINE__);</span>
+<span 
+class="cmtt-12">&#x00A0;</span><br /><span 
+class="cmtt-12">&#x00A0;</span><span 
+class="cmtt-12">&#x00A0;</span><span 
+class="cmtt-12">&#x00A0;</span><span 
+class="cmtt-12">&#x00A0;return</span><span 
+class="cmtt-12">&#x00A0;1;</span>
+<span 
+class="cmtt-12">&#x00A0;</span><br /><span 
+class="cmtt-12">&#x00A0;</span><span 
+class="cmtt-12">&#x00A0;}</span>
+<span 
+class="cmtt-12">&#x00A0;</span><br /><span 
+class="cmtt-12">&#x00A0;</span><span 
+class="cmtt-12">&#x00A0;return_number</span><span 
+class="cmtt-12">&#x00A0;=</span><span 
+class="cmtt-12">&#x00A0;clGetDeviceIDs(platform_id,</span><span 
+class="cmtt-12">&#x00A0;CL_DEVICE_TYPE_DEFAULT,</span><span 
+class="cmtt-12">&#x00A0;1,</span>
+<span 
+class="cmtt-12">&#x00A0;</span><br /><span 
+class="cmtt-12">&#x00A0;</span><span 
+class="cmtt-12">&#x00A0;</span><span 
+class="cmtt-12">&#x00A0;</span><span 
+class="cmtt-12">&#x00A0;</span><span 
+class="cmtt-12">&#x00A0;</span><span 
+class="cmtt-12">&#x00A0;</span><span 
+class="cmtt-12">&#x00A0;</span><span 
+class="cmtt-12">&#x00A0;</span><span 
+class="cmtt-12">&#x00A0;</span><span 
+class="cmtt-12">&#x00A0;</span><span 
+class="cmtt-12">&#x00A0;</span><span 
+class="cmtt-12">&#x00A0;</span><span 
+class="cmtt-12">&#x00A0;</span><span 
+class="cmtt-12">&#x00A0;</span><span 
+class="cmtt-12">&#x00A0;</span><span 
+class="cmtt-12">&#x00A0;</span><span 
+class="cmtt-12">&#x00A0;</span><span 
+class="cmtt-12">&#x00A0;</span><span 
+class="cmtt-12">&#x00A0;</span><span 
+class="cmtt-12">&#x00A0;</span><span 
+class="cmtt-12">&#x00A0;</span><span 
+class="cmtt-12">&#x00A0;</span><span 
+class="cmtt-12">&#x00A0;</span><span 
+class="cmtt-12">&#x00A0;</span><span 
+class="cmtt-12">&#x00A0;</span><span 
+class="cmtt-12">&#x00A0;</span><span 
+class="cmtt-12">&#x00A0;</span><span 
+class="cmtt-12">&#x00A0;</span><span 
+class="cmtt-12">&#x00A0;</span><span 
+class="cmtt-12">&#x00A0;</span><span 
+class="cmtt-12">&#x00A0;</span><span 
+class="cmtt-12">&#x00A0;</span><span 
+class="cmtt-12">&#x00A0;&amp;device_id,</span><span 
+class="cmtt-12">&#x00A0;&amp;ret_num_devices);</span>
+<span 
+class="cmtt-12">&#x00A0;</span><br /><span 
+class="cmtt-12">&#x00A0;</span><span 
+class="cmtt-12">&#x00A0;if</span><span 
+class="cmtt-12">&#x00A0;(!success_verification(return_number))</span><span 
+class="cmtt-12">&#x00A0;{</span>
+<span 
+class="cmtt-12">&#x00A0;</span><br /><span 
+class="cmtt-12">&#x00A0;</span><span 
+class="cmtt-12">&#x00A0;</span><span 
+class="cmtt-12">&#x00A0;</span><span 
+class="cmtt-12">&#x00A0;fprintf(stderr,</span><span 
+class="cmtt-12">&#x00A0;"Failed</span><span 
+class="cmtt-12">&#x00A0;to</span><span 
+class="cmtt-12">&#x00A0;get</span><span 
+class="cmtt-12">&#x00A0;OpenCL</span><span 
+class="cmtt-12">&#x00A0;devices.</span><span 
+class="cmtt-12">&#x00A0;%s:%d\n",</span><span 
+class="cmtt-12">&#x00A0;__FILE__,</span>
+<span 
+class="cmtt-12">&#x00A0;</span><br /><span 
+class="cmtt-12">&#x00A0;</span><span 
+class="cmtt-12">&#x00A0;</span><span 
+class="cmtt-12">&#x00A0;</span><span 
+class="cmtt-12">&#x00A0;</span><span 
+class="cmtt-12">&#x00A0;</span><span 
+class="cmtt-12">&#x00A0;</span><span 
+class="cmtt-12">&#x00A0;</span><span 
+class="cmtt-12">&#x00A0;</span><span 
+class="cmtt-12">&#x00A0;</span><span 
+class="cmtt-12">&#x00A0;</span><span 
+class="cmtt-12">&#x00A0;</span><span 
+class="cmtt-12">&#x00A0;__LINE__);</span>
+<span 
+class="cmtt-12">&#x00A0;</span><br /><span 
+class="cmtt-12">&#x00A0;</span><span 
+class="cmtt-12">&#x00A0;</span><span 
+class="cmtt-12">&#x00A0;</span><span 
+class="cmtt-12">&#x00A0;return</span><span 
+class="cmtt-12">&#x00A0;1;</span>
+<span 
+class="cmtt-12">&#x00A0;</span><br /><span 
+class="cmtt-12">&#x00A0;</span><span 
+class="cmtt-12">&#x00A0;}</span>
+<span 
+class="cmtt-12">&#x00A0;</span><br /><span 
+class="cmtt-12">&#x00A0;</span><span 
+class="cmtt-12">&#x00A0;context</span><span 
+class="cmtt-12">&#x00A0;=</span><span 
+class="cmtt-12">&#x00A0;clCreateContext(NULL,</span><span 
+class="cmtt-12">&#x00A0;1,</span><span 
+class="cmtt-12">&#x00A0;&amp;device_id,</span><span 
+class="cmtt-12">&#x00A0;NULL,</span><span 
+class="cmtt-12">&#x00A0;NULL,</span><span 
+class="cmtt-12">&#x00A0;&amp;return_number);</span>
+<span 
+class="cmtt-12">&#x00A0;</span><br /><span 
+class="cmtt-12">&#x00A0;</span><span 
+class="cmtt-12">&#x00A0;if</span><span 
+class="cmtt-12">&#x00A0;(!success_verification(return_number))</span><span 
+class="cmtt-12">&#x00A0;{</span>
+<span 
+class="cmtt-12">&#x00A0;</span><br /><span 
+class="cmtt-12">&#x00A0;</span><span 
+class="cmtt-12">&#x00A0;</span><span 
+class="cmtt-12">&#x00A0;</span><span 
+class="cmtt-12">&#x00A0;fprintf(stderr,</span><span 
+class="cmtt-12">&#x00A0;"Failed</span><span 
+class="cmtt-12">&#x00A0;to</span><span 
+class="cmtt-12">&#x00A0;create</span><span 
+class="cmtt-12">&#x00A0;an</span><span 
+class="cmtt-12">&#x00A0;OpenCL</span><span 
+class="cmtt-12">&#x00A0;context.</span><span 
+class="cmtt-12">&#x00A0;%s:%d\n",</span><span 
+class="cmtt-12">&#x00A0;__FILE__,</span>
+<span 
+class="cmtt-12">&#x00A0;</span><br /><span 
+class="cmtt-12">&#x00A0;</span><span 
+class="cmtt-12">&#x00A0;</span><span 
+class="cmtt-12">&#x00A0;</span><span 
+class="cmtt-12">&#x00A0;</span><span 
+class="cmtt-12">&#x00A0;</span><span 
+class="cmtt-12">&#x00A0;</span><span 
+class="cmtt-12">&#x00A0;</span><span 
+class="cmtt-12">&#x00A0;</span><span 
+class="cmtt-12">&#x00A0;</span><span 
+class="cmtt-12">&#x00A0;</span><span 
+class="cmtt-12">&#x00A0;</span><span 
+class="cmtt-12">&#x00A0;__LINE__);</span>
+<span 
+class="cmtt-12">&#x00A0;</span><br /><span 
+class="cmtt-12">&#x00A0;</span><span 
+class="cmtt-12">&#x00A0;</span><span 
+class="cmtt-12">&#x00A0;</span><span 
+class="cmtt-12">&#x00A0;return</span><span 
+class="cmtt-12">&#x00A0;1;</span>
+<span 
+class="cmtt-12">&#x00A0;</span><br /><span 
+class="cmtt-12">&#x00A0;</span><span 
+class="cmtt-12">&#x00A0;}</span>
+<span 
+class="cmtt-12">&#x00A0;</span><br /><span 
+class="cmtt-12">&#x00A0;</span><span 
+class="cmtt-12">&#x00A0;seed_program_probe(device_id,</span><span 
+class="cmtt-12">&#x00A0;context,</span><span 
+class="cmtt-12">&#x00A0;filename,</span><span 
+class="cmtt-12">&#x00A0;&amp;program);</span>
+<span 
+class="cmtt-12">&#x00A0;</span><br /><span 
+class="cmtt-12">&#x00A0;</span><span 
+class="cmtt-12">&#x00A0;</span>
+</p><!--l. 100--><p class="noindent" >
+</p>
+   <h3 class="sectionHead"><span class="titlemark">3.3   </span> <a 
+ id="x1-220003.3"></a>Bugs</h3>
+<!--l. 101--><p class="noindent" >Still need to add ability to load header files.
+</p>
+   <h3 class="sectionHead"><span class="titlemark">3.4   </span> <a 
+ id="x1-230003.4"></a>Author</h3>
+<!--l. 103--><p class="noindent" >Logan Streondj ¡streondj at gmail dot com¿
+</p>
+   <h3 class="sectionHead"><span class="titlemark">3.5   </span> <a 
+ id="x1-240003.5"></a>See Also</h3>
+<!--l. 105--><p class="noindent" >generic.c <span 
+class="cmti-12">libOpenCL</span>(7)
+</p>
+   <h3 class="sectionHead"><span class="titlemark">3.6   </span> <a 
+ id="x1-250003.6"></a>License</h3>
+<!--l. 107--><p class="noindent" >This work is licensed under a <a 
+href="https://creativecommons.org/licenses/by-sa/4.0/deed.en" >Creative Commons &#8220;Attribution-ShareAlike 4.0 International&#8221;</a>
+license.
+                                                                                               
+                                                                                               
+</p>
+   <h2 class="chapterHead"><span class="titlemark">Chapter&#x00A0;4</span><br /><a 
+ id="x1-260004"></a>binary/encoding</h2>
+    
+</body></html> 
+
+                                                                                               
+
+

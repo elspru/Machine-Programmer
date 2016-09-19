@@ -91,10 +91,10 @@ int main(void) {
     return 1;
   }
 
-  seed_program_establish(device_id, context,
-                         "source/parallel/composition_population.cl",
-                         "composition_population", &program, &kernel);
-
+  return_number = seed_program_establish(
+      device_id, context, "source/parallel/composition_population.cl",
+      "composition_population", &program, &kernel);
+  success_verification(return_number);
   /* [Setup memory] */
   /* Number of elements in the arrays of input and output data. */
 
@@ -315,9 +315,6 @@ int main(void) {
   if (!success_verification(clEnqueueUnmapMemObject(
           command_waiting_line, memoryObjects[1], output, 0, NULL, NULL))) {
     printf("unmapping\n");
-    // cleanUpOpenCL(context, command_waiting_line, program, kernel,
-    // memoryObjects,
-    //              numberOfMemoryObjects);
     fprintf(stderr, "Unmapping memory objects failed %s:%d\n", __FILE__,
             __LINE__);
     return 1;
@@ -325,9 +322,6 @@ int main(void) {
   if (!success_verification(clEnqueueUnmapMemObject(
           command_waiting_line, memoryObjects[2], newspaper, 0, NULL, NULL))) {
     printf("unmapping\n");
-    // cleanUpOpenCL(context, command_waiting_line, program, kernel,
-    // memoryObjects,
-    //              numberOfMemoryObjects);
     fprintf(stderr, "Unmapping memory objects failed %s:%d\n", __FILE__,
             __LINE__);
     return 1;
@@ -341,9 +335,13 @@ int main(void) {
   return_number = clReleaseProgram(program);
 
   printf("loading quiz population \n");
-  seed_program_establish(device_id, context,
-                         "source/parallel/quiz_population.cl",
-                         "quiz_population", &program, &kernel);
+  return_number = seed_program_establish(device_id, context,
+                                         "source/parallel/quiz_population.cl",
+                                         "quiz_population", &program, &kernel);
+  success_verification(return_number);
+  /* randomAccessMemory _nom variable _ben  establish _rea */
+  /* variable _nom assigned _rea */
+  /* seed _gen ingredient _nom assigned _rea */
 
   // cleanUpOpenCL(context, command_waiting_line, program, kernel,
   // memoryObjects,

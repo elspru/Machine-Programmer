@@ -1,4 +1,4 @@
-\documentclass[12pt]{article}
+\documentclass[12pt]{report}
 \usepackage{machine_programmer}
 \begin{document}
 %\dominitoc
@@ -51,7 +51,8 @@ Portable Open Compute Library or
 
 POCL has some dependencies on Ubuntu
 \begin{lstlisting}[language=bash]
-apt-get install libhwloc-dev zlib1g-dev libclang-dev libx11-dev ocl-icd-dev cmake
+apt-get install libhwloc-dev zlib1g-dev libclang-dev libx11-dev ocl-icd-dev
+cmake opencl-headers
 \end{lstlisting}
 
 Then if you are sure you don't have GPU drivers, as installing this package may
@@ -63,6 +64,9 @@ apt-get install ocl-icd-opencl-dev
 then compile POCL based on it's instructions, if it's being difficult, can try
 the cmake part of the instructions, as cmake may give you additional
 dependencies. 
+
+Also note that you need to have likely the most recent OpenCL headers available, 
+as of this writing, pocl-0.13 needs opencl 2.0 headers.
 
 If you find that the dependencies I listed about are insufficient, then please
 email me with how you got it working.
@@ -97,13 +101,32 @@ sudo mv CL /usr/local/include/
 So far have tested it with the Mali OpenCL SDK, which works on the ODroid, an
 open-hardware heterogenous processing SoC board.
 
-Strangely enough, in order to get it to compile, and to get it to run requires
-different versions of libOpenCL.so
 
 To run it need to do
 \begin{lstlisting}[language=bash]
 apt-get install mali-x11 # and probably restart X server.
 \end{lstlisting}
+
+
+Because the standard opencl-headers provided by Ubuntu are 2.0+, and the
+Mali-T628 only supports up to 1.1 you may have to copy the CL folder 
+from Mali SDK to /usr/local/include, to avoid a bunch of deprecation
+warnings and-or errors.
+\begin{lstlisting}[language=bash]
+sudo cp -rv include/CL /usr/local/include
+\end{lstlisting}
+
+Strangely enough, in order to get it to compile, and to get it to run requires
+different versions of libOpenCL.so. However it seeems if POCL is installed, then
+can simply compile now with:
+
+\begin{lstlisting}[language=bash]
+./autogen.sh && ./configure make && binary/programmer
+\end{lstlisting}
+
+Otherwise if POCL is Not installed the commands would be:
+
+\textbf{Mali's libOpenCL.so installation}
 
 In order to compile need the ones from
 \href{https://developer.arm.com/products/software/mali-sdks/mali-opencl-sdk/downloads}
@@ -116,6 +139,7 @@ CC:=arm-linux-gnueabihf-g++
 AR=arm-linux-gnueabihf-ar
 \end{lstlisting}
 
+
 then in the Mali SDK folder compile the libOpenCL.so
 \begin{lstlisting}[language=bash]
 cd lib/ && make
@@ -125,16 +149,6 @@ library/ folder.
 \begin{lstlisting}[language=bash]
 cp lib/libOpenCL.so  $MACHINE_PROGRAMMER_PATH/library/
 \end{lstlisting}
-
-Because the standard opencl-headers provided by Ubuntu are 2.0+, and the
-Mali-T628 only supports up to 1.1 you'll also have to copy the CL folder 
-from Mali SDK to /usr/local/include, to avoid a bunch of deprecation
-warnings and-or errors.
-\begin{lstlisting}[language=bash]
-sudo cp -rv include/CL /usr/local/include
-\end{lstlisting}
-
-After that can go back into the project folder
 \begin{lstlisting}[language=bash]
 ./autogen.sh && ./configure LDFLAGS=-L./library && make && binary/programmer
 \end{lstlisting}

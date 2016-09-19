@@ -11,7 +11,7 @@ function file_compile {
     echo "'$verification_text'"
     echo "'$file_verification_text'"
     echo file verification fail
-    htlatex "$stem.tex" "$BASE/web"  &
+    htlatex "$stem.tex" "$BASE/web" -utf8 &
     lualatex "$stem.tex"  &
     pandoc "$stem.tex" --toc -f latex -t markdown_github -s -o "$stem.md" &
     wait;
@@ -27,6 +27,7 @@ function file_compile {
 }
 file_compile installing
 file_compile readme
+file_compile binary_clprobe
 file_compile encoding
-file_compile clprobe
+file_compile binary_encoding
 file_compile machine_programmer

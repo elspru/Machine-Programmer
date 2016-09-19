@@ -59,6 +59,16 @@ typedef ushort4 v4us;
 typedef ushort8 v8us;
 typedef ushort16 v16us;
 
+int comparison_randomAccessMemory(const void *s1, const void *s2, size_t n) {
+  const unsigned char *p1 = s1, *p2 = s2;
+  while (n--)
+    if (*p1 != *p2)
+      return *p1 - *p2;
+    else
+      p1++, p2++;
+  return 0;
+}
+
 void obtain_first_independentClause(
     const uint16_t quiz_independentClause_list_size,
     const v16us *restrict quiz_independentClause_list,
@@ -89,7 +99,7 @@ inline void play_quote(const v16us *tablet, const uint8_t tablet_indexFinger,
   // agree(quote_fill != NULL);
   word = ((uint16_t *)tablet)[tablet_indexFinger];
   // printf("quote quizing, word %04X\n", (uint)
-  (*tablet)[tablet_indexFinger]);
+  //(*tablet)[tablet_indexFinger]);
   if ((word & CONSONANT_ONE_MASK) == QUOTED_REFERENTIAL) {
     // then is quote
     *quote_word = word;
@@ -216,11 +226,11 @@ void obtain_import(const uint8_t independentClause_size,
   // TABLET_LONG;
   //     ++brick_indexFinger) {
   //  if (((grammar_indicator & (1 << brick_indexFinger)) >>
-  brick_indexFinger)
+  // brick_indexFinger)
   //  == indicator
   //  &&
   //      quiz_independentClause_list[0][brick_indexFinger] ==
-  CONDITIONAL_MOOD)
+  // CONDITIONAL_MOOD)
   //      {
   //    // import_size = (uint8_t)(brick_indexFinger + 1);
   //    break;
@@ -258,6 +268,45 @@ void obtain_export(const uint8_t independentClause_size,
   //  }
 }
 
+inline void x6048009D00000000(unsigned char *text) {
+  //  assert(text != NULL);
+  printf("ini %02X\n", (uint)text[0]);
+  printf("%s", text);
+}
+inline void x6048029D00000000(signed char *text) {
+  // assert(text != NULL);
+  printf("%s", text);
+}
+inline void x4124000000000000(v8us *hook_list) {
+  if (comparison_randomAccessMemory(
+          (char *)&hook_list[ACCUSATIVE_INDEXFINGER],
+          (char *)&hook_list[INSTRUMENTAL_INDEXFINGER], 16) == 0) {
+    ((uint16_t *)&hook_list[DATIVE_INDEXFINGER])[0] = TRUTH_WORD;
+  } else {
+    ((uint16_t *)&hook_list[DATIVE_INDEXFINGER])[0] = LIE_WORD;
+  }
+}
+inline void x8006000000000000(v8us *hook_list) {
+  if (comparison_randomAccessMemory(
+          (char *)&hook_list[ACCUSATIVE_INDEXFINGER],
+          (char *)&hook_list[INSTRUMENTAL_INDEXFINGER], 16) != 0) {
+    ((uint16_t *)&hook_list[DATIVE_INDEXFINGER])[0] = TRUTH_WORD;
+  } else {
+    ((uint16_t *)&hook_list[DATIVE_INDEXFINGER])[0] = LIE_WORD;
+  }
+}
+
+inline void xA130143D143D0000(uint16_t *accusative, uint16_t *instrumental) {
+  if (*instrumental) {
+    *accusative = (uint16_t) ~(*accusative);
+  }
+}
+inline void xC450143D143D0000(uint16_t *accusative, uint16_t *instrumental) {
+  *accusative = (uint16_t)(*accusative - *instrumental);
+}
+inline void x8006143D143D0000(uint16_t *accusative, uint16_t *instrumental) {
+  *accusative = (uint16_t)(*accusative + *instrumental);
+}
 inline void play(const v4us coded_name, v8us *hook_list) {
   void *accusative = NULL;
   void *instrumental = NULL;
@@ -489,81 +538,83 @@ void quiz_program(const uint16_t quiz_independentClause_list_size,
   v8us export_hook_list[HOOK_LIST_LONG] = {0};
   // memset(hook_list, 0, HOOK_LIST_LONG * HOOK_LIST_THICK * WORD_THICK);
   // memset(export_hook_list, 0, HOOK_LIST_LONG * HOOK_LIST_THICK *
- WORD_THICK);
- //  agree(quiz_independentClause_list_size > 0);
- //  agree(quiz_independentClause_list != NULL);
- //  agree(program_size > 0);
- //  agree(program != NULL);
- //  agree(program_worth != NULL);
- for (quiz_independentClause_indexFinger = 0;
-      quiz_independentClause_indexFinger < quiz_independentClause_list_size;
-      ++quiz_independentClause_indexFinger) {
-   brick_indexFinger = 1;
-   // obtain_first_independentClause(); // for multi brick independentClauses
-   // printf("ITERATION %X\n", quiz_independentClause_indexFinger);
-   // memset((char *)&coded_name, 0, 8);
-   // memset(hook_list, 0, V8US_LONG * HOOK_LIST_LONG);
-   // memset(export_hook_list, 0, V8US_LONG * HOOK_LIST_LONG);
-   obtain_first_independentClause(
-       (uint16_t)(quiz_independentClause_list_size -
-                  quiz_independentClause_indexFinger),
-       quiz_independentClause_list + quiz_independentClause_indexFinger,
-       &independentClause_size);
-   // obtain_import
-   obtain_import(independentClause_size, quiz_independentClause_list +
-                                             quiz_independentClause_indexFinger,
-                 &brick_indexFinger, &coded_name, hook_list);
-   // printf("hook_list: ");
-   // for (quiz_indexFinger = 0; quiz_indexFinger < HOOK_LIST_LONG;
-   // ++quiz_indexFinger) {
-   //  printf("%04X ", (uint)hook_list[quiz_indexFinger][0]);
-   //}
-   // printf("\n");
-   for (list_indexFinger = 0; list_indexFinger < HOOK_LIST_LONG;
-        ++list_indexFinger) {
-     export_hook_list[list_indexFinger] = hook_list[list_indexFinger];
-   }
-   // copy_randomAccessMemory((char *)&export_hook_list, (char *)&hook_list,
-   //       V8US_LONG * HOOK_LIST_LONG);
-   // obtain_export
-   // printf("pre export hook_list: ");
-   // for (quiz_indexFinger = 0; quiz_indexFinger < HOOK_LIST_LONG;
-   // ++quiz_indexFinger) {
-   //  printf("%04X ", (uint)export_hook_list[quiz_indexFinger][0]);
-   //}
-   // printf("\n");
-   ++brick_indexFinger;
-   // printf("brick_indexFinger %X\n", (uint)brick_indexFinger);
-   obtain_export(independentClause_size, quiz_independentClause_list +
-                                             quiz_independentClause_indexFinger,
-                 &brick_indexFinger, &coded_name, export_hook_list);
-   // printf("export hook_list: ");
-   // for (quiz_indexFinger = 0; quiz_indexFinger < HOOK_LIST_LONG;
-   // ++quiz_indexFinger) {
-   //  printf("%04X ", (uint)export_hook_list[quiz_indexFinger][0]);
-   //}
-   // printf("\n");
-   // printf("coded_name burden3 %04X%04X%04X%04X\n",
-   // (uint)(coded_name)[3],
-   //        (uint)(coded_name)[2], (uint)(coded_name)[1],
-   //        (uint)(coded_name)[0]);
-   // play_program
-   play_text(program_size, program, &coded_name, hook_list);
-   // printf("hook_list-after: ");
-   // for (quiz_indexFinger = 0; quiz_indexFinger < HOOK_LIST_LONG;
-   // ++quiz_indexFinger) {
-   //  printf("%04X ", (uint)hook_list[quiz_indexFinger][0]);
-   //}
-   // printf("\n");
-   if (comparison_randomAccessMemory((char *)&export_hook_list,
-                                     (char *)&hook_list,
-                                     V8US_LONG * HOOK_LIST_LONG) == 0) {
-     ++worth;
-   }
-   // compare program_export to quiz_export
- }
- // printf("worth: %X\n", (uint)worth);
- *program_worth = worth;
+  // WORD_THICK);
+  //  agree(quiz_independentClause_list_size > 0);
+  //  agree(quiz_independentClause_list != NULL);
+  //  agree(program_size > 0);
+  //  agree(program != NULL);
+  //  agree(program_worth != NULL);
+  for (quiz_independentClause_indexFinger = 0;
+       quiz_independentClause_indexFinger < quiz_independentClause_list_size;
+       ++quiz_independentClause_indexFinger) {
+    brick_indexFinger = 1;
+    // obtain_first_independentClause(); // for multi brick independentClauses
+    // printf("ITERATION %X\n", quiz_independentClause_indexFinger);
+    // memset((char *)&coded_name, 0, 8);
+    // memset(hook_list, 0, V8US_LONG * HOOK_LIST_LONG);
+    // memset(export_hook_list, 0, V8US_LONG * HOOK_LIST_LONG);
+    obtain_first_independentClause(
+        (uint16_t)(quiz_independentClause_list_size -
+                   quiz_independentClause_indexFinger),
+        quiz_independentClause_list + quiz_independentClause_indexFinger,
+        &independentClause_size);
+    // obtain_import
+    obtain_import(independentClause_size,
+                  quiz_independentClause_list +
+                      quiz_independentClause_indexFinger,
+                  &brick_indexFinger, &coded_name, hook_list);
+    // printf("hook_list: ");
+    // for (quiz_indexFinger = 0; quiz_indexFinger < HOOK_LIST_LONG;
+    // ++quiz_indexFinger) {
+    //  printf("%04X ", (uint)hook_list[quiz_indexFinger][0]);
+    //}
+    // printf("\n");
+    for (list_indexFinger = 0; list_indexFinger < HOOK_LIST_LONG;
+         ++list_indexFinger) {
+      export_hook_list[list_indexFinger] = hook_list[list_indexFinger];
+    }
+    // copy_randomAccessMemory((char *)&export_hook_list, (char *)&hook_list,
+    //       V8US_LONG * HOOK_LIST_LONG);
+    // obtain_export
+    // printf("pre export hook_list: ");
+    // for (quiz_indexFinger = 0; quiz_indexFinger < HOOK_LIST_LONG;
+    // ++quiz_indexFinger) {
+    //  printf("%04X ", (uint)export_hook_list[quiz_indexFinger][0]);
+    //}
+    // printf("\n");
+    ++brick_indexFinger;
+    // printf("brick_indexFinger %X\n", (uint)brick_indexFinger);
+    obtain_export(independentClause_size,
+                  quiz_independentClause_list +
+                      quiz_independentClause_indexFinger,
+                  &brick_indexFinger, &coded_name, export_hook_list);
+    // printf("export hook_list: ");
+    // for (quiz_indexFinger = 0; quiz_indexFinger < HOOK_LIST_LONG;
+    // ++quiz_indexFinger) {
+    //  printf("%04X ", (uint)export_hook_list[quiz_indexFinger][0]);
+    //}
+    // printf("\n");
+    // printf("coded_name burden3 %04X%04X%04X%04X\n",
+    // (uint)(coded_name)[3],
+    //        (uint)(coded_name)[2], (uint)(coded_name)[1],
+    //        (uint)(coded_name)[0]);
+    // play_program
+    play_text(program_size, program, &coded_name, hook_list);
+    // printf("hook_list-after: ");
+    // for (quiz_indexFinger = 0; quiz_indexFinger < HOOK_LIST_LONG;
+    // ++quiz_indexFinger) {
+    //  printf("%04X ", (uint)hook_list[quiz_indexFinger][0]);
+    //}
+    // printf("\n");
+    if (comparison_randomAccessMemory((char *)&export_hook_list,
+                                      (char *)&hook_list,
+                                      V8US_LONG * HOOK_LIST_LONG) == 0) {
+      ++worth;
+    }
+    // compare program_export to quiz_export
+  }
+  // printf("worth: %X\n", (uint)worth);
+  *program_worth = worth;
 }
 
 kernel void

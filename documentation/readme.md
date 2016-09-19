@@ -1,9 +1,3 @@
--   [Readme](#readme)
-    -   [Abstract](#abstract)
-    -   [Ingredients](#ingredients)
-    -   [Progress](#progress)
-    -   [Tiny OpenCL Teaching](#tiny-opencl-teaching)
-
 Readme
 ======
 

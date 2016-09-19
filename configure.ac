@@ -1,5 +1,5 @@
 AC_INIT([vm], [0.1])
-AM_INIT_AUTOMAKE([foreign -Wall -Werror subdir-objects])
+AM_INIT_AUTOMAKE([foreign -Wall subdir-objects])
 AC_PROG_CC
 AM_PROG_CC_C_O
 AC_CONFIG_HEADERS([config.h])
@@ -11,7 +11,7 @@ MY_CFLAGS="-O2 -Iinclude -Wall -Wno-strict-aliasing -Wpedantic -std=c11 \
  -Wlogical-op -Wunused -Wconversion\
  -Wno-aggressive-loop-optimizations -Wunsafe-loop-optimizations\
  -Wdouble-promotion -Wmaybe-uninitialized -lOpenCL -L./library\
- -Waggregate-return -Werror -Wextra"
+ -Waggregate-return -Wextra"
 
 AC_CHECK_LIB(OpenCL, clGetPlatformIDs, [], [
   echo -e "Error! You need to have OpenCL. Try your (AMD, Intel, Mali) OpenCL\

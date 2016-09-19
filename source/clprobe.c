@@ -35,31 +35,32 @@ contact: streondj at gmail dot com
 #include "generic.h"
 
 int main(int ingredient_long, char *ingredient_list[]) {
-//\end{comment}
-//\section{Synopsis}
-//\Prog{clprobe} \Arg{input filename}
-/* \section{Description}
- if there is no filename ingredient then \Prog{clprobe} demonstrates openCL 
- which includes the platform and instrument knowledge.
-*/
-//\begin{sourcecode}
+  //\end{comment}
+  //\section{Synopsis}
+  //\Prog{clprobe} \Arg{input filename}
+  /* \section{Description}
+   if there is no filename ingredient then \Prog{clprobe} demonstrates openCL
+   which includes the platform and instrument knowledge.
+  */
+  //\begin{sourcecode}
   if (ingredient_long != 2) {
-    fprintf(stderr, "no .cl filename ingredient so demonstrating openCL knowledge\n");
+    fprintf(stderr,
+            "no .cl filename ingredient so demonstrating openCL knowledge\n");
     getInfo();
     exit(0);
   }
-//\end{sourcecode}
-/*
-Otherwise /Prog{clprobe} accepts one ingredient, which is the input filename.
-*/
-//\begin{sourcecode}
+  //\end{sourcecode}
+  /*
+  Otherwise /Prog{clprobe} accepts one ingredient, which is the input filename.
+  */
+  //\begin{sourcecode}
   char *filename = ingredient_list[1];
-//\end{sourcecode}
-/*
-It then sets up a minimal OpenCL environment, 
-and attempts to compile it.
-*/
-//\begin{sourcecode}
+  //\end{sourcecode}
+  /*
+  It then sets up a minimal OpenCL environment,
+  and attempts to compile it.
+  */
+  //\begin{sourcecode}
   cl_platform_id platform_id = NULL;
   cl_uint ret_num_platforms;
   cl_context context = 0;
@@ -87,8 +88,8 @@ and attempts to compile it.
     return 1;
   }
   seed_program_probe(device_id, context, filename, &program);
-//\end{sourcecode}
-//\begin{comment}
+  //\end{sourcecode}
+  //\begin{comment}
   // if binary option is set, then for each platform, output a kernel binary
   //  in the form kernel_name.vendor (lower case vendor)
 
@@ -97,7 +98,7 @@ and attempts to compile it.
 //\end{comment}
 /*
 \section{Bugs}
-Still need to add ability to load header files. 
+Still need to add ability to load header files.
 \section{Author}
 Logan Streondj <streondj at gmail dot com>
 \section{See Also}

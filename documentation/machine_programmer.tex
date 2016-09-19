@@ -1,7 +1,10 @@
 \documentclass[12pt]{report}
 \usepackage{machine_programmer}
 \usepackage{standalone}
-\usepackage{pdfpages}
+%\usepackage{pdfpages}
+\usepackage[c]{documentation}
+\usepackage[fancyhdr]{latex2man}
+\usepackage{verbatim}
 \title{Machine Programmer Documentation}
 \author{\copyright 2016 Logan Streondj}%\\
 %\doclicenseName}
@@ -10,8 +13,9 @@
 \tableofcontents
 \input{readme}
 \input{installing}
-%\inputsourcecode{../source/clprobe.c}
-\chapter{OpenCl Probe: clprobe}
-\includepdf[pages=-]{clprobe.pdf}
-%\input{encoding}
+\chapter{binary/clprobe}
+\input{binary_clprobe}
+\input{encoding}
+\chapter{binary/encoding}
+\input{binary_encoding}
 \end{document}

@@ -1,8 +1,6 @@
-\documentclass[12pt]{report}
-\usepackage{machine_programmer}
-\begin{document}
-\chapter{Pyash Encoding}
+\section{Pyash Encoding}\label{troshlyash-encoding-for-virtual-machine}
 
+\includegraphics[width=6.66667in,height=4.71875in]{https://joylifecoop.files.wordpress.com/2016/03/640px-arithmetic_coding_example-svg.png}
 The virtual machine uses variable-length-instruction-word (VLIW),
 loosely inspired by
 \href{http://scale.eecs.berkeley.edu/papers/hat-cases2001.pdf}{head and
@@ -10,7 +8,7 @@ tails instruction format}(HTF). HTF uses VLIW's which are 128 or 256
 bits long, however there can be multiple instructions per major
 instruction word.
 
-\section{VLIW's Head Index}\label{vliws-head-index}
+\subsubsection{VLIW's Head Index}\label{vliws-head-index}
 
 The head is really a parse index, to show the phrase boundaries. In
 TroshLyash each bit represents a word, each of which is 16bits, when a
@@ -24,7 +22,7 @@ which can be placed at the beginning of a VLIW. Can fit 16 VLIWS in a
 POSIX page, 128 VLIW's in a Linux page, so would only need 1 byte
 (8bits) for addressing functions that are within 1 page distance.
 
-\section{Word Compression}\label{word-compression}
+\subsubsection{Word Compression}\label{word-compression}
 
 Now for the slightly more interesting issue of packing as many as 5
 glyphs into a mere 16 bits. Why this is particularly interesting is that
@@ -36,7 +34,7 @@ supports 4 kinds of words, 2 grammar word classes and 2 root word
 classes. Where C is a consonant, T is a tone and V is a vowel, they are
 CVT, CCVT, and CVTC, CCVTC respectively.
 
-\subsection{CCVTC or CSVTF}\label{ccvtc-or-csvtf}
+\paragraph{CCVTC or CSVTF}\label{ccvtc-or-csvtf}
 
 I'll start with explaining the simplest case of the CCVTC word pattern.
 To make it easier to understand the word classes can call is the CSVTF
@@ -61,7 +59,7 @@ T needs 2 bits and F needs 3 bits which is a total of 16 bits. 5+3+3+2+3
 = 16 However there are other kinds of words also. we'll see how those
 work.
 
-\subsection{HCVTF}\label{hcvtf}
+\subsubsection{HCVTF}\label{hcvtf}
 
 So here we have to realize that CVC or CVTC is actually HCVTF due to
 alignment. So what we do is make a three bit trigger from the first
@@ -72,26 +70,26 @@ consonants, and only 2 of those are purely for syntax so aren't
 necessary, so that's okay, simply can skip the assignment of 8, 16 and
 24.
 
-\subsection{CSVT}\label{csvt}
+\subsubsection{CSVT}\label{csvt}
 
 This is similar to the above, except we use 0b111 as the trigger,
 meaning have to also skip assignment of 15, 23 and 31. 3+5+3+3+2 = 16
 ?+C+S+V+T
 
-\subsection{CVT}\label{cvt}
+\subsubsection{CVT}\label{cvt}
 
 For this one can actually simply have a special number, such as 30,
 which indicates that the word represents a 2 letter word. 5+5+3+2+1
 ?+C+V+T+P what is P? P can be a parity-bit for the phrase, or simply
 unassigned.
 
-\section{Quotes}\label{quotes}
+\subsubsection{Quotes}\label{quotes}
 
 Now with VM encodings, it is also necessary to make reference to binary
 numbers and things like that. The nice thing with this encoding is that
 we can represent several different things. Currently with the above
 words, we have 1 number undefined in the initial 5 bits. 29 can be an
-initial dot or the final one, can call the the quote-denote (QF),
+initial dot or the final one, can call the the quote-flag (QF),
 depending on if parser works forwards or backwards. Though for
 consistency it is best that it is kept as a suffix (final one), as most
 other things are suffixes. 5+3+8 = 16 Q+L+B QF has a 3 bit argument of
@@ -106,7 +104,7 @@ floating-point-number. Though if the VM interpreter is smart then it
 will make sure the encoding is compatible with the type Lyash type, and
 throw an error otherwise.
 
-\section{Extension}\label{extension}
+\subsubsection{Extension}\label{extension}
 
 This encoding already can represent over 17,000 words, which if they
 were all assigned would take 15bits, so it is a fairly efficient
@@ -123,7 +121,7 @@ thousand words. It will be possible to flesh out the vocabulary with
 compound words and more technical words later on. Also it might make
 sense to supplant or remove some words like proper-names of countries.
 
-\section{Table of Values}\label{values}
+\subsection{Table of Values}\label{values}
 
 \begin{longtable}[c]{@{}llllll@{}}
 \toprule
@@ -644,82 +642,36 @@ LGO
 \bottomrule
 \end{longtable}
 
-\subsection{definitions}
-\begin{description}
-  \item [] blank means out of bounds
-  \item [U] undefined
-  \item [MT] middle tone, no marking
-  \item [QF] quote denote
-  \item [SGF] short grammar word denote
-  \item [SRF] short root word denote
-  \item [LGF] long grammar word denote
-  \item [SRO] short root word denote overflow
-  \item [LGO] long grammar word denote overflow
-\end{description}
+blank means out of bounds
 
-\section{Quoted Sort}
-\begin{bytefield}[endianness=little, bitwidth=0.0625\linewidth]{16}
-  \bitheader{0,5,6,7,9,10,11,12,15}\\
-  \bitbox{5}{Quote Denote} & \bitbox{2}{gyenhmus} &
-  \bitbox{3}{Vector Thick} & \bitbox{2}{region} &
-  \bitbox{4}{Sort Denote}  \\
-\end{bytefield}
-\\
-\begin{tabular}{*{5}{|l}|}
-\hline
-\multicolumn{5}{|c|}{16 tidbit} \\
-\hline
-0 \hfill 4 & 5 \hfill 6            & 7 \hfill 9      & 10 \hfill 11  & 12 \hfill
-15 \\
-\hline
-5 tidbit     & 2 tidbit            & 3 tidbit        & 2 tidbit & 4 tidbit \\
-\hline
-quote denote & ingredient thick & vector thick & region & sort denote \\
-\hline \hline
-\multicolumn{5}{|c|}{definitions}\\
-\hline
-0            & 1 byte, 8 tidbit   & 1               & literal & glyph \\
-1            & 2 byte, 16 tidbit  & 2               & global  & word \\
-2            & 4 byte, 32 tidbit  & 4               & constant & phrase \\
-3            & 8 byte, 64 tidbit  & 8               & local   & sentence \\
-4            &                    & 16              & & text \\
-5            &                    & U               & & function \\
-6            &                    & U               & & database \\
-7            &                    & 3               & & named database \\
-8 & & & & unsigned integer \\
-9 & & & & signed integer \\
-A & & & & floating point number \\
-B & & & & U \\
-C & & & & U \\
-D & & & & U \\
-E & & & & U \\
-F & & & & U \\
-\hline
-\end{tabular}
-The quote denote is 5 bits long, leaving 11 bits.
-the next 2 bits is used to indicate bit width of quote ingredient(s),
-the following 3 bits is used to indicate the number of vector ingredient(s),
-2 bit for region
-\begin{enumerate}
-  \setcounter{enumi}{0}
-  \item literal
-  \item global memory referential
-  \item constant memory referential
-  \item local memory referential
-\end{enumerate}
-4 bits for noun denote:
-\begin{enumerate}
-  \setcounter{enumi}{0}
-  \item glyph
-  \item word
-  \item phrase
-  \item sentence
-  \item text
-  \item function
-  \item datastructure
-  \item named data type, next 16 bits gives name
-  \item unsigned integer
-  \item signed integer
-  \item floating point number
-\end{enumerate}
-\end{document}
+U
+
+undefined
+
+MT
+
+middle tone, no marking
+
+QF
+
+quote flag
+
+SGF
+
+short grammar word flag
+
+SRF
+
+short root word flag
+
+LGF
+
+long grammar word flag
+
+SRO
+
+short root word flag overflow
+
+LGO
+
+long grammar word flag overflow

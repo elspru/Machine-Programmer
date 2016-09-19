@@ -351,8 +351,8 @@ static void found_and_switch(const size_t input_text_long,
   }
 }
 
-void seed_program_probe(const cl_device_id device_id, const cl_context context,
-                        char *filename, cl_program *program /*,
+int seed_program_probe(const cl_device_id device_id, const cl_context context,
+                       char *filename, cl_program *program /*,
                             cl_kernel *kernel*/) {
   /* Load the source code containing the kernel*/
   cl_int return_number;
@@ -382,7 +382,7 @@ void seed_program_probe(const cl_device_id device_id, const cl_context context,
   if (!fp) {
     fprintf(stderr, "Failed to open file %s %s:%d.\n", filename, __FILE__,
             __LINE__);
-    exit(1);
+    return return_number;
   }
   source_text = (char *)malloc(MAX_SOURCE_SIZE);
   source_size = fread(source_text, 1, MAX_SOURCE_SIZE, fp);
@@ -396,7 +396,7 @@ void seed_program_probe(const cl_device_id device_id, const cl_context context,
   if (!success_verification(return_number)) {
     fprintf(stderr, "Failed to create OpenCL program. %s:%d\n", __FILE__,
             __LINE__);
-    exit(1);
+    return return_number;
   }
   // if no lines start with either kernel or _kernel return error
   /* Build Kernel Program */
@@ -412,19 +412,21 @@ void seed_program_probe(const cl_device_id device_id, const cl_context context,
     return_number =
         clGetProgramBuildInfo(*program, device_id, CL_PROGRAM_BUILD_STATUS, 1,
                               &cl_build_status, &compile_newspaper_long);
-    fprintf(stderr, "CL_BUILD_STATUS %d, %d\n", compile_newspaper_long,
-            cl_build_status);
+    fprintf(stderr, "CL_BUILD_STATUS 0x%X, 0x%X\n",
+            (unsigned int)compile_newspaper_long,
+            (unsigned int)cl_build_status);
     return_number = clGetProgramBuildInfo(
         *program, device_id, CL_PROGRAM_BUILD_LOG, INFO_LENGTH,
         compile_newspaper, &compile_newspaper_long);
     sprintf(filename_switch, "%s:", filename);
     found_and_switch(compile_newspaper_long, compile_newspaper, "<source>",
                      filename_switch, INFO_LENGTH, compile_newspaper_produce);
-    fprintf(stderr, "compile_newspaper %d\n", compile_newspaper_long);
+    fprintf(stderr, "compile_newspaper 0x%X\n",
+            (unsigned int)compile_newspaper_long);
     fprintf(stderr, "%s\n", compile_newspaper_produce);
     fprintf(stderr, "Failed to build OpenCL program. %s:%d\n", __FILE__,
             __LINE__);
-    exit(1);
+    return return_number;
   }
   // const char * seed_name = "hello";
   // find all lines starting with kernel or _kernel
@@ -439,11 +441,12 @@ void seed_program_probe(const cl_device_id device_id, const cl_context context,
   //          __LINE__);
   //  exit(1);
   //}
+  return 0;
 }
-void seed_program_establish(const cl_device_id device_id,
-                            const cl_context context, char *filename,
-                            char *seed_name, cl_program *program,
-                            cl_kernel *kernel) {
+int seed_program_establish(const cl_device_id device_id,
+                           const cl_context context, char *filename,
+                           char *seed_name, cl_program *program,
+                           cl_kernel *kernel) {
   /* Load the source code containing the kernel*/
   cl_int return_number;
   FILE *fp;
@@ -473,7 +476,7 @@ void seed_program_establish(const cl_device_id device_id,
   if (!fp) {
     fprintf(stderr, "Failed to open file %s %s:%d.\n", filename, __FILE__,
             __LINE__);
-    exit(1);
+    return 1;
   }
   source_text = (char *)malloc(MAX_SOURCE_SIZE);
   source_size = fread(source_text, 1, MAX_SOURCE_SIZE, fp);
@@ -487,7 +490,7 @@ void seed_program_establish(const cl_device_id device_id,
   if (!success_verification(return_number)) {
     fprintf(stderr, "Failed to create OpenCL program. %s:%d\n", __FILE__,
             __LINE__);
-    exit(1);
+    return return_number;
   }
   /* Build Kernel Program */
   return_number = clBuildProgram(*program, 1, &device_id, NULL, NULL, NULL);
@@ -499,16 +502,17 @@ void seed_program_establish(const cl_device_id device_id,
     return_number =
         clGetProgramBuildInfo(*program, device_id, CL_PROGRAM_BUILD_STATUS, 1,
                               &cl_build_status, &compile_newspaper_long);
-    fprintf(stderr, "CL_BUILD_STATUS %d, %d\n", compile_newspaper_long,
-            cl_build_status);
+    fprintf(stderr, "CL_BUILD_STATUS 0x%X, 0x%X\n",
+            (unsigned int)compile_newspaper_long,
+            (unsigned int)cl_build_status);
     return_number = clGetProgramBuildInfo(
         *program, device_id, CL_PROGRAM_BUILD_LOG, INFO_LENGTH,
         compile_newspaper, &compile_newspaper_long);
-    fprintf(stderr, "compile_newspaper %d, %s\n", compile_newspaper_long,
-            compile_newspaper);
+    fprintf(stderr, "compile_newspaper 0x%X, %s\n",
+            (unsigned int)compile_newspaper_long, compile_newspaper);
     fprintf(stderr, "Failed to build OpenCL program. %s:%d\n", __FILE__,
             __LINE__);
-    exit(1);
+    return return_number;
   }
   *kernel = clCreateKernel(*program, seed_name, &return_number);
   if (!success_verification(return_number)) {
@@ -517,8 +521,9 @@ void seed_program_establish(const cl_device_id device_id,
     //              numberOfMemoryObjects);
     fprintf(stderr, "Failed to create OpenCL kernel. %s:%d\n", __FILE__,
             __LINE__);
-    exit(1);
+    return return_number;
   }
+  return 0;
 }
 
 //#define TRUE  1
