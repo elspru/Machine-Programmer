@@ -1,12 +1,13 @@
 \documentclass[12pt]{report}
 \usepackage{machine_programmer}
+\usepackage{amstext}
 \begin{document}
 \chapter{Pyash Encoding}
 
 The virtual machine uses variable-length-instruction-word (VLIW),
 loosely inspired by
 \href{http://scale.eecs.berkeley.edu/papers/hat-cases2001.pdf}{head and
-tails instruction format}(HTF). HTF uses VLIW's which are 128 or 256
+tails instruction format} (HTF). HTF uses VLIW's which are 128 or 256
 bits long, however there can be multiple instructions per major
 instruction word.
 
@@ -15,12 +16,12 @@ instruction word.
 The head is really a parse index, to show the phrase boundaries. In
 TroshLyash each bit represents a word, each of which is 16bits, when a
 phrase boundary is met then the bits flip from 1 to 0 or vice-versa at
-the phrase boundary word. index takes up the first 16bits of the VLIW.
+the phrase boundary word.\ index takes up the first 16bits of the VLIW\@.
 This would lead to 256bit (32Byte) VLIW's. The real advantage of the
 indexing occurs when there either multiple sentences per VLIW, or when
 there are complex sentences in the VLIW's. Having the VLIW's broken up
 into 32Byte chunks, makes it easier to address function entry points,
-which can be placed at the beginning of a VLIW. Can fit 16 VLIWS in a
+which can be placed at the beginning of a VLIW\@. Can fit 16 VLIWS in a
 POSIX page, 128 VLIW's in a Linux page, so would only need 1 byte
 (8bits) for addressing functions that are within 1 page distance.
 
@@ -43,13 +44,17 @@ To make it easier to understand the word classes can call is the CSVTF
 pattern, where S stands for Second consonant, and F stands for Final
 Consonant. The first C represents 22 consonants, so there needs to be at
 least 5 bits to represent them. Here are the various classes
-``C'':{[}``p'',``t'',``k'',``f'', ``s'',``c'',``x'',
+\begin{description}
+\item[``C'']:``p'',``t'',``k'',``f'', ``s'',``c'',``x'',
 ``b'',``d'',``g'',``v'', ``z'',``j'', ``n'',``m'',``q'',``r'',
-``l'',``y'',``w''{]}, ``S'':{[}``f'',``s'',``c'',``y'',
-``r'',``w'',``l'',``x'', ``z'',``j'',``v''{]},
-``V'':{[}``i'',``a'',``e'',``o'',``u'',``6''{]},
-``T'':{[}``7'',``\_''{]}, ``F'':{[}``p'',``t'',``k'',``f'',
-``s'',``c'',``n'',``m''{]}, (can check the
+``l'',``y'',``w'', 
+\item[``S'']``f'',``s'',``c'',``y'', ``r'',``w'',``l'',``x'', ``z'',``j'',``v'',
+\item[``V'']``i'',``a'',``e'',``o'',``u'',``6'',
+\item[``T'']``7'',``\_'', 
+\item[``F'']``p'',``t'',``k'',``f'',
+``s'',``c'',``n'',``m''
+\end{description}
+, (can check the
 \href{http://wyn.bot.nu/spel/src/vocab/gen/phonology.html}{phonology}
 page for pronunciation) C needs 5 bits, S would need 4 bits, however the
 phonotactics means that if the initial C is voiced, then the S must be
@@ -58,7 +63,7 @@ into ``v'', also none of the ambigiously voiced phonemes (l, m, n, q, y,
 w, r) can come before a fricative because they have a higher sonority,
 thus must be closer to the vowel. So S only needs 3 bits. V needs 3 bits
 T needs 2 bits and F needs 3 bits which is a total of 16 bits. 5+3+3+2+3
-= 16 However there are other kinds of words also. we'll see how those
+= 16 However there are other kinds of words also.\ we'll see how those
 work.
 
 \subsection{HCVTF}\label{hcvtf}
@@ -75,14 +80,14 @@ necessary, so that's okay, simply can skip the assignment of 8, 16 and
 \subsection{CSVT}\label{csvt}
 
 This is similar to the above, except we use 0b111 as the trigger,
-meaning have to also skip assignment of 15, 23 and 31. 3+5+3+3+2 = 16
-?+C+S+V+T
+meaning have to also skip assignment of 15, 23 and 31.
+$3+5+3+3+2=16$?+C+S+V+T
 
 \subsection{CVT}\label{cvt}
 
 For this one can actually simply have a special number, such as 30,
-which indicates that the word represents a 2 letter word. 5+5+3+2+1
-?+C+V+T+P what is P? P can be a parity-bit for the phrase, or simply
+which indicates that the word represents a 2 letter word. $5+5+3+2+1$
+$F+C+V+T+P$ what is PF P can be a parity-bit for the phrase, or simply
 unassigned.
 
 \section{Quotes}\label{quotes}
@@ -91,10 +96,10 @@ Now with VM encodings, it is also necessary to make reference to binary
 numbers and things like that. The nice thing with this encoding is that
 we can represent several different things. Currently with the above
 words, we have 1 number undefined in the initial 5 bits. 29 can be an
-initial dot or the final one, can call the the quote-denote (QF),
+initial dot or the final one, can call the the quote-denote (QD),
 depending on if parser works forwards or backwards. Though for
 consistency it is best that it is kept as a suffix (final one), as most
-other things are suffixes. 5+3+8 = 16 Q+L+B QF has a 3 bit argument of
+other things are suffixes. 5+3+8 = 16 Q+L+B QD has a 3 bit argument of
 Length. The Length is the number of 16bit fields which are quoted, if
 the length is 0, then the B is used as a raw byte of binary. Otherwise
 the B represents the encoding of the quoted bytes, mostly so that it is
@@ -123,561 +128,122 @@ thousand words. It will be possible to flesh out the vocabulary with
 compound words and more technical words later on. Also it might make
 sense to supplant or remove some words like proper-names of countries.
 
+\section{Encoding Tidbit Overview}
+\begin{bytefield}[endianness=little, bitwidth=0.0625\linewidth]{16}
+  \bitheader{0,2,4,6,8,10,12,14,16}\\
+  \bitbox{5}{C} & \bitbox{3}{S} & \bitbox{3}{V} & \bitbox{2}{T} & \bitbox{3}{F}  \\
+  \bitbox{3}{SRD} & \bitbox{5}{C} & \bitbox{3}{V} & \bitbox{2}{T} & \bitbox{3}{F}  \\
+  \bitbox{3}{LGD} & \bitbox{5}{C} & \bitbox{3}{S} &\bitbox{3}{V} & \bitbox{2}{T}  \\
+  \bitbox{5}{SGD} & \bitbox{5}{C} & \bitbox{3}{V} & \bitbox{2}{T} &
+\bitbox{1}{P}  \\
+  \bitbox{5}{QD} & \bitbox{2}{TW} & \bitbox{3}{VT} & \bitbox{2}{R} & \bitbox{4}{SD}  \\
+\end{bytefield}
+
+\subsection{definitions}
+\begin{description}
+  \item [C] Initial Consonant
+  \item [S] Secondary Consonant
+  \item [V] Vowel
+  \item [T] Tone
+  \item [F] Final Consonant
+  \item [SRD] Short Root Denote
+  \item [LGD] Long Grammar Denote
+  \item [SGD] Short Grammar Denote
+  \item [P] (optional) Phrase Parity Check tidbit
+  \item [QD] Quote Denote
+  \item [TW] tidbit width
+  \item [VT] vector thick
+  \item [R] region
+  \item [SD] sort denote
+\end{description}
+
 \section{Table of Values}\label{values}
 
-\begin{longtable}[c]{@{}llllll@{}}
+
+\begin{tabular}[c]{@{}llllll@{}}
 \toprule
-\begin{minipage}[b]{0.14\columnwidth}\raggedright\strut
-\#
-\strut\end{minipage} &
-\begin{minipage}[b]{0.14\columnwidth}\raggedright\strut
-C
-\strut\end{minipage} &
-\begin{minipage}[b]{0.14\columnwidth}\raggedright\strut
-S
-\strut\end{minipage} &
-\begin{minipage}[b]{0.14\columnwidth}\raggedright\strut
-V
-\strut\end{minipage} &
-\begin{minipage}[b]{0.14\columnwidth}\raggedright\strut
-T
-\strut\end{minipage} &
-\begin{minipage}[b]{0.14\columnwidth}\raggedright\strut
-F
-\strut\end{minipage}\tabularnewline
+\#     & C   & S   & V & T   & F \\
+width & 5   & 3   & 3 & 2   & 3 \\
 \midrule
-\endhead
-\begin{minipage}[t]{0.14\columnwidth}\raggedright\strut
-width
-\strut\end{minipage} &
-\begin{minipage}[t]{0.14\columnwidth}\raggedright\strut
-5
-\strut\end{minipage} &
-\begin{minipage}[t]{0.14\columnwidth}\raggedright\strut
-3
-\strut\end{minipage} &
-\begin{minipage}[t]{0.14\columnwidth}\raggedright\strut
-3
-\strut\end{minipage} &
-\begin{minipage}[t]{0.14\columnwidth}\raggedright\strut
-2
-\strut\end{minipage} &
-\begin{minipage}[t]{0.14\columnwidth}\raggedright\strut
-3
-\strut\end{minipage}\tabularnewline
-\begin{minipage}[t]{0.14\columnwidth}\raggedright\strut
-0
-\strut\end{minipage} &
-\begin{minipage}[t]{0.14\columnwidth}\raggedright\strut
-SRF
-\strut\end{minipage} &
-\begin{minipage}[t]{0.14\columnwidth}\raggedright\strut
-y
-\strut\end{minipage} &
-\begin{minipage}[t]{0.14\columnwidth}\raggedright\strut
-i
-\strut\end{minipage} &
-\begin{minipage}[t]{0.14\columnwidth}\raggedright\strut
-MT
-\strut\end{minipage} &
-\begin{minipage}[t]{0.14\columnwidth}\raggedright\strut
-m
-\strut\end{minipage}\tabularnewline
-\begin{minipage}[t]{0.14\columnwidth}\raggedright\strut
-1
-\strut\end{minipage} &
-\begin{minipage}[t]{0.14\columnwidth}\raggedright\strut
-m
-\strut\end{minipage} &
-\begin{minipage}[t]{0.14\columnwidth}\raggedright\strut
-w
-\strut\end{minipage} &
-\begin{minipage}[t]{0.14\columnwidth}\raggedright\strut
-a
-\strut\end{minipage} &
-\begin{minipage}[t]{0.14\columnwidth}\raggedright\strut
-7
-\strut\end{minipage} &
-\begin{minipage}[t]{0.14\columnwidth}\raggedright\strut
-k
-\strut\end{minipage}\tabularnewline
-\begin{minipage}[t]{0.14\columnwidth}\raggedright\strut
-2
-\strut\end{minipage} &
-\begin{minipage}[t]{0.14\columnwidth}\raggedright\strut
-k
-\strut\end{minipage} &
-\begin{minipage}[t]{0.14\columnwidth}\raggedright\strut
-s z
-\strut\end{minipage} &
-\begin{minipage}[t]{0.14\columnwidth}\raggedright\strut
-u
-\strut\end{minipage} &
-\begin{minipage}[t]{0.14\columnwidth}\raggedright\strut
-\_
-\strut\end{minipage} &
-\begin{minipage}[t]{0.14\columnwidth}\raggedright\strut
-p
-\strut\end{minipage}\tabularnewline
-\begin{minipage}[t]{0.14\columnwidth}\raggedright\strut
-3
-\strut\end{minipage} &
-\begin{minipage}[t]{0.14\columnwidth}\raggedright\strut
-y
-\strut\end{minipage} &
-\begin{minipage}[t]{0.14\columnwidth}\raggedright\strut
-l
-\strut\end{minipage} &
-\begin{minipage}[t]{0.14\columnwidth}\raggedright\strut
-e
-\strut\end{minipage} &
-\begin{minipage}[t]{0.14\columnwidth}\raggedright\strut
-U
-\strut\end{minipage} &
-\begin{minipage}[t]{0.14\columnwidth}\raggedright\strut
-n
-\strut\end{minipage}\tabularnewline
-\begin{minipage}[t]{0.14\columnwidth}\raggedright\strut
-4
-\strut\end{minipage} &
-\begin{minipage}[t]{0.14\columnwidth}\raggedright\strut
-p
-\strut\end{minipage} &
-\begin{minipage}[t]{0.14\columnwidth}\raggedright\strut
-f v
-\strut\end{minipage} &
-\begin{minipage}[t]{0.14\columnwidth}\raggedright\strut
-o
-\strut\end{minipage} &
-\begin{minipage}[t]{0.14\columnwidth}\raggedright\strut
-\strut\end{minipage} &
-\begin{minipage}[t]{0.14\columnwidth}\raggedright\strut
-s
-\strut\end{minipage}\tabularnewline
-\begin{minipage}[t]{0.14\columnwidth}\raggedright\strut
-5
-\strut\end{minipage} &
-\begin{minipage}[t]{0.14\columnwidth}\raggedright\strut
-w
-\strut\end{minipage} &
-\begin{minipage}[t]{0.14\columnwidth}\raggedright\strut
-c j
-\strut\end{minipage} &
-\begin{minipage}[t]{0.14\columnwidth}\raggedright\strut
-6
-\strut\end{minipage} &
-\begin{minipage}[t]{0.14\columnwidth}\raggedright\strut
-\strut\end{minipage} &
-\begin{minipage}[t]{0.14\columnwidth}\raggedright\strut
-t
-\strut\end{minipage}\tabularnewline
-\begin{minipage}[t]{0.14\columnwidth}\raggedright\strut
-6
-\strut\end{minipage} &
-\begin{minipage}[t]{0.14\columnwidth}\raggedright\strut
-n
-\strut\end{minipage} &
-\begin{minipage}[t]{0.14\columnwidth}\raggedright\strut
-r
-\strut\end{minipage} &
-\begin{minipage}[t]{0.14\columnwidth}\raggedright\strut
-U
-\strut\end{minipage} &
-\begin{minipage}[t]{0.14\columnwidth}\raggedright\strut
-\strut\end{minipage} &
-\begin{minipage}[t]{0.14\columnwidth}\raggedright\strut
-f
-\strut\end{minipage}\tabularnewline
-\begin{minipage}[t]{0.14\columnwidth}\raggedright\strut
-7
-\strut\end{minipage} &
-\begin{minipage}[t]{0.14\columnwidth}\raggedright\strut
-LGF
-\strut\end{minipage} &
-\begin{minipage}[t]{0.14\columnwidth}\raggedright\strut
-x
-\strut\end{minipage} &
-\begin{minipage}[t]{0.14\columnwidth}\raggedright\strut
-U
-\strut\end{minipage} &
-\begin{minipage}[t]{0.14\columnwidth}\raggedright\strut
-\strut\end{minipage} &
-\begin{minipage}[t]{0.14\columnwidth}\raggedright\strut
-c
-\strut\end{minipage}\tabularnewline
-\begin{minipage}[t]{0.14\columnwidth}\raggedright\strut
-8
-\strut\end{minipage} &
-\begin{minipage}[t]{0.14\columnwidth}\raggedright\strut
-SRO
-\strut\end{minipage} &
-\begin{minipage}[t]{0.14\columnwidth}\raggedright\strut
-\strut\end{minipage} &
-\begin{minipage}[t]{0.14\columnwidth}\raggedright\strut
-\strut\end{minipage} &
-\begin{minipage}[t]{0.14\columnwidth}\raggedright\strut
-\strut\end{minipage} &
-\begin{minipage}[t]{0.14\columnwidth}\raggedright\strut
-\strut\end{minipage}\tabularnewline
-\begin{minipage}[t]{0.14\columnwidth}\raggedright\strut
-9
-\strut\end{minipage} &
-\begin{minipage}[t]{0.14\columnwidth}\raggedright\strut
-s
-\strut\end{minipage} &
-\begin{minipage}[t]{0.14\columnwidth}\raggedright\strut
-\strut\end{minipage} &
-\begin{minipage}[t]{0.14\columnwidth}\raggedright\strut
-\strut\end{minipage} &
-\begin{minipage}[t]{0.14\columnwidth}\raggedright\strut
-\strut\end{minipage} &
-\begin{minipage}[t]{0.14\columnwidth}\raggedright\strut
-\strut\end{minipage}\tabularnewline
-\begin{minipage}[t]{0.14\columnwidth}\raggedright\strut
-10
-\strut\end{minipage} &
-\begin{minipage}[t]{0.14\columnwidth}\raggedright\strut
-t
-\strut\end{minipage} &
-\begin{minipage}[t]{0.14\columnwidth}\raggedright\strut
-\strut\end{minipage} &
-\begin{minipage}[t]{0.14\columnwidth}\raggedright\strut
-\strut\end{minipage} &
-\begin{minipage}[t]{0.14\columnwidth}\raggedright\strut
-\strut\end{minipage} &
-\begin{minipage}[t]{0.14\columnwidth}\raggedright\strut
-\strut\end{minipage}\tabularnewline
-\begin{minipage}[t]{0.14\columnwidth}\raggedright\strut
-11
-\strut\end{minipage} &
-\begin{minipage}[t]{0.14\columnwidth}\raggedright\strut
-l
-\strut\end{minipage} &
-\begin{minipage}[t]{0.14\columnwidth}\raggedright\strut
-\strut\end{minipage} &
-\begin{minipage}[t]{0.14\columnwidth}\raggedright\strut
-\strut\end{minipage} &
-\begin{minipage}[t]{0.14\columnwidth}\raggedright\strut
-\strut\end{minipage} &
-\begin{minipage}[t]{0.14\columnwidth}\raggedright\strut
-\strut\end{minipage}\tabularnewline
-\begin{minipage}[t]{0.14\columnwidth}\raggedright\strut
-12
-\strut\end{minipage} &
-\begin{minipage}[t]{0.14\columnwidth}\raggedright\strut
-f
-\strut\end{minipage} &
-\begin{minipage}[t]{0.14\columnwidth}\raggedright\strut
-\strut\end{minipage} &
-\begin{minipage}[t]{0.14\columnwidth}\raggedright\strut
-\strut\end{minipage} &
-\begin{minipage}[t]{0.14\columnwidth}\raggedright\strut
-\strut\end{minipage} &
-\begin{minipage}[t]{0.14\columnwidth}\raggedright\strut
-\strut\end{minipage}\tabularnewline
-\begin{minipage}[t]{0.14\columnwidth}\raggedright\strut
-13
-\strut\end{minipage} &
-\begin{minipage}[t]{0.14\columnwidth}\raggedright\strut
-c
-\strut\end{minipage} &
-\begin{minipage}[t]{0.14\columnwidth}\raggedright\strut
-\strut\end{minipage} &
-\begin{minipage}[t]{0.14\columnwidth}\raggedright\strut
-\strut\end{minipage} &
-\begin{minipage}[t]{0.14\columnwidth}\raggedright\strut
-\strut\end{minipage} &
-\begin{minipage}[t]{0.14\columnwidth}\raggedright\strut
-\strut\end{minipage}\tabularnewline
-\begin{minipage}[t]{0.14\columnwidth}\raggedright\strut
-14
-\strut\end{minipage} &
-\begin{minipage}[t]{0.14\columnwidth}\raggedright\strut
-r
-\strut\end{minipage} &
-\begin{minipage}[t]{0.14\columnwidth}\raggedright\strut
-\strut\end{minipage} &
-\begin{minipage}[t]{0.14\columnwidth}\raggedright\strut
-\strut\end{minipage} &
-\begin{minipage}[t]{0.14\columnwidth}\raggedright\strut
-\strut\end{minipage} &
-\begin{minipage}[t]{0.14\columnwidth}\raggedright\strut
-\strut\end{minipage}\tabularnewline
-\begin{minipage}[t]{0.14\columnwidth}\raggedright\strut
-15
-\strut\end{minipage} &
-\begin{minipage}[t]{0.14\columnwidth}\raggedright\strut
-LGO
-\strut\end{minipage} &
-\begin{minipage}[t]{0.14\columnwidth}\raggedright\strut
-\strut\end{minipage} &
-\begin{minipage}[t]{0.14\columnwidth}\raggedright\strut
-\strut\end{minipage} &
-\begin{minipage}[t]{0.14\columnwidth}\raggedright\strut
-\strut\end{minipage} &
-\begin{minipage}[t]{0.14\columnwidth}\raggedright\strut
-\strut\end{minipage}\tabularnewline
-\begin{minipage}[t]{0.14\columnwidth}\raggedright\strut
-16
-\strut\end{minipage} &
-\begin{minipage}[t]{0.14\columnwidth}\raggedright\strut
-SRO
-\strut\end{minipage} &
-\begin{minipage}[t]{0.14\columnwidth}\raggedright\strut
-\strut\end{minipage} &
-\begin{minipage}[t]{0.14\columnwidth}\raggedright\strut
-\strut\end{minipage} &
-\begin{minipage}[t]{0.14\columnwidth}\raggedright\strut
-\strut\end{minipage} &
-\begin{minipage}[t]{0.14\columnwidth}\raggedright\strut
-\strut\end{minipage}\tabularnewline
-\begin{minipage}[t]{0.14\columnwidth}\raggedright\strut
-17
-\strut\end{minipage} &
-\begin{minipage}[t]{0.14\columnwidth}\raggedright\strut
-b
-\strut\end{minipage} &
-\begin{minipage}[t]{0.14\columnwidth}\raggedright\strut
-\strut\end{minipage} &
-\begin{minipage}[t]{0.14\columnwidth}\raggedright\strut
-\strut\end{minipage} &
-\begin{minipage}[t]{0.14\columnwidth}\raggedright\strut
-\strut\end{minipage} &
-\begin{minipage}[t]{0.14\columnwidth}\raggedright\strut
-\strut\end{minipage}\tabularnewline
-\begin{minipage}[t]{0.14\columnwidth}\raggedright\strut
-18
-\strut\end{minipage} &
-\begin{minipage}[t]{0.14\columnwidth}\raggedright\strut
-g
-\strut\end{minipage} &
-\begin{minipage}[t]{0.14\columnwidth}\raggedright\strut
-\strut\end{minipage} &
-\begin{minipage}[t]{0.14\columnwidth}\raggedright\strut
-\strut\end{minipage} &
-\begin{minipage}[t]{0.14\columnwidth}\raggedright\strut
-\strut\end{minipage} &
-\begin{minipage}[t]{0.14\columnwidth}\raggedright\strut
-\strut\end{minipage}\tabularnewline
-\begin{minipage}[t]{0.14\columnwidth}\raggedright\strut
-19
-\strut\end{minipage} &
-\begin{minipage}[t]{0.14\columnwidth}\raggedright\strut
-d
-\strut\end{minipage} &
-\begin{minipage}[t]{0.14\columnwidth}\raggedright\strut
-\strut\end{minipage} &
-\begin{minipage}[t]{0.14\columnwidth}\raggedright\strut
-\strut\end{minipage} &
-\begin{minipage}[t]{0.14\columnwidth}\raggedright\strut
-\strut\end{minipage} &
-\begin{minipage}[t]{0.14\columnwidth}\raggedright\strut
-\strut\end{minipage}\tabularnewline
-\begin{minipage}[t]{0.14\columnwidth}\raggedright\strut
-20
-\strut\end{minipage} &
-\begin{minipage}[t]{0.14\columnwidth}\raggedright\strut
-z
-\strut\end{minipage} &
-\begin{minipage}[t]{0.14\columnwidth}\raggedright\strut
-\strut\end{minipage} &
-\begin{minipage}[t]{0.14\columnwidth}\raggedright\strut
-\strut\end{minipage} &
-\begin{minipage}[t]{0.14\columnwidth}\raggedright\strut
-\strut\end{minipage} &
-\begin{minipage}[t]{0.14\columnwidth}\raggedright\strut
-\strut\end{minipage}\tabularnewline
-\begin{minipage}[t]{0.14\columnwidth}\raggedright\strut
-21
-\strut\end{minipage} &
-\begin{minipage}[t]{0.14\columnwidth}\raggedright\strut
-j
-\strut\end{minipage} &
-\begin{minipage}[t]{0.14\columnwidth}\raggedright\strut
-\strut\end{minipage} &
-\begin{minipage}[t]{0.14\columnwidth}\raggedright\strut
-\strut\end{minipage} &
-\begin{minipage}[t]{0.14\columnwidth}\raggedright\strut
-\strut\end{minipage} &
-\begin{minipage}[t]{0.14\columnwidth}\raggedright\strut
-\strut\end{minipage}\tabularnewline
-\begin{minipage}[t]{0.14\columnwidth}\raggedright\strut
-22
-\strut\end{minipage} &
-\begin{minipage}[t]{0.14\columnwidth}\raggedright\strut
-v
-\strut\end{minipage} &
-\begin{minipage}[t]{0.14\columnwidth}\raggedright\strut
-\strut\end{minipage} &
-\begin{minipage}[t]{0.14\columnwidth}\raggedright\strut
-\strut\end{minipage} &
-\begin{minipage}[t]{0.14\columnwidth}\raggedright\strut
-\strut\end{minipage} &
-\begin{minipage}[t]{0.14\columnwidth}\raggedright\strut
-\strut\end{minipage}\tabularnewline
-\begin{minipage}[t]{0.14\columnwidth}\raggedright\strut
-23
-\strut\end{minipage} &
-\begin{minipage}[t]{0.14\columnwidth}\raggedright\strut
-LGO
-\strut\end{minipage} &
-\begin{minipage}[t]{0.14\columnwidth}\raggedright\strut
-\strut\end{minipage} &
-\begin{minipage}[t]{0.14\columnwidth}\raggedright\strut
-\strut\end{minipage} &
-\begin{minipage}[t]{0.14\columnwidth}\raggedright\strut
-\strut\end{minipage} &
-\begin{minipage}[t]{0.14\columnwidth}\raggedright\strut
-\strut\end{minipage}\tabularnewline
-\begin{minipage}[t]{0.14\columnwidth}\raggedright\strut
-24
-\strut\end{minipage} &
-\begin{minipage}[t]{0.14\columnwidth}\raggedright\strut
-SRO
-\strut\end{minipage} &
-\begin{minipage}[t]{0.14\columnwidth}\raggedright\strut
-\strut\end{minipage} &
-\begin{minipage}[t]{0.14\columnwidth}\raggedright\strut
-\strut\end{minipage} &
-\begin{minipage}[t]{0.14\columnwidth}\raggedright\strut
-\strut\end{minipage} &
-\begin{minipage}[t]{0.14\columnwidth}\raggedright\strut
-\strut\end{minipage}\tabularnewline
-\begin{minipage}[t]{0.14\columnwidth}\raggedright\strut
-25
-\strut\end{minipage} &
-\begin{minipage}[t]{0.14\columnwidth}\raggedright\strut
-q
-\strut\end{minipage} &
-\begin{minipage}[t]{0.14\columnwidth}\raggedright\strut
-\strut\end{minipage} &
-\begin{minipage}[t]{0.14\columnwidth}\raggedright\strut
-\strut\end{minipage} &
-\begin{minipage}[t]{0.14\columnwidth}\raggedright\strut
-\strut\end{minipage} &
-\begin{minipage}[t]{0.14\columnwidth}\raggedright\strut
-\strut\end{minipage}\tabularnewline
-\begin{minipage}[t]{0.14\columnwidth}\raggedright\strut
-26
-\strut\end{minipage} &
-\begin{minipage}[t]{0.14\columnwidth}\raggedright\strut
-x
-\strut\end{minipage} &
-\begin{minipage}[t]{0.14\columnwidth}\raggedright\strut
-\strut\end{minipage} &
-\begin{minipage}[t]{0.14\columnwidth}\raggedright\strut
-\strut\end{minipage} &
-\begin{minipage}[t]{0.14\columnwidth}\raggedright\strut
-\strut\end{minipage} &
-\begin{minipage}[t]{0.14\columnwidth}\raggedright\strut
-\strut\end{minipage}\tabularnewline
-\begin{minipage}[t]{0.14\columnwidth}\raggedright\strut
-27
-\strut\end{minipage} &
-\begin{minipage}[t]{0.14\columnwidth}\raggedright\strut
-1
-\strut\end{minipage} &
-\begin{minipage}[t]{0.14\columnwidth}\raggedright\strut
-\strut\end{minipage} &
-\begin{minipage}[t]{0.14\columnwidth}\raggedright\strut
-\strut\end{minipage} &
-\begin{minipage}[t]{0.14\columnwidth}\raggedright\strut
-\strut\end{minipage} &
-\begin{minipage}[t]{0.14\columnwidth}\raggedright\strut
-\strut\end{minipage}\tabularnewline
-\begin{minipage}[t]{0.14\columnwidth}\raggedright\strut
-28
-\strut\end{minipage} &
-\begin{minipage}[t]{0.14\columnwidth}\raggedright\strut
-8
-\strut\end{minipage} &
-\begin{minipage}[t]{0.14\columnwidth}\raggedright\strut
-\strut\end{minipage} &
-\begin{minipage}[t]{0.14\columnwidth}\raggedright\strut
-\strut\end{minipage} &
-\begin{minipage}[t]{0.14\columnwidth}\raggedright\strut
-\strut\end{minipage} &
-\begin{minipage}[t]{0.14\columnwidth}\raggedright\strut
-\strut\end{minipage}\tabularnewline
-\begin{minipage}[t]{0.14\columnwidth}\raggedright\strut
-29
-\strut\end{minipage} &
-\begin{minipage}[t]{0.14\columnwidth}\raggedright\strut
-QF
-\strut\end{minipage} &
-\begin{minipage}[t]{0.14\columnwidth}\raggedright\strut
-\strut\end{minipage} &
-\begin{minipage}[t]{0.14\columnwidth}\raggedright\strut
-\strut\end{minipage} &
-\begin{minipage}[t]{0.14\columnwidth}\raggedright\strut
-\strut\end{minipage} &
-\begin{minipage}[t]{0.14\columnwidth}\raggedright\strut
-\strut\end{minipage}\tabularnewline
-\begin{minipage}[t]{0.14\columnwidth}\raggedright\strut
-30
-\strut\end{minipage} &
-\begin{minipage}[t]{0.14\columnwidth}\raggedright\strut
-SGF
-\strut\end{minipage} &
-\begin{minipage}[t]{0.14\columnwidth}\raggedright\strut
-\strut\end{minipage} &
-\begin{minipage}[t]{0.14\columnwidth}\raggedright\strut
-\strut\end{minipage} &
-\begin{minipage}[t]{0.14\columnwidth}\raggedright\strut
-\strut\end{minipage} &
-\begin{minipage}[t]{0.14\columnwidth}\raggedright\strut
-\strut\end{minipage}\tabularnewline
-\begin{minipage}[t]{0.14\columnwidth}\raggedright\strut
-31
-\strut\end{minipage} &
-\begin{minipage}[t]{0.14\columnwidth}\raggedright\strut
-LGO
-\strut\end{minipage} &
-\begin{minipage}[t]{0.14\columnwidth}\raggedright\strut
-\strut\end{minipage} &
-\begin{minipage}[t]{0.14\columnwidth}\raggedright\strut
-\strut\end{minipage} &
-\begin{minipage}[t]{0.14\columnwidth}\raggedright\strut
-\strut\end{minipage} &
-\begin{minipage}[t]{0.14\columnwidth}\raggedright\strut
-\strut\end{minipage}\tabularnewline
+0     & SRD & y   & i & MT  & m \\
+1     & m   & w   & a & 7   & k \\
+2     & k   & s z & u & \_   & p \\
+3     & y   & l   & e & U   & n \\
+4     & p   & f v & o &     & s \\
+5     & w   & c j & 6 &     & t \\
+6     & n   & r   & U &     & f \\
+7     & LGD & x   & U &     & c \\
+8     & SRO &     &   &     &   \\
+9     & s   &     &   &     &   \\
+10    & t   &     &   &     &   \\
+11    & l   &     &   &     &   \\
+12    & f   &     &   &     &   \\
+13    & c   &     &   &     &   \\
+14    & r   &     &   &     &   \\
+15    & LGO &     &   &     &   \\
+16    & SRO &     &   &     &   \\
+17    & b   &     &   &     &   \\
+18    & g   &     &   &     &   \\
+19    & d   &     &   &     &   \\
+20    & z   &     &   &     &   \\
+21    & j   &     &   &     &   \\
+22    & v   &     &   &     &   \\
+23    & LGO &     &   &     &   \\
+24    & SRO &     &   &     &   \\
+25    & q   &     &   &     &   \\
+26    & x   &     &   &     &   \\
+27    & 1   &     &   &     &   \\
+28    & 8   &     &   &     &   \\
+29    & QD  &     &   &     &   \\
+30    & SGD &     &   &     &   \\
+31    & LGO &     &   &     &   \\
 \bottomrule
-\end{longtable}
+\end{tabular}
 
 \subsection{definitions}
 \begin{description}
   \item [] blank means out of bounds
   \item [U] undefined
   \item [MT] middle tone, no marking
-  \item [QF] quote denote
-  \item [SGF] short grammar word denote
-  \item [SRF] short root word denote
-  \item [LGF] long grammar word denote
+  \item [QD] quote denote
+  \item [SGD] short grammar word denote
+  \item [SRD] short root word denote
+  \item [LGD] long grammar word denote
   \item [SRO] short root word denote overflow
   \item [LGO] long grammar word denote overflow
 \end{description}
 
 \section{Quoted Sort}
 \begin{bytefield}[endianness=little, bitwidth=0.0625\linewidth]{16}
-  \bitheader{0,5,6,7,9,10,11,12,15}\\
-  \bitbox{5}{Quote Denote} & \bitbox{2}{gyenhmus} &
-  \bitbox{3}{Vector Thick} & \bitbox{2}{region} &
-  \bitbox{4}{Sort Denote}  \\
+  \bitheader{0,4,5,6,7,9,10,11,12,15}\\
+  \bitbox{5}{5} & \bitbox{2}{2} & \bitbox{3}{3} & \bitbox{2}{2} & \bitbox{4}{4}  \\
+  \bitbox{5}{QD} & \bitbox{2}{TW} & \bitbox{3}{VT} & \bitbox{2}{R} & \bitbox{4}{SD}  \\
 \end{bytefield}
-\\
-\begin{tabular}{*{5}{|l}|}
-\hline
+
+\subsection{definitions}
+\begin{description}
+  \item [] blank means out of bounds
+  \item [QD] quote denote
+  \item [TW] tidbit width
+  \item [VT] vector thick
+  \item [R] region
+  \item [SD] sort denote
+\end{description}
+
+\begin{tabular}{*{5}{l}}
+\toprule
 \multicolumn{5}{|c|}{16 tidbit} \\
-\hline
+\midrule
 0 \hfill 4 & 5 \hfill 6            & 7 \hfill 9      & 10 \hfill 11  & 12 \hfill
 15 \\
-\hline
+\midrule
 5 tidbit     & 2 tidbit            & 3 tidbit        & 2 tidbit & 4 tidbit \\
-\hline
+\midrule
 quote denote & ingredient thick & vector thick & region & sort denote \\
-\hline \hline
+\midrule
+\midrule
 \multicolumn{5}{|c|}{definitions}\\
-\hline
+\bottomrule
 0            & 1 byte, 8 tidbit   & 1               & literal & glyph \\
 1            & 2 byte, 16 tidbit  & 2               & global  & word \\
 2            & 4 byte, 32 tidbit  & 4               & constant & phrase \\
@@ -694,11 +260,11 @@ C & & & & U \\
 D & & & & U \\
 E & & & & U \\
 F & & & & U \\
-\hline
+\bottomrule
 \end{tabular}
-The quote denote is 5 bits long, leaving 11 bits.
-the next 2 bits is used to indicate bit width of quote ingredient(s),
-the following 3 bits is used to indicate the number of vector ingredient(s),
+The quote denote is 5 bits long, leaving 11 bits.\
+the next 2 bits is used to indicate bit width of quote ingredient (s),
+the following 3 bits is used to indicate the number of vector ingredient (s),
 2 bit for region
 \begin{enumerate}
   \setcounter{enumi}{0}
@@ -710,7 +276,7 @@ the following 3 bits is used to indicate the number of vector ingredient(s),
 4 bits for noun denote:
 \begin{enumerate}
   \setcounter{enumi}{0}
-  \item glyph
+  \item letter
   \item word
   \item phrase
   \item sentence
@@ -722,4 +288,29 @@ the following 3 bits is used to indicate the number of vector ingredient(s),
   \item signed integer
   \item floating point number
 \end{enumerate}
+\section{Denote Syntax}
+For literals
+\begin{description}
+  \item[letter] l \_letter
+  \item[word] word \_word
+  \item[phrase] word \_acc \_phrase
+  \item[sentence] word \_acc \_rea \_independent\_clause
+  \item[text] 
+  \item[function]
+  \item[datastructure]
+  \item[named data type]
+  \item[unsigned integer] one two three \_number (291)
+  \item[signed integer] one two three \_negatory\_quantifier \_num
+(-291)
+  \item[floating\_point\_number] two four \_floating\_point\_num ten \_bas
+one \_neg \_exponential \_num (2.4)
+  \item[fixed\_point\_number] two \_flo one \_num (2.1)
+  \item[rational] one two \_rational three \_num (1/3)
+  \item[decimal number] ten \_bas  one one \_num (11)
+  \item[hexadecimal number] sixteen \_bas eleven \_num (11)
+  \item[vector] world \_word \_and \_voc \_word two sixteen word \_vector (vector of 16
+unsigned shorts each short containing a word, intialized to repeating sequence
+of ``hello \_vocative\_case'')
+\end{description}
+
 \end{document}
