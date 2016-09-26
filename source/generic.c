@@ -145,6 +145,20 @@ int success_verification(cl_int return_number) {
   }
 }
 
+float diagnoseOpenCLnumber(cl_platform_id platform) {
+#define VERSION_LENGTH 64
+  char complete_version[VERSION_LENGTH];
+  size_t realSize = 0;
+  clGetPlatformInfo(platform, CL_PLATFORM_VERSION, VERSION_LENGTH,
+                    &complete_version, &realSize);
+  char version[4];
+  version[3] = 0;
+  memcpy(version, &complete_version[7], 3);
+  // printf("V %s %f\n", version, version_float);
+  float version_float = atof(version);
+  return version_float;
+}
+
 void getInfo() {
   /* get info */
   cl_uint numEntries = 5;
@@ -184,10 +198,17 @@ void getInfo() {
     return_number =
         clGetPlatformInfo(platforms[platform_indexFinger], CL_PLATFORM_VERSION,
                           INFO_LENGTH, &platformInfo, &realSize);
+    char version[4];
+    version[3] = 0;
+    memcpy(version, &platformInfo[7], 3);
+    float version_float = atof(version);
+    printf("V %s %f\n", version, version_float);
+
     if (!(success_verification(return_number))) {
       return;
     }
     printf("version %s \n", platformInfo);
+
     memset(platformInfo, 0, INFO_LENGTH);
     return_number =
         clGetPlatformInfo(platforms[platform_indexFinger], CL_PLATFORM_PROFILE,

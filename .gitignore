@@ -1,6 +1,8 @@
 aclocal.m4
 config.h.in
 autom4te.cache/
+*.html
+*.tmp
 *.o
 *.a
 *.Po

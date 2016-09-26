@@ -138,24 +138,28 @@ sense to supplant or remove some words like proper-names of countries.
 \bitbox{1}{P}  \\
   \bitbox{5}{QD} & \bitbox{2}{TW} & \bitbox{3}{VT} & \bitbox{2}{R} & \bitbox{4}{SD}  \\
 \end{bytefield}
+%\caption{Encoding Table Brief}
+%\label{table:main}
+%\caption*{
+\begin{tabular}{l l}
+Legend
+  C & Initial Consonant\\
+  S & Secondary Consonant\\
+  V & Vowel\\
+  T & Tone\\
+  F & Final Consonant\\
+  SRD & Short Root Denote\\
+  LGD & Long Grammar Denote\\
+  SGD & Short Grammar Denote\\
+  P & (optional) Phrase Parity Check tidbit\\
+  QD & Quote Denote\\
+  TW & tidbit width\\
+  VT & vector thick\\
+  R & region\\
+  SD & sort denote\\
+\end{tabular}
+%}
 
-\subsection{definitions}
-\begin{description}
-  \item [C] Initial Consonant
-  \item [S] Secondary Consonant
-  \item [V] Vowel
-  \item [T] Tone
-  \item [F] Final Consonant
-  \item [SRD] Short Root Denote
-  \item [LGD] Long Grammar Denote
-  \item [SGD] Short Grammar Denote
-  \item [P] (optional) Phrase Parity Check tidbit
-  \item [QD] Quote Denote
-  \item [TW] tidbit width
-  \item [VT] vector thick
-  \item [R] region
-  \item [SD] sort denote
-\end{description}
 
 \section{Table of Values}\label{values}
 
@@ -199,19 +203,22 @@ width & 5   & 3   & 3 & 2   & 3 \\
 31    & LGO &     &   &     &   \\
 \bottomrule
 \end{tabular}
+%\caption{encoding specification}
+%\label{table:specification}
+%\caption*{
+\begin{tabular}{ll}
+ & blank means out of bounds\\
+U & undefined\\
+MT & middle tone, no marking\\
+QD & quote denote\\
+SGD & short grammar word denote\\
+SRD & short root word denote\\
+LGD & long grammar word denote\\
+SRO & short root word denote overflow\\
+LGO & long grammar word denote overflow\\
+\end{tabular}
+%}
 
-\subsection{definitions}
-\begin{description}
-  \item [] blank means out of bounds
-  \item [U] undefined
-  \item [MT] middle tone, no marking
-  \item [QD] quote denote
-  \item [SGD] short grammar word denote
-  \item [SRD] short root word denote
-  \item [LGD] long grammar word denote
-  \item [SRO] short root word denote overflow
-  \item [LGO] long grammar word denote overflow
-\end{description}
 
 \section{Quoted Sort}
 \begin{bytefield}[endianness=little, bitwidth=0.0625\linewidth]{16}

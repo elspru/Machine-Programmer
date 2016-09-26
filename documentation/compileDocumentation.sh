@@ -11,9 +11,10 @@ function file_compile {
     echo "'$verification_text'"
     echo "'$file_verification_text'"
     echo file verification fail
-    htlatex "$stem.tex" "$BASE/web" -utf8 &
+    #htlatex "$stem.tex" "$BASE/web" -utf8 &
     lualatex "$stem.tex"  &
-    pandoc "$stem.tex" --toc -f latex -t markdown_github -s -o "$stem.md" &
+    pandoc "$stem.tex" --toc -f latex -t markdown_github -s \
+-o "$stem.md" &
     wait;
     ebook-convert "$stem.html" "$stem.epub"
     "$BASE/clean.sh"

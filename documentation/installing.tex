@@ -32,6 +32,15 @@ needs autotools to compile
 apt-get install autoconf automake libtool build-essential
 \end{lstlisting}
 
+\subsection{Documentation}
+If you desire to compile the documentation.
+\begin{lstlisting}[language=bash]
+apt-get install texlive-latex-base texlive-latex-recommended texlive-science \
+biber
+\end{lstlisting}
+
+
+
 \subsection{OpenCL}
 The hardest part of compiling this is probably installing OpenCL.
 If you have that down, can simply:
@@ -52,7 +61,7 @@ Portable Open Compute Library or
 POCL has some dependencies on Ubuntu
 \begin{lstlisting}[language=bash]
 apt-get install libhwloc-dev zlib1g-dev libclang-dev libx11-dev ocl-icd-dev
-cmake opencl-headers
+cmake opencl-headers llvm clang
 \end{lstlisting}
 
 Then if you are sure you don't have GPU drivers, as installing this package may

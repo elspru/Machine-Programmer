@@ -39,6 +39,8 @@ int seed_program_establish(const cl_device_id device_id,
                            char *seed_name, cl_program *program,
                            cl_kernel *kernel);
 
+float diagnoseOpenCLnumber(cl_platform_id platform);
+
 #define seed_input_giving(seed, indexFinger, input_long, input)                \
   if (success_verification(                                                    \
           clSetKernelArg(kernel, indexFinger, input_long, input))) {           \

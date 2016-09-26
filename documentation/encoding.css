@@ -1,7 +1,9 @@
  
 /* start css.sty */
+.cmr-6{font-size:50%;}
 .cmtt-12{font-family: monospace;}
 .cmbx-12{ font-weight: bold;}
+.cmmi-12{font-style: italic;}
 p.noindent { text-indent: 0em }
 td p.noindent { text-indent: 0em; margin-top:0em; }
 p.nopar { text-indent: 0em; }
@@ -124,8 +126,18 @@ div.verbatiminput {font-family: monospace; white-space: nowrap; }
 .figure img.graphics {margin-left:10%;}
 .marginpar {width:5em; float:right; text-align:left; margin-left:auto; font-size:85%; text-decoration:none;color:#aaa;} 
 @media screen and (min-width: 46.3em){ .marginpar{margin-right:-6em;} }
-tr#TBL-1-1- td{border-bottom:0.13159em solid}
-tr#TBL-1-3- td{border-bottom:0.08224em solid}
-tr#TBL-1-40- td{border-bottom:0.13159em solid}
+tr#TBL-2-1- td{border-top:0.13159em solid} 
+tr#TBL-2-2- td{border-bottom:0.08224em solid}
+tr#TBL-2-34- td{border-bottom:0.13159em solid}
+tr#TBL-4-1- td{border-top:0.13159em solid} 
+td#TBL-4-1-5{border-left:solid black 0.4pt;border-right:solid black 0.4pt;}
+tr#TBL-4-1- td{border-bottom:0.08224em solid}
+tr#TBL-4-2- td{border-bottom:0.08224em solid}
+tr#TBL-4-3- td{border-bottom:0.08224em solid}
+tr#TBL-4-4- td{border-bottom:0.08224em solid}
+tr#TBL-4-4- td{border-bottom:0.08224em solid}
+td#TBL-4-5-5{border-left:solid black 0.4pt;border-right:solid black 0.4pt;}
+tr#TBL-4-5- td{border-bottom:0.13159em solid}
+tr#TBL-4-21- td{border-bottom:0.13159em solid}
 /* end css.sty */
 

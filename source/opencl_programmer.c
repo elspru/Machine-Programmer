@@ -57,11 +57,13 @@ int main(void) {
 
   getInfo();
 
+  printf("clGetPlatformIDs\n");
   return_number = clGetPlatformIDs(1, &platform_id, &ret_num_platforms);
   if (!success_verification(return_number)) {
     fprintf(stderr, "Failed to get platform id's. %s:%d\n", __FILE__, __LINE__);
     return 1;
   }
+
   return_number = clGetDeviceIDs(platform_id, CL_DEVICE_TYPE_DEFAULT, 1,
                                  &device_id, &ret_num_devices);
   if (!success_verification(return_number)) {
@@ -70,6 +72,7 @@ int main(void) {
     return 1;
   }
 
+  printf("clCreateContext\n");
   context = clCreateContext(NULL, 1, &device_id, NULL, NULL, &return_number);
   if (!success_verification(return_number)) {
     fprintf(stderr, "Failed to create an OpenCL context. %s:%d\n", __FILE__,
@@ -77,6 +80,12 @@ int main(void) {
     return 1;
   }
 
+  printf("clCreateCommandQueue\n");
+  float version_float = diagnoseOpenCLnumber(platform_id);
+  if (version_float >= 2.0) {
+#undef CL_VERSION_2_0
+#pragma GCC diagnostic ignored "-Wdeprecated-declarations"
+  }
 #ifdef CL_VERSION_2_0
   command_waiting_line =
       clCreateCommandQueueWithProperties(context, device_id, 0, &return_number);
@@ -91,6 +100,7 @@ int main(void) {
     return 1;
   }
 
+  printf("seed program establish\n");
   return_number = seed_program_establish(
       device_id, context, "source/parallel/composition_population.cl",
       "composition_population", &program, &kernel);
@@ -106,6 +116,7 @@ int main(void) {
   uint16_t population_byte_size =
       (uint16_t)(program_size * (uint16_t)(population_size * sizeof(v16us)));
 
+  printf("clmemoryObjects\n");
   /*
    * Ask the OpenCL implementation to allocate buffers for the data.
    * We ask the OpenCL implemenation to allocate memory rather than allocating
