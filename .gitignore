@@ -22,7 +22,6 @@ compile
 binary/programmer
 .dirstamp
 .deps
-*pdf
 *dvi
 *log
 source/hello
