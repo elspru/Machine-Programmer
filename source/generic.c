@@ -155,7 +155,7 @@ float diagnoseOpenCLnumber(cl_platform_id platform) {
   version[3] = 0;
   memcpy(version, &complete_version[7], 3);
   // printf("V %s %f\n", version, version_float);
-  float version_float = atof(version);
+  float version_float = (float)atof(version);
   return version_float;
 }
 
@@ -172,20 +172,22 @@ void getInfo() {
     fprintf(stderr, "getPlatformId failed \n");
     return;
   }
-  printf("num_platforms %d\n", num_platforms);
+  printf("###################\n");
+  printf("# of platforms \t%d\n", num_platforms);
   for (; platform_indexFinger < num_platforms; ++platform_indexFinger) {
     printf("#################\n");
     char platformInfo[INFO_LENGTH];
     memset(platformInfo, 0, INFO_LENGTH);
     size_t realSize = 0;
     memset(platformInfo, 0, INFO_LENGTH);
+    printf("Platform #: \t%d\n", platform_indexFinger);
     return_number =
         clGetPlatformInfo(platforms[platform_indexFinger], CL_PLATFORM_VENDOR,
                           INFO_LENGTH, &platformInfo, &realSize);
     if (!(success_verification(return_number))) {
       return;
     }
-    printf("vendor %s \n", platformInfo);
+    printf("vendor: \t%s \n", platformInfo);
     memset(platformInfo, 0, INFO_LENGTH);
     return_number =
         clGetPlatformInfo(platforms[platform_indexFinger], CL_PLATFORM_NAME,
@@ -193,21 +195,16 @@ void getInfo() {
     if (!(success_verification(return_number))) {
       fprintf(stderr, "getPlatformInfo Failed \n");
     }
-    printf("name %s \n", platformInfo);
+    printf("name: \t\t%s \n", platformInfo);
     memset(platformInfo, 0, INFO_LENGTH);
     return_number =
         clGetPlatformInfo(platforms[platform_indexFinger], CL_PLATFORM_VERSION,
                           INFO_LENGTH, &platformInfo, &realSize);
-    char version[4];
-    version[3] = 0;
-    memcpy(version, &platformInfo[7], 3);
-    float version_float = atof(version);
-    printf("V %s %f\n", version, version_float);
 
     if (!(success_verification(return_number))) {
       return;
     }
-    printf("version %s \n", platformInfo);
+    printf("version: \t%s \n", platformInfo);
 
     memset(platformInfo, 0, INFO_LENGTH);
     return_number =
@@ -216,14 +213,14 @@ void getInfo() {
     if (!(success_verification(return_number))) {
       return;
     }
-    printf("profile %s \n", platformInfo);
+    printf("profile: \t%s \n", platformInfo);
     return_number = clGetPlatformInfo(platforms[platform_indexFinger],
                                       CL_PLATFORM_EXTENSIONS, INFO_LENGTH,
                                       &platformInfo, &realSize);
     if (!(success_verification(return_number))) {
       return;
     }
-    printf("extensions %s \n", platformInfo);
+    printf("extensions: \t%s \n", platformInfo);
 
     cl_device_id deviceID[4];
     cl_uint num_devices;
@@ -232,7 +229,7 @@ void getInfo() {
     if (!success_verification(return_number)) {
       return;
     }
-    printf("# of devices %d\n", num_devices);
+    printf("# of devices: \t%d\n", num_devices);
 
     // cl_ulong deviceType[2];
     cl_ulong globalCacheSize = 0;
@@ -249,7 +246,7 @@ void getInfo() {
     char deviceName[256];
     memset(deviceName, 0, 256);
     cl_uint i = 0;
-    printf("\n Platform %d\n", platform_indexFinger);
+    cl_uint dimension_indexFinger = 0;
     for (i = 0; i < num_devices; i++) {
       return_number = clGetDeviceInfo(deviceID[i], CL_DEVICE_NAME, 256,
                                       deviceName, &realSize);
@@ -306,28 +303,33 @@ void getInfo() {
         return;
       }
       return_number =
-          clGetDeviceInfo(deviceID[i], CL_DEVICE_MAX_WORK_ITEM_DIMENSIONS, 25,
+          clGetDeviceInfo(deviceID[i], CL_DEVICE_MAX_WORK_ITEM_SIZES, 25,
                           workItemSizes, &realSize);
       if (!success_verification(return_number)) {
         return;
       }
-      printf("\n DEVICE %d\n", i);
-      printf("name %s \n", deviceName);
-      printf("compute units \t%u \n", (unsigned int)maxComputeUnits);
-      printf("clockFreq \t%u \n", (unsigned int)clockFreq);
-      printf("localMemSize \t%lu \n", (unsigned long)localMemSize);
-      printf("constant buffer size \t%lu \n",
+      printf("#######\nDEVICE: \t%d\n", i);
+      printf("name: \t\t\t%s \n", deviceName);
+      printf("compute units: \t\t%u \n", (unsigned int)maxComputeUnits);
+      printf("clockFreq: \t\t%u MHz \n", (unsigned int)clockFreq);
+      printf("localMemSize: \t\t%lu bytes \n", (unsigned long)localMemSize);
+      printf("constant buffer size: \t%lu bytes \n",
              (unsigned long)constantBufferSize);
-      printf("globalCacheSize %lu \n", (unsigned long)globalCacheSize);
-      printf("globalMemSize \t%lu \n", (unsigned long)globalMemSize);
-      printf("memory allocation size \t %ld \n", (unsigned long)memAllocSize);
-      printf("max work group size %d \n", (unsigned int)workGroupSize);
-      printf("max work item dimensions %d \n",
+      printf("globalCacheSize: \t%lu bytes\n", (unsigned long)globalCacheSize);
+      printf("globalMemSize: \t\t%lu bytes\n", (unsigned long)globalMemSize);
+      printf("memory allocation size:\t%ld bytes\n",
+             (unsigned long)memAllocSize);
+      printf("max work group size:\t%d workers \n",
+             (unsigned int)workGroupSize);
+      printf("max work item dimensions:\t%d \n",
              (unsigned int)workItemDimensions);
-      printf("max work item sizes 0 %lu \n", (unsigned long)workItemSizes[0]);
-      printf("max work item sizes 1 %lu \n", (unsigned long)workItemSizes[1]);
-      printf("max work item sizes 2 %lu \n", (unsigned long)workItemSizes[2]);
-      printf("max work item sizes 3 %lu \n", (unsigned long)workItemSizes[3]);
+      for (dimension_indexFinger = 0;
+           dimension_indexFinger < workItemDimensions;
+           ++dimension_indexFinger) {
+        printf("dimension %X max work item size %lu workers\n",
+               (unsigned int)dimension_indexFinger,
+               (unsigned long)workItemSizes[1]);
+      }
     }
   }
 }

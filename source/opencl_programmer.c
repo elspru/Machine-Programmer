@@ -39,7 +39,9 @@ const uint16_t newspaper_byte_size = NEWSPAPER_LONG * TABLET_BYTE_LONG;
  * \return The exit code of the application, non-zero if a problem occurred.
  */
 
+#define MAX_PLATFORMS 10
 int main(void) {
+  cl_platform_id platform_ids[MAX_PLATFORMS];
   cl_platform_id platform_id = NULL;
   cl_context context = 0;
   cl_command_queue command_waiting_line = 0;
@@ -58,11 +60,15 @@ int main(void) {
   getInfo();
 
   printf("clGetPlatformIDs\n");
-  return_number = clGetPlatformIDs(1, &platform_id, &ret_num_platforms);
+  return_number =
+      clGetPlatformIDs(MAX_PLATFORMS, platform_ids, &ret_num_platforms);
   if (!success_verification(return_number)) {
     fprintf(stderr, "Failed to get platform id's. %s:%d\n", __FILE__, __LINE__);
     return 1;
   }
+  printf("ret_num_platforms %X\n", (unsigned int)ret_num_platforms);
+  printf("ret_num_platforms %X\n", (unsigned int)ret_num_platforms);
+  platform_id = platform_ids[0];
 
   return_number = clGetDeviceIDs(platform_id, CL_DEVICE_TYPE_DEFAULT, 1,
                                  &device_id, &ret_num_devices);
@@ -80,19 +86,16 @@ int main(void) {
     return 1;
   }
 
+#pragma GCC diagnostic ignored "-Wdeprecated-declarations"
   printf("clCreateCommandQueue\n");
   float version_float = diagnoseOpenCLnumber(platform_id);
-  if (version_float >= 2.0) {
-#undef CL_VERSION_2_0
-#pragma GCC diagnostic ignored "-Wdeprecated-declarations"
+  if (version_float >= 2.0f) {
+    command_waiting_line = clCreateCommandQueueWithProperties(
+        context, device_id, 0, &return_number);
+  } else {
+    command_waiting_line =
+        clCreateCommandQueue(context, device_id, 0, &return_number);
   }
-#ifdef CL_VERSION_2_0
-  command_waiting_line =
-      clCreateCommandQueueWithProperties(context, device_id, 0, &return_number);
-#else
-  command_waiting_line =
-      clCreateCommandQueue(context, device_id, 0, &return_number);
-#endif
 
   if (!success_verification(return_number)) {
     fprintf(stderr, "Failed to create the OpenCL command queue. %s:%d\n",
@@ -116,7 +119,7 @@ int main(void) {
   uint16_t population_byte_size =
       (uint16_t)(program_size * (uint16_t)(population_size * sizeof(v16us)));
 
-  printf("clmemoryObjects\n");
+  printf("clMemoryObjects\n");
   /*
    * Ask the OpenCL implementation to allocate buffers for the data.
    * We ask the OpenCL implemenation to allocate memory rather than allocating
@@ -170,6 +173,7 @@ int main(void) {
   }
   /* [Map the buffers to pointers] */
 
+  printf("initializing input\n");
   /* [Initialize the input data] */
 
   const char *activity_atom_text = "plostu drettu gzactu bwistu hwantu hnamtu";
@@ -213,6 +217,7 @@ int main(void) {
    * are undefined.
    * - the OpenCL implementation cannot free the memory when it is finished.
    */
+  printf("unmapping buffers\n");
   if (!success_verification(
           clEnqueueUnmapMemObject(command_waiting_line, memoryObjects[0],
                                   activity_atom, 0, NULL, NULL))) {
@@ -226,20 +231,31 @@ int main(void) {
   /* [Set the kernel arguments] */
   cl_uint input_indexFinger = 0;
 
+  printf("input giving\n");
 #define input_giving(input_long, input)                                        \
   seed_input_giving(kernel, input_indexFinger, input_long, input)
 
+  // printf("input giving %X\n", (unsigned int)input_indexFinger);
   input_giving(sizeof(uint8_t), (uint8_t *)&activity_atom_size);
+  // printf("input giving %X\n", (unsigned int)input_indexFinger);
   input_giving(sizeof(cl_mem), &memoryObjects[0]);
+  // printf("input giving %X\n", (unsigned int)input_indexFinger);
   input_giving(sizeof(uint16_t), (uint16_t *)&program_size);
+  // printf("input giving %X\n", (unsigned int)input_indexFinger);
   input_giving(sizeof(uint8_t), (uint8_t *)&population_size);
+  // printf("input giving %X\n", (unsigned int)input_indexFinger);
 
   input_giving(sizeof(uint64_t), (uint64_t *)&random_seed);
+  // printf("input giving %X\n", (unsigned int)input_indexFinger);
   input_giving(sizeof(uint64_t *), NULL);
+  // printf("input giving %X\n", (unsigned int)input_indexFinger);
   input_giving(sizeof(cl_mem), &memoryObjects[1]);
+  // printf("input giving %X\n", (unsigned int)input_indexFinger);
   input_giving(sizeof(uint8_t *), NULL);
+  // printf("input giving %X\n", (unsigned int)input_indexFinger);
 
   input_giving(sizeof(cl_mem), &memoryObjects[2]);
+  // printf("input giving %X\n", (unsigned int)input_indexFinger);
 
   /* [Set the kernel arguments] */
 
@@ -256,6 +272,7 @@ int main(void) {
   size_t globalWorksize[1] = {population_size};
   size_t localWorksize[1] = {2};
   /* Enqueue the kernel */
+  printf("enqueue kernel\n");
   if (!success_verification(clEnqueueNDRangeKernel(
           command_waiting_line, kernel, 1, NULL, globalWorksize, localWorksize,
           0, NULL, &event))) {
@@ -264,6 +281,7 @@ int main(void) {
   }
   /* [Global work size] */
 
+  printf("wait for clfinish\n");
   /* Wait for kernel execution completion. */
   if (!success_verification(clFinish(command_waiting_line))) {
     fprintf(stderr, "Failed waiting for kernel execution to finish. %s:%d\n",
@@ -274,6 +292,7 @@ int main(void) {
   /* Print the profiling information for the event. */
   // printProfilingInfo(event);
   /* Release the event object. */
+  printf("releasing event\n");
   if (!success_verification(clReleaseEvent(event))) {
     // cleanUpOpenCL(context, command_waiting_line, program, kernel,
     // memoryObjects,
