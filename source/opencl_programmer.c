@@ -23,21 +23,13 @@ contact: streondj at gmail dot com
 #include <stdlib.h>
 #include <string.h>
 
-#include "generic.h"
+#include "genericOpenCL.h"
 #include "seed.h"
+#include "simple-opencl/simpleCL.h"
 #define NEWSPAPER_LONG 0x10
 uint8_t newspaper_indexFinger = 0;
 const uint16_t newspaper_byte_size = NEWSPAPER_LONG * TABLET_BYTE_LONG;
 // v16us newspaper[NEWSPAPER_LONG] = {0};
-
-/**
- * \brief Basic integer array addition implemented in OpenCL.
- * \details A sample which shows how to add two integer arrays and store the
- * result in a third array.
- *          The main calculation code is in an OpenCL kernel which is executed
- * on a GPU device.
- * \return The exit code of the application, non-zero if a problem occurred.
- */
 
 #define MAX_PLATFORMS 10
 int main(void) {
@@ -67,8 +59,7 @@ int main(void) {
     return 1;
   }
   printf("ret_num_platforms %X\n", (unsigned int)ret_num_platforms);
-  printf("ret_num_platforms %X\n", (unsigned int)ret_num_platforms);
-  platform_id = platform_ids[0];
+  platform_id = platform_ids[1];
 
   return_number = clGetDeviceIDs(platform_id, CL_DEVICE_TYPE_DEFAULT, 1,
                                  &device_id, &ret_num_devices);
@@ -86,15 +77,18 @@ int main(void) {
     return 1;
   }
 
-#pragma GCC diagnostic ignored "-Wdeprecated-declarations"
   printf("clCreateCommandQueue\n");
   float version_float = diagnoseOpenCLnumber(platform_id);
+  cl_queue_properties properties[] = {CL_QUEUE_PROFILING_ENABLE};
   if (version_float >= 2.0f) {
     command_waiting_line = clCreateCommandQueueWithProperties(
-        context, device_id, 0, &return_number);
+        context, device_id, properties, &return_number);
   } else {
+#pragma GCC diagnostic push
+#pragma GCC diagnostic ignored "-Wdeprecated-declarations"
     command_waiting_line =
-        clCreateCommandQueue(context, device_id, 0, &return_number);
+        clCreateCommandQueue(context, device_id, *properties, &return_number);
+#pragma GCC diagnostic pop
   }
 
   if (!success_verification(return_number)) {

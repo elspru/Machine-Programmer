@@ -19,7 +19,8 @@
 SUBDIRS = .
 
 noinst_LIBRARIES =  library/library_seed.a \
-                    library/library_generic.a \
+                    library/library_genericOpenCL.a \
+                    library/library_simpleCL.a \
                     library/library_dictionary.a 
                     # library/library_programmer.a  \
                     # library/library_random.a 
@@ -27,8 +28,12 @@ library_library_seed_a_SOURCES = source/seed.c source/seed.h
 library_library_seed_a_CFLAGS = -I$(top_srcdir) $(MY_CFLAGS)\
          -Wstack-usage=256 # data bytes per warp
 
-library_library_generic_a_SOURCES = source/generic.c source/generic.h
-library_library_generic_a_CFLAGS = -I$(top_srcdir) $(MY_CFLAGS)
+library_library_genericOpenCL_a_SOURCES = source/genericOpenCL.c source/genericOpenCL.h
+library_library_genericOpenCL_a_CFLAGS = -I$(top_srcdir) $(MY_CFLAGS)
+      #   -Wstack-usage=256 # data bytes per warp
+
+library_library_simpleCL_a_SOURCES = source/simple-opencl/simpleCL.c source/simple-opencl/simpleCL.h
+library_library_simpleCL_a_CFLAGS = -I$(top_srcdir) $(MY_CFLAGS)
       #   -Wstack-usage=256 # data bytes per warp
 
 library_library_dictionary_a_SOURCES = source/dictionary.c \
@@ -50,19 +55,21 @@ binary_programmer_SOURCES = source/opencl_programmer.c
 binary_programmer_CFLAGS = -I$(top_srcdir) $(MY_CFLAGS) \
          -Wstack-usage=32768  #L1 Cache
 binary_programmer_LDADD = library/library_seed.a \
-          library/library_generic.a library/library_dictionary.a
+          library/library_genericOpenCL.a library/library_dictionary.a\
+          library/library_simpleCL.a
 # library/library_programmer.a library/library_random.a 
 
 binary_encoding_SOURCES = source/encoding.c
 binary_encoding_CFLAGS = -I$(top_srcdir) $(MY_CFLAGS) \
          -Wstack-usage=32768  #L1 Cache
 binary_encoding_LDADD = library/library_seed.a \
-          library/library_generic.a library/library_dictionary.a
+          library/library_genericOpenCL.a library/library_dictionary.a\
+          library/library_simpleCL.a
 
 binary_clprobe_SOURCES = source/clprobe.c
 binary_clprobe_CFLAGS = -I$(top_srcdir) $(MY_CFLAGS) \
          -Wstack-usage=32768  #L1 Cache
-binary_clprobe_LDADD = library/library_generic.a 
+binary_clprobe_LDADD = library/library_genericOpenCL.a 
 
 # TESTS
 #TESTS = check_vm

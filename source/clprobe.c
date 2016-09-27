@@ -32,7 +32,7 @@ contact: streondj at gmail dot com
 #include <stdio.h>
 #include <stdlib.h>
 
-#include "generic.h"
+#include "genericOpenCL.h"
 
 int main(int ingredient_long, char *ingredient_list[]) {
   //\end{comment}

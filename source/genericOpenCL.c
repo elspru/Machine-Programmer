@@ -22,7 +22,7 @@ contact: streondj at gmail dot com
 #include <stdlib.h>
 #include <string.h>
 
-#include "generic.h"
+#include "genericOpenCL.h"
 
 #define MAX_SOURCE_SIZE (0x100000)
 #define MAX_FILENAME_LONG (0xFF)

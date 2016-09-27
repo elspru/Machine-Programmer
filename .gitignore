@@ -22,6 +22,7 @@ config.status
 configure
 compile
 binary/programmer
+binary/*
 .dirstamp
 .deps
 *dvi
