@@ -59,7 +59,7 @@ int main(void) {
     return 1;
   }
   printf("ret_num_platforms %X\n", (unsigned int)ret_num_platforms);
-  platform_id = platform_ids[1];
+  platform_id = platform_ids[0];
 
   return_number = clGetDeviceIDs(platform_id, CL_DEVICE_TYPE_DEFAULT, 1,
                                  &device_id, &ret_num_devices);
@@ -78,6 +78,7 @@ int main(void) {
   }
 
   printf("clCreateCommandQueue\n");
+#ifdef CL_VERSION_2_0
   float version_float = diagnoseOpenCLnumber(platform_id);
   cl_queue_properties properties[] = {CL_QUEUE_PROFILING_ENABLE};
   if (version_float >= 2.0f) {
@@ -86,10 +87,13 @@ int main(void) {
   } else {
 #pragma GCC diagnostic push
 #pragma GCC diagnostic ignored "-Wdeprecated-declarations"
-    command_waiting_line =
-        clCreateCommandQueue(context, device_id, *properties, &return_number);
+#endif
+    command_waiting_line = clCreateCommandQueue(
+        context, device_id, CL_QUEUE_PROFILING_ENABLE, &return_number);
+#ifdef CL_VERSION_2_0
 #pragma GCC diagnostic pop
   }
+#endif
 
   if (!success_verification(return_number)) {
     fprintf(stderr, "Failed to create the OpenCL command queue. %s:%d\n",

@@ -217,7 +217,7 @@ char *_sclLoadProgramSource(const char *filename) {
   stat(filename, &statbuf);
   source = (char *)malloc((size_t)statbuf.st_size + 1);
 
-  if (fread(source, (size_t) statbuf.st_size, 1, fh) != 1) {
+  if (fread(source, (size_t)statbuf.st_size, 1, fh) != 1) {
     fprintf(stderr, "Error on loadProgramSource");
     sclPrintErrorFlags(CL_INVALID_PROGRAM);
   }
@@ -344,7 +344,7 @@ void sclRetainClHard(sclHard hardware) {
 
 //\end{comment}
 //\begin{lstlisting}[language=C]
-//void sclReleaseAllHardware(sclHard *hardList, cl_int found) {
+// void sclReleaseAllHardware(sclHard *hardList, cl_int found) {
 //  //\end{lstlisting}
 //  //\begin{comment}
 //  int i;
@@ -424,23 +424,30 @@ void _sclCreateQueues(sclHard *hardList, cl_int found) {
 #ifdef DEBUG
   cl_int err;
 
+#ifdef CL_VERSION_2_0
   float version_float;
   cl_queue_properties properties[] = {CL_QUEUE_PROFILING_ENABLE};
+  version_float = diagnoseOpenCLnumber(hardList[i].platform);
+#endif
   for (i = 0; i < found; ++i) {
-    version_float = diagnoseOpenCLnumber(hardList[i].platform);
+#ifdef CL_VERSION_2_0
     if (version_float >= 2.0f) {
       hardList[i].queue = clCreateCommandQueueWithProperties(
           hardList[i].context, hardList[i].device, properties, &err);
     } else {
 #pragma GCC diagnostic push
 #pragma GCC diagnostic ignored "-Wdeprecated-declarations"
-      hardList[i].queue = clCreateCommandQueue(
-          hardList[i].context, hardList[i].device, *properties, &err);
+#endif
+      hardList[i].queue =
+          clCreateCommandQueue(hardList[i].context, hardList[i].device,
+                               CL_QUEUE_PROFILING_ENABLE, &err);
+#ifdef CL_VERSION_2_0
 #pragma GCC diagnostic pop
     }
     if (err != CL_SUCCESS) {
       fprintf(stderr, "\nError creating command queue %d", i);
     }
+#endif
   }
 #else
   for (i = 0; i < found; ++i) {
@@ -501,7 +508,8 @@ void _sclSmartCreateContexts(sclHard *hardList, cl_int found) {
       deviceList[j] = groups[i][j]->device;
     }
 #ifdef DEBUG
-    context = clCreateContext(0, (cl_uint) groupSizes[i], deviceList, NULL, NULL, &err);
+    context = clCreateContext(0, (cl_uint)groupSizes[i], deviceList, NULL, NULL,
+                              &err);
     if (err != CL_SUCCESS) {
       fprintf(stderr, "\nError creating context on device %d", i);
     }
@@ -551,8 +559,8 @@ int _sclGetDeviceType(cl_device_id device) {
   return out;
 }
 
-void sclGetFastestDevice(const sclHard *hardList, const cl_int found, sclHard
-*fastest) {
+void sclGetFastestDevice(const sclHard *hardList, const cl_int found,
+                         sclHard *fastest) {
   int i, maxCpUnits = 0, device = 0;
 
   for (i = 0; i < found; ++i) {
@@ -569,7 +577,7 @@ void sclGetFastestDevice(const sclHard *hardList, const cl_int found, sclHard
 
 //\end{comment}
 //\begin{lstlisting}[language=C]
-//void sclGetAllHardware(int *found, sclHard *hardwareList) {
+// void sclGetAllHardware(int *found, sclHard *hardwareList) {
 //  //\end{lstlisting}
 //  //\begin{comment}
 //
@@ -637,7 +645,7 @@ void sclGetFastestDevice(const sclHard *hardList, const cl_int found, sclHard
 //}
 
 void sclGetHardwareByType(const cl_device_type device_type, const int iDevice,
-                             int *found, sclHard *Hardware) {
+                          int *found, sclHard *Hardware) {
   cl_uint i;
   sclHard hardware;
   cl_int err;
@@ -670,9 +678,7 @@ void sclGetHardwareByType(const cl_device_type device_type, const int iDevice,
 
       if (nDevices > 0) {
         // device_type found, return it
-        cl_queue_properties properties[] = {CL_QUEUE_PROFILING_ENABLE};
         hardware.platform = platforms[i];
-        float version_float = diagnoseOpenCLnumber(hardware.platform);
         hardware.device = devices[i][(iDevice < (int)nDevices ? iDevice : 0)];
         hardware.context =
             clCreateContext(0, 1, &hardware.device, NULL, NULL, &err);
@@ -680,16 +686,23 @@ void sclGetHardwareByType(const cl_device_type device_type, const int iDevice,
           fprintf(stderr, "\nError 3");
           sclPrintErrorFlags(err);
         };
+#ifdef CL_VERSION_2_0
+        float version_float = diagnoseOpenCLnumber(hardware.platform);
         if (version_float >= 2.0f) {
+          cl_queue_properties properties[] = {CL_QUEUE_PROFILING_ENABLE};
           hardware.queue = clCreateCommandQueueWithProperties(
               hardware.context, hardware.device, properties, &err);
         } else {
 #pragma GCC diagnostic push
 #pragma GCC diagnostic ignored "-Wdeprecated-declarations"
-          hardware.queue = clCreateCommandQueue(
-              hardware.context, hardware.device, *properties, &err);
+#endif
+          hardware.queue =
+              clCreateCommandQueue(hardware.context, hardware.device,
+                                   CL_QUEUE_PROFILING_ENABLE, &err);
+#ifdef CL_VERSION_2_0
 #pragma GCC diagnostic pop
         }
+#endif
         if (err != CL_SUCCESS) {
           fprintf(stderr, "\nError 3.1");
           sclPrintErrorFlags(err);
@@ -737,16 +750,16 @@ void sclGetCPUHardware(const int iDevice, int *found, sclHard *CPUHardware) {
   sclGetHardwareByType(CL_DEVICE_TYPE_CPU, iDevice, found, CPUHardware);
 }
 
-void sclGetAcceleratorHardware(const int iDevice, int *found, sclHard
-*AcceleratorHardware) {
+void sclGetAcceleratorHardware(const int iDevice, int *found,
+                               sclHard *AcceleratorHardware) {
   sclGetHardwareByType(CL_DEVICE_TYPE_ACCELERATOR, iDevice, found,
-AcceleratorHardware);
+                       AcceleratorHardware);
 }
 
 //\end{comment}
 //\begin{lstlisting}[language=C]
 void sclGetCLSoftware(const char *kernel_file, const char *kernel_name,
-                         const sclHard hardware, sclSoft *Software) {
+                      const sclHard hardware, sclSoft *Software) {
   //\end{lstlisting}
   //\begin{comment}
   sclSoft software;
@@ -784,7 +797,8 @@ cl_mem sclMalloc(sclHard hardware, cl_int mode, size_t size) {
 #ifdef DEBUG
   cl_int err;
 
-  buffer = clCreateBuffer(hardware.context, (cl_mem_flags) mode, size, NULL, &err);
+  buffer =
+      clCreateBuffer(hardware.context, (cl_mem_flags)mode, size, NULL, &err);
   if (err != CL_SUCCESS) {
     fprintf(stderr, "\nclMalloc Error\n");
     sclPrintErrorFlags(err);
@@ -891,7 +905,7 @@ void sclSetKernelArg(sclSoft software, int argnum, size_t typeSize,
 #ifdef DEBUG
   cl_int err;
 
-  err = clSetKernelArg(software.kernel, (cl_uint) argnum, typeSize, argument);
+  err = clSetKernelArg(software.kernel, (cl_uint)argnum, typeSize, argument);
   if (err != CL_SUCCESS) {
     fprintf(stderr, "\nError clSetKernelArg number %d\n", argnum);
     sclPrintErrorFlags(err);
