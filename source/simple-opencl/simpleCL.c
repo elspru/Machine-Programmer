@@ -420,7 +420,7 @@ void sclPrintHardwareStatus(sclHard hardware) {
 
 void _sclCreateQueues(sclHard *hardList, cl_int found) {
 
-  int i;
+  int i = 0;
 #ifdef DEBUG
   cl_int err;
 
