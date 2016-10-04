@@ -33,8 +33,8 @@ const uint16_t newspaper_byte_size = NEWSPAPER_LONG * TABLET_BYTE_LONG;
 
 #define MAX_PLATFORMS 10
 int main(void) {
-  cl_platform_id platform_ids[MAX_PLATFORMS];
-  cl_platform_id platform_id = NULL;
+  // cl_platform_id platform_ids[MAX_PLATFORMS];
+  // cl_platform_id platform_id = NULL;
   cl_context context = 0;
   cl_command_queue command_waiting_line = 0;
   cl_program program = 0;
@@ -42,70 +42,33 @@ int main(void) {
   cl_kernel kernel = 0;
   // int numberOfMemoryObjects = 3;
   cl_mem memoryObjects[3] = {0, 0, 0};
-  cl_uint ret_num_devices;
+  //  cl_uint ret_num_devices;
   cl_int errorNumber;
   cl_int return_number;
-  cl_uint ret_num_platforms;
+  //  cl_uint ret_num_platforms;
 
   // printf("file: %s :file", source_str);
 
   getInfo();
 
-  printf("clGetPlatformIDs\n");
-  return_number =
-      clGetPlatformIDs(MAX_PLATFORMS, platform_ids, &ret_num_platforms);
-  if (!success_verification(return_number)) {
-    fprintf(stderr, "Failed to get platform id's. %s:%d\n", __FILE__, __LINE__);
-    return 1;
-  }
-  printf("ret_num_platforms %X\n", (unsigned int)ret_num_platforms);
-  platform_id = platform_ids[0];
-
-  return_number = clGetDeviceIDs(platform_id, CL_DEVICE_TYPE_DEFAULT, 1,
-                                 &device_id, &ret_num_devices);
-  if (!success_verification(return_number)) {
-    fprintf(stderr, "Failed to get OpenCL devices. %s:%d\n", __FILE__,
-            __LINE__);
-    return 1;
-  }
-
-  printf("clCreateContext\n");
-  context = clCreateContext(NULL, 1, &device_id, NULL, NULL, &return_number);
-  if (!success_verification(return_number)) {
-    fprintf(stderr, "Failed to create an OpenCL context. %s:%d\n", __FILE__,
-            __LINE__);
-    return 1;
-  }
-
-  printf("clCreateCommandQueue\n");
-#ifdef CL_VERSION_2_0
-  float version_float = diagnoseOpenCLnumber(platform_id);
-  cl_queue_properties properties[] = {CL_QUEUE_PROFILING_ENABLE};
-  if (version_float >= 2.0f) {
-    command_waiting_line = clCreateCommandQueueWithProperties(
-        context, device_id, properties, &return_number);
-  } else {
-#pragma GCC diagnostic push
-#pragma GCC diagnostic ignored "-Wdeprecated-declarations"
-#endif
-    command_waiting_line = clCreateCommandQueue(
-        context, device_id, CL_QUEUE_PROFILING_ENABLE, &return_number);
-#ifdef CL_VERSION_2_0
-#pragma GCC diagnostic pop
-  }
-#endif
-
-  if (!success_verification(return_number)) {
-    fprintf(stderr, "Failed to create the OpenCL command queue. %s:%d\n",
-            __FILE__, __LINE__);
-    return 1;
-  }
+  sclHard hardware;
+  sclSoft software;
+  sclGetHardware(0, &hardware);
+  context = hardware.context;
+  command_waiting_line = hardware.queue;
+  device_id = hardware.device;
 
   printf("seed program establish\n");
-  return_number = seed_program_establish(
-      device_id, context, "source/parallel/composition_population.cl",
-      "composition_population", &program, &kernel);
-  success_verification(return_number);
+  // return_number = seed_program_establish(
+  //    device_id, context, "source/parallel/composition_population.cl",
+  //    "composition_population", &program, &kernel);
+  // success_verification(return_number);
+
+  sclGetCLSoftware("source/parallel/composition_population.cl",
+                   "composition_population", hardware, &software);
+  program = software.program;
+  kernel = software.kernel;
+
   /* [Setup memory] */
   /* Number of elements in the arrays of input and output data. */
 

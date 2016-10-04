@@ -188,7 +188,7 @@ void sclPrintErrorFlags(cl_int flag) {
   }
 }
 
-float diagnoseOpenCLnumber(cl_platform_id platform) {
+float sclDiagnoseOpenCLnumber(cl_platform_id platform) {
 #define VERSION_LENGTH 64
   char complete_version[VERSION_LENGTH];
   size_t realSize = 0;
@@ -210,8 +210,9 @@ char *_sclLoadProgramSource(const char *filename) {
   fh = fopen(filename, "r");
   if (fh == NULL) {
     fprintf(stderr, "Error on loadProgramSource");
+    fprintf(stderr, " %s:%d \n", __FILE__, __LINE__);
     sclPrintErrorFlags(CL_INVALID_PROGRAM);
-    return 0;
+    exit(-1);
   }
 
   stat(filename, &statbuf);
@@ -219,7 +220,9 @@ char *_sclLoadProgramSource(const char *filename) {
 
   if (fread(source, (size_t)statbuf.st_size, 1, fh) != 1) {
     fprintf(stderr, "Error on loadProgramSource");
+    fprintf(stderr, " %s:%d \n", __FILE__, __LINE__);
     sclPrintErrorFlags(CL_INVALID_PROGRAM);
+    exit(-1);
   }
 
   source[statbuf.st_size] = '\0';
@@ -238,7 +241,9 @@ cl_program _sclCreateProgram(char *program_source, cl_context context) {
       context, 1, (const char **)&program_source, NULL, &err);
   if (err != CL_SUCCESS) {
     fprintf(stderr, "Error on createProgram");
+    fprintf(stderr, " %s:%d \n", __FILE__, __LINE__);
     sclPrintErrorFlags(err);
+    exit(-1);
   }
 #else
   program = clCreateProgramWithSource(
@@ -257,11 +262,13 @@ void _sclBuildProgram(cl_program program, cl_device_id devices,
   err = clBuildProgram(program, 0, NULL, NULL, NULL, NULL);
   if (err != CL_SUCCESS) {
     fprintf(stderr, "Error on buildProgram ");
+    fprintf(stderr, " %s:%d \n", __FILE__, __LINE__);
     sclPrintErrorFlags(err);
     fprintf(stderr, "\nRequestingInfo\n");
     clGetProgramBuildInfo(program, devices, CL_PROGRAM_BUILD_LOG, 4096, build_c,
                           NULL);
     fprintf(stderr, "Build Log for %s_program:\n%s\n", pName, build_c);
+    exit(-1);
   }
 #else
   clBuildProgram(program, 0, NULL, NULL, NULL, NULL);
@@ -276,7 +283,9 @@ cl_kernel _sclCreateKernel(sclSoft software) {
   kernel = clCreateKernel(software.program, software.kernelName, &err);
   if (err != CL_SUCCESS) {
     fprintf(stderr, "Error on createKernel %s ", software.kernelName);
+    fprintf(stderr, " %s:%d \n", __FILE__, __LINE__);
     sclPrintErrorFlags(err);
+    exit(-1);
   }
 #else
   kernel = clCreateKernel(software.program, software.kernelName, NULL);
@@ -296,7 +305,9 @@ cl_event sclLaunchKernel(sclHard hardware, sclSoft software,
                                &myEvent);
   if (err != CL_SUCCESS) {
     fprintf(stderr, "\nError on launchKernel %s", software.kernelName);
+    fprintf(stderr, " %s:%d \n", __FILE__, __LINE__);
     sclPrintErrorFlags(err);
+    exit(-1);
   }
 #else
   clEnqueueNDRangeKernel(hardware.queue, software.kernel, 2, NULL,
@@ -317,7 +328,9 @@ cl_event sclEnqueueKernel(sclHard hardware, sclSoft software,
                                &myEvent);
   if (err != CL_SUCCESS) {
     fprintf(stderr, "\nError on launchKernel %s", software.kernelName);
+    fprintf(stderr, " %s:%d \n", __FILE__, __LINE__);
     sclPrintErrorFlags(err);
+    exit(-1);
   }
 #else
   clEnqueueNDRangeKernel(hardware.queue, software.kernel, 2, NULL,
@@ -369,7 +382,9 @@ void sclReleaseMemObject(cl_mem object) {
   err = clReleaseMemObject(object);
   if (err != CL_SUCCESS) {
     fprintf(stderr, "\nError on sclReleaseMemObject");
+    fprintf(stderr, " %s:%d \n", __FILE__, __LINE__);
     sclPrintErrorFlags(err);
+    exit(-1);
   }
 }
 
@@ -427,7 +442,7 @@ void _sclCreateQueues(sclHard *hardList, cl_int found) {
 #ifdef CL_VERSION_2_0
   float version_float;
   cl_queue_properties properties[] = {CL_QUEUE_PROFILING_ENABLE};
-  version_float = diagnoseOpenCLnumber(hardList[i].platform);
+  version_float = sclDiagnoseOpenCLnumber(hardList[i].platform);
 #endif
   for (i = 0; i < found; ++i) {
 #ifdef CL_VERSION_2_0
@@ -600,7 +615,9 @@ void sclGetFastestDevice(const sclHard *hardList, const cl_int found,
 //                           &nDevices);
 //      if (err != CL_SUCCESS) {
 //        fprintf(stderr, "\nError clGetDeviceIDs");
+//          fprintf(stderr, " %s:%d \n", __FILE__, __LINE__);
 //        sclPrintErrorFlags(err);
+//        exit(-1);
 //      } else {
 //        n_found = (n_found + (int) nDevices);
 //      }
@@ -616,6 +633,7 @@ void sclGetFastestDevice(const sclHard *hardList, const cl_int found,
 //                           &nDevices);
 //      if (err != CL_SUCCESS) {
 //        fprintf(stderr, "\nError clGetDeviceIDs");
+//          fprintf(stderr, " %s:%d \n", __FILE__, __LINE__);
 //        sclPrintErrorFlags(err);
 //      } else {
 //        /* save every available devices on each platform */
@@ -648,6 +666,7 @@ void sclGetHardwareByType(const cl_device_type device_type, const int iDevice,
                           int *found, sclHard *Hardware) {
   cl_uint i;
   sclHard hardware;
+  hardware.platform = NULL;
   cl_int err;
   cl_uint nPlatforms, nDevices = 0;
   cl_char vendor_name[1024];
@@ -660,7 +679,7 @@ void sclGetHardwareByType(const cl_device_type device_type, const int iDevice,
 
   /*Get platform info ###################################################### */
   err = clGetPlatformIDs(NB_MAX_PLATFORMS, platforms, &nPlatforms);
-  /*fprintf( stdout, "\n Number of platforms found: %d \n",nPlatforms);*/
+  // fprintf( stdout, "\n Number of platforms found: %d \n",nPlatforms);
   /* ###################################################### */
 
   if (nPlatforms == 0) {
@@ -668,12 +687,19 @@ void sclGetHardwareByType(const cl_device_type device_type, const int iDevice,
     *found = 0;
   } else {
     for (i = 0; i < nPlatforms; ++i) {
+      if (hardware.platform != NULL) {
+        i = nPlatforms;
+        break;
+      }
       err =
           clGetDeviceIDs(platforms[i], device_type, NB_MAX_DEVICES_PER_PLATFORM,
                          &devices[i][0], &nDevices);
       if (err != CL_SUCCESS) {
         fprintf(stderr, "\nError clGetDeviceIDs");
+        fprintf(stderr, " %s:%d \n", __FILE__, __LINE__);
         sclPrintErrorFlags(err);
+        break;
+        exit(-1);
       }
 
       if (nDevices > 0) {
@@ -685,13 +711,22 @@ void sclGetHardwareByType(const cl_device_type device_type, const int iDevice,
         if (err != CL_SUCCESS) {
           fprintf(stderr, "\nError 3");
           sclPrintErrorFlags(err);
+          fprintf(stderr, " %s:%d \n", __FILE__, __LINE__);
+          exit(-1);
         };
 #ifdef CL_VERSION_2_0
-        float version_float = diagnoseOpenCLnumber(hardware.platform);
+        float version_float = sclDiagnoseOpenCLnumber(hardware.platform);
         if (version_float >= 2.0f) {
-          cl_queue_properties properties[] = {CL_QUEUE_PROFILING_ENABLE};
+          // const cl_queue_properties properties[] =
+          // {CL_QUEUE_PROFILING_ENABLE};
           hardware.queue = clCreateCommandQueueWithProperties(
-              hardware.context, hardware.device, properties, &err);
+              hardware.context, hardware.device, NULL, &err);
+          if (err != CL_SUCCESS) {
+            fprintf(stderr, "\nError 3.1");
+            fprintf(stderr, " %s:%d \n", __FILE__, __LINE__);
+            sclPrintErrorFlags(err);
+            exit(-1);
+          };
         } else {
 #pragma GCC diagnostic push
 #pragma GCC diagnostic ignored "-Wdeprecated-declarations"
@@ -705,7 +740,9 @@ void sclGetHardwareByType(const cl_device_type device_type, const int iDevice,
 #endif
         if (err != CL_SUCCESS) {
           fprintf(stderr, "\nError 3.1");
+          fprintf(stderr, " %s:%d \n", __FILE__, __LINE__);
           sclPrintErrorFlags(err);
+          exit(-1);
         };
         /* deviceType 0 = GPU | deviceType 1 = CPU | deviceType 2 = Accelerator
          * | deviceType 3 = other */
@@ -742,12 +779,17 @@ void sclGetHardwareByType(const cl_device_type device_type, const int iDevice,
   *Hardware = hardware;
 }
 
-void sclGetGPUHardware(const int iDevice, int *found, sclHard *GPUHardware) {
-  sclGetHardwareByType(CL_DEVICE_TYPE_GPU, iDevice, found, GPUHardware);
+void sclGetHardware(const int iDevice, sclHard *CPUHardware) {
+  int found = 0;
+  sclGetHardwareByType(CL_DEVICE_TYPE_ALL, iDevice, &found, CPUHardware);
 }
 
 void sclGetCPUHardware(const int iDevice, int *found, sclHard *CPUHardware) {
   sclGetHardwareByType(CL_DEVICE_TYPE_CPU, iDevice, found, CPUHardware);
+}
+
+void sclGetGPUHardware(const int iDevice, int *found, sclHard *GPUHardware) {
+  sclGetHardwareByType(CL_DEVICE_TYPE_GPU, iDevice, found, GPUHardware);
 }
 
 void sclGetAcceleratorHardware(const int iDevice, int *found,
@@ -821,12 +863,16 @@ cl_mem sclMallocWrite(sclHard hardware, cl_int mode, size_t size,
 
   if (buffer == NULL) {
     fprintf(stderr, "\nclMallocWrite Error on clCreateBuffer\n");
+    fprintf(stderr, " %s:%d \n", __FILE__, __LINE__);
+    exit(-1);
   }
   err = clEnqueueWriteBuffer(hardware.queue, buffer, CL_TRUE, 0, size,
                              hostPointer, 0, NULL, NULL);
   if (err != CL_SUCCESS) {
     fprintf(stderr, "\nclMallocWrite Error on clEnqueueWriteBuffer\n");
+    fprintf(stderr, " %s:%d \n", __FILE__, __LINE__);
     sclPrintErrorFlags(err);
+    exit(-1);
   }
 
 #else
@@ -875,7 +921,9 @@ cl_int sclFinish(sclHard hardware) {
   err = clFinish(hardware.queue);
   if (err != CL_SUCCESS) {
     fprintf(stderr, "\nError clFinish\n");
+    fprintf(stderr, " %s:%d \n", __FILE__, __LINE__);
     sclPrintErrorFlags(err);
+    exit(-1);
   }
 #else
   clFinish(hardware.queue);
@@ -908,7 +956,9 @@ void sclSetKernelArg(sclSoft software, int argnum, size_t typeSize,
   err = clSetKernelArg(software.kernel, (cl_uint)argnum, typeSize, argument);
   if (err != CL_SUCCESS) {
     fprintf(stderr, "\nError clSetKernelArg number %d\n", argnum);
+    fprintf(stderr, " %s:%d \n", __FILE__, __LINE__);
     sclPrintErrorFlags(err);
+    exit(-1);
   }
 #else
   clSetKernelArg(software.kernel, argnum, typeSize, argument);
