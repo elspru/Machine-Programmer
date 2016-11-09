@@ -38,7 +38,7 @@ int main(void) {
   cl_context context = 0;
   cl_command_queue command_waiting_line = 0;
   cl_program program = 0;
-  cl_device_id device_id = 0;
+  // cl_device_id device_id = 0;
   cl_kernel kernel = 0;
   // int numberOfMemoryObjects = 3;
   cl_mem memoryObjects[3] = {0, 0, 0};
@@ -56,7 +56,7 @@ int main(void) {
   sclGetHardware(0, &hardware);
   context = hardware.context;
   command_waiting_line = hardware.queue;
-  device_id = hardware.device;
+  // device_id = hardware.device;
 
   printf("seed program establish\n");
   // return_number = seed_program_establish(
@@ -159,8 +159,10 @@ int main(void) {
   // uint16_t champion_worth = 0;
   // v16us program_;
   // v16us population[4];
+  uint16_t quiz_independentClause_list_byte_size =
+      (uint16_t)(quiz_independentClause_list_size * TABLET_LONG * WORD_THICK);
   memset(quiz_independentClause_list, 0,
-         (size_t)(quiz_independentClause_list_size * TABLET_LONG * WORD_THICK));
+         (size_t)(quiz_independentClause_list_byte_size));
   text_encoding(activity_atom_text_size, activity_atom_text,
                 &activity_atom_size, activity_atom, &text_remainder);
   assert(text_remainder == 0);
@@ -326,9 +328,23 @@ int main(void) {
   return_number = clReleaseProgram(program);
 
   printf("loading quiz population \n");
-  return_number = seed_program_establish(device_id, context,
-                                         "source/parallel/quiz_population.cl",
-                                         "quiz_population", &program, &kernel);
+  // return_number = seed_program_establish(device_id, context,
+  //                                       "source/parallel/quiz_population.cl",
+  //                                       "quiz_population", &program,
+  //                                       &kernel);
+
+  sclGetCLSoftware("source/parallel/quiz_population.cl", "quiz_population",
+                   hardware, &software);
+
+  uint8_t champion = 0;
+  uint16_t champion_worth = 0;
+  sclManageArgsLaunchKernel(
+      hardware, software, NULL, NULL, "%a %r %a %a %w %w", sizeof(uint16_t),
+      quiz_independentClause_list_size, &quiz_independentClause_list_byte_size,
+      quiz_independentClause_list, sizeof(uint16_t), program_size,
+      sizeof(uint8_t), population_size, sizeof(uint8_t), &champion,
+      sizeof(uint16_t), &champion_worth);
+
   success_verification(return_number);
   /* randomAccessMemory _nom variable _ben  establish _rea */
   /* variable _nom assigned _rea */

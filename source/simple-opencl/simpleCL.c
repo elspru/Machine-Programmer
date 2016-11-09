@@ -950,10 +950,12 @@ cl_ulong sclGetEventTime(sclHard hardware, cl_event event) {
 
 void sclSetKernelArg(sclSoft software, int argnum, size_t typeSize,
                      void *argument) {
+//  printf("SSKA %X %X \n", (unsigned int)typeSize, (unsigned int)argument);
 #ifdef DEBUG
   cl_int err;
 
   err = clSetKernelArg(software.kernel, (cl_uint)argnum, typeSize, argument);
+  printf("SSKA done");
   if (err != CL_SUCCESS) {
     fprintf(stderr, "\nError clSetKernelArg number %d\n", argnum);
     fprintf(stderr, " %s:%d \n", __FILE__, __LINE__);
@@ -1061,6 +1063,24 @@ cl_event sclSetArgsEnqueueKernel(sclHard hardware, sclSoft software,
   return event;
 }
 
+cl_event sclPlayKernel(sclHard hardware, sclSoft software,
+                       size_t *global_work_size, size_t *local_work_size,
+                       const char *sizesValues, ...) {
+  va_list argList;
+  cl_event event;
+
+  va_start(argList, sizesValues);
+
+  _sclVSetKernelArgs(software, sizesValues, argList);
+
+  va_end(argList);
+
+  event =
+      sclEnqueueKernel(hardware, software, global_work_size, local_work_size);
+
+  return event;
+}
+
 //\end{comment}
 //\begin{lstlisting}[language=C]
 cl_event sclManageArgsLaunchKernel(sclHard hardware, sclSoft software,
@@ -1081,12 +1101,14 @@ cl_event sclManageArgsLaunchKernel(sclHard hardware, sclSoft software,
   typedef unsigned char *puchar;
   puchar outArgs[30];
 
+  printf("starting sclManageArgsLaunchKernel\n");
   va_start(argList, sizesValues);
 
   //\end{comment}
   //\subsection{kernel argument assignement sizeTypes string's letter meanings}
   //\begin{lstlisting}[language=C]
   for (p = sizesValues; *p != '\0'; p++) {
+    printf("looping sclManageArgsLaunchKernel %s\n", p);
     if (*p == '%') {
       switch (*++p) {
       case 'a': /* Single value non pointer argument: byte length, array pointer
@@ -1095,7 +1117,9 @@ cl_event sclManageArgsLaunchKernel(sclHard hardware, sclSoft software,
         //\begin{comment}
         actual_size = va_arg(argList, size_t);
         argument = va_arg(argList, void *);
+        printf("sclManageArgsLaunchKernel a\n");
         sclSetKernelArg(software, argCount, actual_size, argument);
+        printf("sclManageArgsLaunchKernel a done\n");
         argCount++;
         break;
 
