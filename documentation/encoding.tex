@@ -136,7 +136,7 @@ sense to supplant or remove some words like proper-names of countries.
   \bitbox{3}{LGD} & \bitbox{5}{C} & \bitbox{3}{S} &\bitbox{3}{V} & \bitbox{2}{T}  \\
   \bitbox{5}{SGD} & \bitbox{5}{C} & \bitbox{3}{V} & \bitbox{2}{T} &
 \bitbox{1}{P}  \\
-  \bitbox{5}{QD} & \bitbox{2}{TW} & \bitbox{3}{VT} & \bitbox{2}{R} & \bitbox{4}{SD}  \\
+  \bitbox{5}{QD} & \bitbox{11}{QS} \\
 \end{bytefield}
 %\caption{Encoding Table Brief}
 %\label{table:main}
@@ -153,10 +153,7 @@ Legend
   SGD & Short Grammar Denote\\
   P & (optional) Phrase Parity Check tidbit\\
   QD & Quote Denote\\
-  TW & tidbit width\\
-  VT & vector thick\\
-  R & region\\
-  SD & sort denote\\
+  QS & Quote Sort~\ref{quotesort} \\
 \end{tabular}
 %}
 
@@ -220,20 +217,22 @@ LGO & long grammar word denote overflow\\
 %}
 
 
-\section{Quoted Sort}
+\section{Quote Sort}
+\label{quotesort}
 \begin{bytefield}[endianness=little, bitwidth=0.0625\linewidth]{16}
-  \bitheader{0,4,5,6,7,9,10,11,12,15}\\
-  \bitbox{5}{5} & \bitbox{2}{2} & \bitbox{3}{3} & \bitbox{2}{2} & \bitbox{4}{4}  \\
-  \bitbox{5}{QD} & \bitbox{2}{TW} & \bitbox{3}{VT} & \bitbox{2}{R} & \bitbox{4}{SD}  \\
+  \bitheader{0,5,7,10,12,15}\\
+  \bitbox{5}{} & \bitbox{11}{QS} \\
+  \bitbox{5}{5} & \bitbox{3}{3} & \bitbox{2}{2} & \bitbox{2}{2}  & \bitbox{4}{4}  \\
+  \bitbox{5}{QD} & \bitbox{3}{VT} & \bitbox{2}{R} & \bitbox{2}{TW}  & \bitbox{4}{SD}  \\
 \end{bytefield}
 
 \subsection{definitions}
 \begin{description}
-  \item [] blank means out of bounds
+  \item [QS] quote sort 
   \item [QD] quote denote
-  \item [TW] tidbit width
   \item [VT] vector thick
   \item [R] region
+  \item [ST] scalar thick
   \item [SD] sort denote
 \end{description}
 
@@ -319,5 +318,90 @@ one \_neg \_exponential \_num (2.4)
 unsigned shorts each short containing a word, intialized to repeating sequence
 of ``hello \_vocative\_case'')
 \end{description}
+
+\section{Independent-Clause Code Name}
+
+Each independent-clause can have a code name to help find it's program.
+
+There is a mix of grammatical-cases, sorts and a verb in each independent clause. 
+For matching with modern computer processing, a 64bit thickness is desired,
+though a 128 bit thickness may be possible.\ 
+
+The grammatical cases can have a table to make it easy to identify them. 
+
+\begin{table}
+\begin{tabular}{l l l l l l}
+      & 0 source-case & 1 location-case & 2 destination-case & 3 way-case \\
+0 base  & nominative-case & accusative-case & dative-case & instrumental-case \\
+1 space-context (x) & ablative-case  & locative-case & allative-case &
+prosecutive-case \\
+2 genitive-case & possessive-case & relational-case & possessed-case  &
+descriptive-case \\
+3 discourse-context & initiative-case & vocative-case & terminative-case &
+topic-case \\
+4 social-context & causal-case & comitative-case & benefactive-case &
+evidential-case \\
+5 surface-context (y) & delative-case & superessive-case & superlative-case &
+vialis-case \\
+6 interior-context (z) & elative-case & inessive-case & illative-case &
+perlative-case  \\
+7 time-context (t) & initial-time & temporal-case & final-time & during-time \\
+\end{tabular}
+\caption{grammtical-case number system}
+\end{table}
+
+five bits to designate the case, and 11 bits for the quote type. 
+
+The context will henceforward be referred to as scene, and the other half being
+the posture. 
+
+\medskip
+
+\begin{table}
+\begin{bytefield}[endianness=little, bitwidth=0.0625\linewidth]{16}
+  \bitheader{0,2,3,4,5,6,7,9,10,11,12,15}\\
+  \bitbox{2}{2} & \bitbox{3}{3} & \bitbox{2}{2} & \bitbox{3}{3} & \bitbox{2}{2} & \bitbox{4}{4}  \\
+  \bitbox{2}{P} & \bitbox{3}{S} & \bitbox{11}{QS}  \\
+\end{bytefield}
+\caption{grammtical-case code}
+\begin{description}
+  \item [P] posture
+  \item [S] scene
+  \item [QS] quote sort~\ref{quotesort}
+\end{description}
+\end{table}
+
+This does mean that any independentClause would have a maximum of 
+three grammatical-cases plus a verb if in 64 bit.
+
+\begin{table}
+\begin{bytefield}[endianness=little, bitwidth=0.125\linewidth]{8}
+  \bitheader{0,2,4,6}\\
+  \bitbox{8}{64 tidbit} \\
+  \bitbox{2}{G} & \bitbox{2}{G} & \bitbox{2}{G} & \bitbox{2}{V}  \\
+\end{bytefield}
+
+
+\begin{bytefield}[endianness=little, bitwidth=0.125\linewidth]{8}
+  \bitheader{0,2,4,6}\\
+  \bitbox{8}{VUL2 vector of two 64 tidbit numbers for searching} \\
+  \bitbox{8}{or VUS8 vector of eight 16 tidbit numbers for establishing} \\
+  \bitbox{2}{G} & \bitbox{2}{G} & \bitbox{2}{G} & \bitbox{2}{G}  \\
+  \bitbox{2}{V} & \bitbox{2}{V} & \bitbox{2}{V or A} & \bitbox{2}{Pe}  \\
+\end{bytefield}
+
+\caption{code name sketch}
+\begin{description}
+  \item [G] grammatical-case
+  \item [V] verb
+  \item [A] aspect
+  \item [Pe] perspective (grammatical-mood)
+\end{description}
+\end{table}
+
+Can also have seperate identifiers for the verb and the grammatical-cases,
+then it would be easier to have multi-word verbs.
+
+
 
 \end{document}

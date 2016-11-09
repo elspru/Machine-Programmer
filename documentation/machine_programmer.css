@@ -12,6 +12,7 @@
 .cmbx-12{ font-weight: bold;}
 .cmti-12{ font-style: italic;}
 .cmmi-12{font-style: italic;}
+@media print {span.next {visibility:hidden;}}
 p.noindent { text-indent: 0em }
 td p.noindent { text-indent: 0em; margin-top:0em; }
 p.nopar { text-indent: 0em; }
