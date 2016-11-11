@@ -220,18 +220,19 @@ LGO & long grammar word denote overflow\\
 \section{Quote Sort}
 \label{quotesort}
 \begin{bytefield}[endianness=little, bitwidth=0.0625\linewidth]{16}
-  \bitheader{0,5,7,10,12,15}\\
+  \bitheader{0,5,6,8,11,13,15}\\
   \bitbox{5}{} & \bitbox{11}{QS} \\
-  \bitbox{5}{5} & \bitbox{3}{3} & \bitbox{2}{2} & \bitbox{2}{2}  & \bitbox{4}{4}  \\
-  \bitbox{5}{QD} & \bitbox{3}{VT} & \bitbox{2}{R} & \bitbox{2}{TW}  & \bitbox{4}{SD}  \\
+  \bitbox{5}{QD} & \bitbox{1}{NL} & \bitbox{2}{R} & \bitbox{3}{VT} & 
+  \bitbox{2}{ST}  & \bitbox{3}{SD}  \\
 \end{bytefield}
 
 \subsection{definitions}
 \begin{description}
   \item [QS] quote sort 
   \item [QD] quote denote
-  \item [VT] vector thick
+  \item [NL] name or literal bit
   \item [R] region
+  \item [VT] vector thick
   \item [ST] scalar thick
   \item [SD] sort denote
 \end{description}
@@ -240,24 +241,21 @@ LGO & long grammar word denote overflow\\
 \toprule
 \multicolumn{5}{|c|}{16 tidbit} \\
 \midrule
-0 \hfill 4 & 5 \hfill 6            & 7 \hfill 9      & 10 \hfill 11  & 12 \hfill
-15 \\
+5 tidbit     & 3 tidbit            & 2 tidbit        & 2 tidbit & 4 tidbit \\
 \midrule
-5 tidbit     & 2 tidbit            & 3 tidbit        & 2 tidbit & 4 tidbit \\
-\midrule
-quote denote & ingredient thick & vector thick & region & sort denote \\
+quote denote & vector thick & region & scalar thick & sort denote \\
 \midrule
 \midrule
 \multicolumn{5}{|c|}{definitions}\\
 \bottomrule
-0            & 1 byte, 8 tidbit   & 1               & literal & glyph \\
-1            & 2 byte, 16 tidbit  & 2               & global  & word \\
-2            & 4 byte, 32 tidbit  & 4               & constant & phrase \\
-3            & 8 byte, 64 tidbit  & 8               & local   & sentence \\
-4            &                    & 16              & & text \\
-5            &                    & U               & & function \\
-6            &                    & U               & & database \\
-7            &                    & 3               & & named database \\
+0            & 1 & literal  & 1 byte, 8 tidbit                & glyph \\
+1            & 2 & global   & 2 byte, 16 tidbit               & word \\
+2            & 4 & constant & 4 byte, 32 tidbit                & phrase \\
+3            & 8 & local    & 8 byte, 64 tidbit               & sentence \\
+4            & 16 &                                 & & text \\
+5            & U  &                                 & & function \\
+6            & U  &                                 & & database \\
+7            & 3  &                                 & & named database \\
 8 & & & & unsigned integer \\
 9 & & & & signed integer \\
 A & & & & floating point number \\
@@ -269,8 +267,8 @@ F & & & & U \\
 \bottomrule
 \end{tabular}
 The quote denote is 5 bits long, leaving 11 bits.\
-the next 2 bits is used to indicate bit width of quote ingredient (s),
-the following 3 bits is used to indicate the number of vector ingredient (s),
+the next 2 bits is used to indicate bit thickness of quote scalar (s),
+the following 3 bits is used to indicate the magnitude of the vector (s),
 2 bit for region
 \begin{enumerate}
   \setcounter{enumi}{0}
@@ -318,6 +316,9 @@ one \_neg \_exponential \_num (2.4)
 unsigned shorts each short containing a word, intialized to repeating sequence
 of ``hello \_vocative\_case'')
 \end{description}
+
+In the case of a refferential, or variable name, the name can be (up to) four
+words long, that way it fits in a 64bit area --- similar to a 64bit address.
 
 \section{Independent-Clause Code Name}
 
@@ -387,13 +388,14 @@ three grammatical-cases plus a verb if in 64 bit.
   \bitbox{8}{VUL2 vector of two 64 tidbit numbers for searching} \\
   \bitbox{8}{or VUS8 vector of eight 16 tidbit numbers for establishing} \\
   \bitbox{2}{G} & \bitbox{2}{G} & \bitbox{2}{G} & \bitbox{2}{G}  \\
-  \bitbox{2}{V} & \bitbox{2}{V} & \bitbox{2}{V or A} & \bitbox{2}{Pe}  \\
+  \bitbox{2}{V} & \bitbox{2}{V xor T} & \bitbox{2}{V xor A} & \bitbox{2}{Pe}  \\
 \end{bytefield}
 
 \caption{code name sketch}
 \begin{description}
   \item [G] grammatical-case
   \item [V] verb
+  \item [T] tense
   \item [A] aspect
   \item [Pe] perspective (grammatical-mood)
 \end{description}
