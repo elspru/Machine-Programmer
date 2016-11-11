@@ -237,60 +237,56 @@ LGO & long grammar word denote overflow\\
   \item [SD] sort denote
 \end{description}
 
-\begin{tabular}{*{5}{l}}
+\begin{tabular}{*{6}{l}}
 \toprule
-\multicolumn{5}{|c|}{16 tidbit} \\
+\multicolumn{6}{|c|}{16 tidbit}\\
 \midrule
-5 tidbit     & 3 tidbit            & 2 tidbit        & 2 tidbit & 4 tidbit \\
+5 tidbit     & 1 tidbit & 2 tidbit            & 3 tidbit        & 2 tidbit & 3 tidbit \\
 \midrule
-quote denote & vector thick & region & scalar thick & sort denote \\
+quote denote & literal or name & region & vector thick & scalar thick & sort denote \\
 \midrule
 \midrule
-\multicolumn{5}{|c|}{definitions}\\
+\multicolumn{6}{|c|}{definitions}\\
 \bottomrule
-0            & 1 & literal  & 1 byte, 8 tidbit                & glyph \\
-1            & 2 & global   & 2 byte, 16 tidbit               & word \\
-2            & 4 & constant & 4 byte, 32 tidbit                & phrase \\
-3            & 8 & local    & 8 byte, 64 tidbit               & sentence \\
-4            & 16 &                                 & & text \\
-5            & U  &                                 & & function \\
-6            & U  &                                 & & database \\
-7            & 3  &                                 & & named database \\
-8 & & & & unsigned integer \\
-9 & & & & signed integer \\
-A & & & & floating point number \\
-B & & & & U \\
-C & & & & U \\
-D & & & & U \\
-E & & & & U \\
-F & & & & U \\
+0            & literal& private  & 1  & 1 byte, 8 tidbit      & letter (s) \\
+1            & name   & world    & 2 & 2 byte, 16 tidbit     & word (s) \\
+2            &        & eternal  & 4 & 4 byte, 32 tidbit     & sentence (s) \\
+3            &        & coworker & 8     & 8 byte, 64 tidbit     & database \\
+4            &         & & 16                                  & & unsigned integer \\
+5            &         & & U                                   & & signed integer \\
+6            &         & & U                                   & & floating point number \\
+7            &         & & 3                                   & & function \\
 \bottomrule
 \end{tabular}
 The quote denote is 5 bits long, leaving 11 bits.\
 the next 2 bits is used to indicate bit thickness of quote scalar (s),
 the following 3 bits is used to indicate the magnitude of the vector (s),
+1 bit for name or literal
+\begin{enumerate}
+  \setcounter{enumi}{0} 
+  \item literal
+  \item name
+\end{enumerate}
+
 2 bit for region
 \begin{enumerate}
-  \setcounter{enumi}{0}
-  \item literal
-  \item global memory referential
-  \item constant memory referential
-  \item local memory referential
+  \setcounter{enumi}{0} 
+  \item private memory
+  \item world memory 
+  \item eternal memory 
+  \item coworker memory 
 \end{enumerate}
-4 bits for noun denote:
+3 bits for noun denote:
 \begin{enumerate}
   \setcounter{enumi}{0}
   \item letter
   \item word
-  \item phrase
   \item sentence
   \item text
-  \item function
-  \item datastructure
-  \item named data type, next 16 bits gives name
   \item unsigned integer
   \item signed integer
   \item floating point number
+  \item function
 \end{enumerate}
 \section{Denote Syntax}
 For literals
